@@ -1,0 +1,33 @@
+generated: '2026-07-19'
+method: searched
+source: openapi/hifi-openapi-original.json
+docs: https://docs.hifi.com/api/authentication
+summary:
+  types:
+  - http
+  api_key_in:
+  - header
+  scheme: All requests are authenticated with a bearer API key sent in the
+    Authorization header over HTTPS/TLS. Keys are created in the Hifi Dashboard
+    under Developer > API Keys and shown only once at creation.
+notes:
+- Header format is "Authorization: Bearer [example key]".
+- Separate keys per environment; sandbox keys must never be used in production
+  and vice versa. There is no documented test/live key prefix.
+- Webhook callbacks are themselves signed as an RS256 JWT in the Authorization
+  header, verified with the per-endpoint webhook public key.
+- Recommended rotation is annual, or immediately on suspected compromise.
+environments:
+- name: sandbox
+  base_url: https://sandbox.hifibridge.com
+- name: production
+  base_url: https://production.hifibridge.com
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  in: header
+  header_name: Authorization
+  sources:
+  - openapi/hifi-openapi-original.json
