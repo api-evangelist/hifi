@@ -1,0 +1,409 @@
+openapi: 3.0.0
+info:
+  title: Hifi Account Transfer Approvals API
+  version: 2.0.0
+  description: API documentation for Hifi
+servers:
+- url: https://production.hifibridge.com
+  description: Production server
+- url: https://sandbox.hifibridge.com
+  description: Sandbox server
+security:
+- bearerAuth: []
+tags:
+- name: Transfer Approvals
+  description: Transfer approval workflow and admin actions
+paths:
+  /v2/transfer-approvals:
+    get:
+      tags:
+      - Transfer Approvals
+      summary: List all pending transfer approvals
+      description: Retrieve all pending transfer approvals that require admin action
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+        description: Number of approvals to return
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+        description: Number of approvals to skip
+      responses:
+        '200':
+          description: Transfer approvals retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTransferApprovalsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/transfer-approvals/{approvalId}/approve:
+    post:
+      tags:
+      - Transfer Approvals
+      summary: Approve a transfer
+      description: Approve a pending transfer. If enough approvals are received, the transfer will be queued for execution.
+      parameters:
+      - name: approvalId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the transfer approval
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveTransferRequest'
+      responses:
+        '200':
+          description: Transfer approval recorded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApproveTransferResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/transfer-approvals/{approvalId}/reject:
+    post:
+      tags:
+      - Transfer Approvals
+      summary: Reject a transfer
+      description: Reject a pending transfer. This will cancel the transfer and return funds to the sender.
+      parameters:
+      - name: approvalId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the transfer approval
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RejectTransferRequest'
+      responses:
+        '200':
+          description: Transfer rejected successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RejectTransferResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/transfer-approvals/{approvalId}:
+    get:
+      tags:
+      - Transfer Approvals
+      summary: Get a transfer approval
+      description: Retrieve detailed information about a specific transfer approval
+      parameters:
+      - name: approvalId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the transfer approval
+      responses:
+        '200':
+          description: Transfer approval details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTransferApprovalResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+components:
+  responses:
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+  schemas:
+    ApprovalVote:
+      type: object
+      properties:
+        approverId:
+          type: string
+          format: uuid
+          example: profile-789-e89b-12d3-a456-426614174006
+          description: ID of the approver who cast the vote
+        vote:
+          type: string
+          enum:
+          - APPROVE
+          - REJECT
+          example: APPROVE
+          description: The vote cast by the approver
+        comment:
+          type: string
+          nullable: true
+          example: Approved after reviewing transaction details
+          description: Optional comment explaining the vote decision
+        createdAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T11:00:00.000Z'
+          description: When the vote was cast
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+    RejectTransferRequest:
+      type: object
+      description: Request body for rejecting a transfer
+      properties:
+        reason:
+          type: string
+          maxLength: 1000
+          description: Reason for rejecting the transfer
+          example: Transfer amount exceeds daily limit
+    ApproveTransferResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Whether the operation was successful
+        message:
+          type: string
+          example: Transfer approved and initiated successfully
+          description: Human-readable message about the operation
+        approvalId:
+          type: string
+          format: uuid
+          description: ID of the approval being processed
+          example: approval-123-e89b-12d3-a456-426614174002
+        status:
+          type: string
+          enum:
+          - APPROVED
+          example: APPROVED
+          description: Current status after approval
+        timestamp:
+          type: string
+          format: date-time
+          description: When the approval was processed
+          example: '2024-01-15T11:00:00.000Z'
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    TransferApprovalSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: approval-123-e89b-12d3-a456-426614174002
+        transferId:
+          type: string
+          format: uuid
+          example: transfer-456-e89b-12d3-a456-426614174003
+        status:
+          type: string
+          enum:
+          - PENDING
+          - APPROVED
+          - REJECTED
+          - EXPIRED
+          example: PENDING
+          description: Current status of the approval process
+        createdAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T10:30:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T11:00:00.000Z'
+          description: When the approval was last updated
+        transferType:
+          type: string
+          enum:
+          - WALLET.TRANSFER
+          - WALLET.TRANSFER.BATCH
+          - WALLET.BRIDGE
+          example: WALLET.TRANSFER
+          description: Type of transfer requiring approval
+    TransferApprovalDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: approval-123-e89b-12d3-a456-426614174002
+        transferId:
+          type: string
+          format: uuid
+          example: transfer-456-e89b-12d3-a456-426614174003
+        status:
+          type: string
+          enum:
+          - PENDING
+          - APPROVED
+          - REJECTED
+          - EXPIRED
+          example: PENDING
+          description: Current status of the approval process
+        createdAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T10:30:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T11:00:00.000Z'
+          description: When the approval was last updated
+        transferType:
+          type: string
+          enum:
+          - WALLET.TRANSFER
+          - WALLET.TRANSFER.BATCH
+          - WALLET.BRIDGE
+          example: WALLET.TRANSFER
+          description: Type of transfer requiring approval
+        votes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApprovalVote'
+          description: Array of votes cast on this approval
+    GetTransferApprovalResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Whether the operation was successful
+        message:
+          type: string
+          example: Approval details retrieved successfully
+          description: Human-readable message about the operation
+        approval:
+          $ref: '#/components/schemas/TransferApprovalDetail'
+    RejectTransferResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Whether the operation was successful
+        message:
+          type: string
+          example: Transfer rejected successfully
+          description: Human-readable message about the operation
+        approvalId:
+          type: string
+          format: uuid
+          description: ID of the approval being processed
+          example: approval-123-e89b-12d3-a456-426614174002
+        status:
+          type: string
+          enum:
+          - REJECTED
+          example: REJECTED
+          description: Current status after rejection
+        reason:
+          type: string
+          description: Reason for rejection
+          example: Transfer amount exceeds daily limit
+        timestamp:
+          type: string
+          format: date-time
+          description: When the rejection was processed
+          example: '2024-01-15T11:00:00.000Z'
+    ApproveTransferRequest:
+      type: object
+      description: Request body for approving a transfer
+      properties:
+        comment:
+          type: string
+          maxLength: 1000
+          description: Optional comment explaining the approval decision
+          example: Approved after reviewing transaction details
+    GetTransferApprovalsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Whether the operation was successful
+        message:
+          type: string
+          example: Pending approvals retrieved successfully
+          description: Human-readable message about the operation
+        count:
+          type: integer
+          description: Total number of pending approvals
+          example: 2
+        approvals:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferApprovalSummary'
+          description: Array of pending approval records
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

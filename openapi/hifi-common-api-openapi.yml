@@ -1,0 +1,92 @@
+openapi: 3.0.0
+info:
+  title: Hifi Account Common API
+  version: 2.0.0
+  description: API documentation for Hifi
+servers:
+- url: https://production.hifibridge.com
+  description: Production server
+- url: https://sandbox.hifibridge.com
+  description: Sandbox server
+security:
+- bearerAuth: []
+tags:
+- name: Common
+  description: Common endpoints
+paths:
+  /v2/ping:
+    get:
+      summary: Ping
+      tags:
+      - Common
+      responses:
+        '200':
+          $ref: '#/components/responses/PingResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+components:
+  responses:
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    PingResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Pong'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+  schemas:
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    Pong:
+      type: object
+      properties:
+        message:
+          type: string
+          example: pong
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,131 @@
+openapi: 3.0.0
+info:
+  title: Hifi Account File API
+  version: 2.0.0
+  description: API documentation for Hifi
+servers:
+- url: https://production.hifibridge.com
+  description: Production server
+- url: https://sandbox.hifibridge.com
+  description: Sandbox server
+security:
+- bearerAuth: []
+tags:
+- name: File
+  description: File endpoints
+paths:
+  /v2/files:
+    post:
+      summary: Upload a file
+      description: 'Upload a file.
+
+        '
+      tags:
+      - File
+      requestBody:
+        $ref: '#/components/requestBodies/FileUploadBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/FileUploadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+components:
+  responses:
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    FileUploadResponse:
+      description: File uploaded successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FileUploadResult'
+  schemas:
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    FileUpload:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+      required:
+      - file
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+    FileUploadResult:
+      type: object
+      properties:
+        id:
+          type: string
+          description: File ID
+        createdAt:
+          type: string
+          format: date-time
+          description: The time the file was uploaded
+        fileName:
+          type: string
+          description: The name of the uploaded file
+        size:
+          type: integer
+          description: The size of the uploaded file in bytes
+        mimeType:
+          type: string
+          description: The MIME type of the uploaded file
+      example:
+        id: file_zEFpbPhk71NaQfEVMR544
+        createdAt: '2023-10-01T12:00:00Z'
+        fileName: document.pdf
+        size: 204800
+        mimeType: application/pdf
+  requestBodies:
+    FileUploadBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/FileUpload'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

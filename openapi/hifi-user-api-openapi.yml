@@ -1,0 +1,738 @@
+openapi: 3.0.0
+info:
+  title: Hifi Account User API
+  version: 2.0.0
+  description: API documentation for Hifi
+servers:
+- url: https://production.hifibridge.com
+  description: Production server
+- url: https://sandbox.hifibridge.com
+  description: Sandbox server
+security:
+- bearerAuth: []
+tags:
+- name: User
+  description: User endpoints
+paths:
+  /v2/tos-link:
+    post:
+      summary: Generate a terms of service link
+      description: The Terms of Service page must be displayed to the end user. This page can be whitelabeled upon request.
+      tags:
+      - User
+      requestBody:
+        $ref: '#/components/requestBodies/ToSLinkBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/ToSLinkObjectResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/tos-link/{signedAgreementId}:
+    get:
+      summary: Retrieve a terms of service link
+      description: Retrieve the status of a terms of service link
+      tags:
+      - User
+      parameters:
+      - $ref: '#/components/parameters/SignedAgreementIdPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/ToSLinkRecordStatusResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/users:
+    post:
+      summary: Create a user
+      description: 'Create a new Hifi user (Individual/Business)
+
+
+        HIFI does not provide services to users or businesses from sanctioned and high-risk regions or unsupported US states. See [here](https://docs.hifibridge.com/docs/compliance/regions) for supported regions.
+
+        '
+      tags:
+      - User
+      requestBody:
+        $ref: '#/components/requestBodies/UserV2CreateBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/UserV2ObjectResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+    get:
+      summary: List all users
+      description: Get all existing Hifi users
+      tags:
+      - User
+      parameters:
+      - $ref: '#/components/parameters/UserTypeV2Parameter'
+      - $ref: '#/components/parameters/UserFirstNameParameter'
+      - $ref: '#/components/parameters/UserLastNameParameter'
+      - $ref: '#/components/parameters/UserBusinessNameParameter'
+      - $ref: '#/components/parameters/UserEmailParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      - $ref: '#/components/parameters/CreatedBeforeParameter'
+      - $ref: '#/components/parameters/CreatedAfterParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/AllUserV2ObjectsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/users/{userId}:
+    get:
+      summary: Retrieve a user
+      description: Get an existing Hifi user
+      tags:
+      - User
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/UserV2ObjectResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+    post:
+      summary: Update a user
+      description: 'Update an existing Hifi user.
+
+
+        HIFI does not provide services to users or businesses from sanctioned and high-risk regions or unsupported US states. See [here](https://docs.hifibridge.com/docs/compliance/regions) for supported regions.
+
+        '
+      tags:
+      - User
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      requestBody:
+        $ref: '#/components/requestBodies/UserV2UpdateBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/UserV2ObjectResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+components:
+  schemas:
+    ToSLinkRecordStatusObject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: signed agreement id
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the ToS link was created
+        expiredAt:
+          type: string
+          format: date-time
+          description: Timestamp when the ToS link will expire
+        signed:
+          type: boolean
+          description: Whether the ToS has been signed
+        sessionToken:
+          type: string
+          format: string
+          description: Session token for the ToS signing session
+    IndividualUserV2Object:
+      type: object
+      title: User Object (Individual)
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User ID
+        createdAt:
+          type: string
+          format: date-time
+          description: Data and time when the user was created
+        type:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        wallets:
+          type: object
+          properties:
+            INDIVIDUAL:
+              type: object
+              properties:
+                ETHEREUM:
+                  $ref: '#/components/schemas/WalletAddressObject'
+                POLYGON:
+                  $ref: '#/components/schemas/WalletAddressObject'
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    AllUserV2Objects:
+      type: object
+      properties:
+        count:
+          type: integer
+        users:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/IndividualUserV2Object'
+            - $ref: '#/components/schemas/BusinessUserV2Object'
+        nextCursor:
+          type: string
+          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
+    BusinessUserV2Update:
+      type: object
+      title: Update Business User
+      properties:
+        type:
+          type: string
+          enum:
+          - business
+        businessName:
+          type: string
+        email:
+          type: string
+        address:
+          type: object
+          description: Address of the user.
+          $ref: '#/components/schemas/Address'
+        ipAddress:
+          type: string
+          description: IP address of the user.
+        ultimateBeneficialOwners:
+          type: array
+          items:
+            $ref: '#/components/schemas/UltimateBeneficialOwnerV2'
+        signedAgreementId:
+          type: string
+          description: ID of the signed agreement, fetched through the HIFI's Hosted Terms of Service Link POST /tos-link
+    WalletAddressObject:
+      type: object
+      properties:
+        address:
+          type: string
+          description: Wallet address
+      required:
+      - address
+    BusinessUserV2Object:
+      type: object
+      title: User Object (Business)
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User ID
+        createdAt:
+          type: string
+          format: date-time
+          description: Data and time when the user was created
+        type:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        wallets:
+          type: object
+          properties:
+            INDIVIDUAL:
+              type: object
+              properties:
+                ETHEREUM:
+                  $ref: '#/components/schemas/WalletAddressObject'
+                POLYGON:
+                  $ref: '#/components/schemas/WalletAddressObject'
+    BusinessUserV2Create:
+      type: object
+      title: Create Business User
+      properties:
+        requestId:
+          type: string
+          description: Request ID for user creation. If not provided, a random UUID will be generated. Using the same requestId will result in the same user being returned.
+          format: uuid
+        type:
+          type: string
+          enum:
+          - business
+        businessName:
+          type: string
+        chains:
+          type: array
+          description: 'The chains to create wallets for, default to POLYGON and ETHEREUM.
+
+            '
+          items:
+            type: string
+            enum:
+            - POLYGON
+            - ETHEREUM
+            - SOLANA
+            - BASE
+        email:
+          type: string
+        address:
+          type: object
+          description: "Address of the user. \n\nEither the address or the ipAddress must be provided.\n"
+          $ref: '#/components/schemas/Address'
+        ipAddress:
+          type: string
+          description: 'IP address of the user.
+
+
+            Either the address or the ipAddress must be provided.
+
+            '
+          format: ipv4
+        ultimateBeneficialOwners:
+          type: array
+          items:
+            $ref: '#/components/schemas/UltimateBeneficialOwnerV2'
+        signedAgreementId:
+          type: string
+          description: ID of the signed agreement, fetched through the HIFI's Hosted Terms of Service Link POST /tos-link
+      required:
+      - type
+      - businessName
+      - email
+      - ultimateBeneficialOwners
+      - signedAgreementId
+    Address:
+      type: object
+      properties:
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        city:
+          type: string
+        stateProvinceRegion:
+          type: string
+          description: "The second part of the [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2). This must be provided if the country has subdivisions.\n\nAn ISO 3166-2 code consists of two parts, separated by a hyphen (`-`):\n  1. The first part is the ISO 3166-1 alpha-2 code of the country (e.g., `US`, `CA`, `BR`);\n  2. The second part is a string of up to three alphanumeric characters representing a specific subdivision (e.g., state, province). This is typically based on national standards or developed by ISO.\n\n  Only provide the second part of the code (e.g., `CA` for California in `US-CA`, or `SP` for São Paulo in `BR-SP`).\n"
+        postalCode:
+          type: string
+          description: Must be supplied for countries that use postal codes.
+        country:
+          type: string
+          description: Three-letter alpha-3 country code as defined in the [ISO 3166-1 spec](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3).
+      required:
+      - addressLine1
+      - city
+      - stateProvinceRegion
+      - postalCode
+      - country
+    IndividualUserV2Create:
+      type: object
+      title: Create Individual User
+      properties:
+        requestId:
+          type: string
+          description: Request ID for user creation. If not provided, a random UUID will be generated. Using the same requestId will result in the same user being returned.
+          format: uuid
+        type:
+          type: string
+          enum:
+          - individual
+        chains:
+          type: array
+          description: 'The chains to create wallets for, default to POLYGON and ETHEREUM.
+
+            '
+          items:
+            type: string
+            enum:
+            - POLYGON
+            - ETHEREUM
+            - SOLANA
+            - BASE
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        dateOfBirth:
+          type: string
+          description: Date of birth in format yyyy-mm-dd.
+          format: date
+        address:
+          type: object
+          description: 'Address of the user.
+
+
+            Either the address or the ipAddress must be provided.
+
+            '
+          $ref: '#/components/schemas/Address'
+        ipAddress:
+          type: string
+          description: "IP address of the user. \n\nEither the address or the ipAddress must be provided.\n"
+          format: ipv4
+        signedAgreementId:
+          type: string
+          description: ID of the signed agreement, fetched through the HIFI's Hosted Terms of Service Link POST /tos-link
+      required:
+      - type
+      - firstName
+      - lastName
+      - email
+      - dateOfBirth
+      - signedAgreementId
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+    ToSLinkObject:
+      type: object
+      properties:
+        url:
+          type: string
+        signedAgreementId:
+          type: string
+    UltimateBeneficialOwnerV2:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+          description: Date of birth in format yyyy-mm-dd.
+          format: date
+        hasControl:
+          type: boolean
+          description: True if the person has a significant responsibility to control, manage, or direct the activities of the business. At least one of the ultimateBeneficialOwners needs to have this set to true.
+        isSigner:
+          type: boolean
+          description: True if the person can authorize transactions on behalf of the business. At least one of the ultimateBeneficialOwners needs to have this set to true.
+      required:
+      - firstName
+      - lastName
+      - dateOfBirth
+      - hasControl
+      - isSigner
+    ToSLink:
+      type: object
+      properties:
+        idempotencyKey:
+          type: string
+          description: Unique identifier for the resource
+          format: uuid
+        templateId:
+          type: string
+          description: Id of the custom terms of service template generated in the HIFI developer dashboard. If not passed, the page will use HIFI's default template.
+        redirectUrl:
+          type: string
+          description: Url to redirect after accepting the terms of service link. The signedAgreementId is the same as the passed idempotencyKey, you may attempt to call the POST /user/create endpoint, but if the user did not accept the TOS, the user creation will return an error.
+      required:
+      - idempotencyKey
+    IndividualUserV2Update:
+      type: object
+      title: Update Individual User
+      properties:
+        type:
+          type: string
+          enum:
+          - individual
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        dateOfBirth:
+          type: string
+          description: Date of birth in format yyyy-mm-dd.
+          format: date
+        address:
+          type: object
+          description: Address of the user.
+          $ref: '#/components/schemas/Address'
+        ipAddress:
+          type: string
+          description: IP address of the user.
+        signedAgreementId:
+          type: string
+          description: ID of the signed agreement, fetched through the HIFI's Hosted Terms of Service Link POST /tos-link
+  parameters:
+    UserTypeV2Parameter:
+      name: type
+      in: query
+      schema:
+        type: string
+        enum:
+        - individual
+        - business
+      description: If passed, you will get all users under the type.
+      required: false
+    UserBusinessNameParameter:
+      name: businessName
+      in: query
+      schema:
+        type: string
+      description: 'If passed, you will get all users with the case-insensitive partial match of `businessName`.
+
+        '
+      required: false
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+    UserEmailParameter:
+      name: email
+      in: query
+      schema:
+        type: string
+      description: 'If passed, you will get all users with the case-insensitive partial match of `email`.
+
+        '
+      required: false
+    UserFirstNameParameter:
+      name: firstName
+      in: query
+      schema:
+        type: string
+      description: 'If passed, you will get all users with the case-insensitive partial match of `firstName`.
+
+        '
+      required: false
+    SignedAgreementIdPathParameter:
+      name: signedAgreementId
+      in: path
+      schema:
+        type: string
+      description: ID of the signed agreement
+      required: true
+    UserIdPathParameter:
+      name: userId
+      in: path
+      schema:
+        type: string
+      description: ID of the user
+      required: true
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    UserLastNameParameter:
+      name: lastName
+      in: query
+      schema:
+        type: string
+      description: 'If passed, you will get all users with the case-insensitive partial match of `lastName`.
+
+        '
+      required: false
+    CreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+  responses:
+    AllUserV2ObjectsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AllUserV2Objects'
+          examples:
+            UserObjectListExample:
+              $ref: '#/components/examples/UserObjectListExample'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    ToSLinkRecordStatusResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ToSLinkRecordStatusObject'
+          examples:
+            TosLinkStatusObjectExample:
+              $ref: '#/components/examples/TosLinkStatusObjectExample'
+    UserV2ObjectResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/IndividualUserV2Object'
+            - $ref: '#/components/schemas/BusinessUserV2Object'
+          examples:
+            UserObjectIndividualExample:
+              $ref: '#/components/examples/UserObjectIndividualExample'
+            UserObjectBusinessExample:
+              $ref: '#/components/examples/UserObjectBusinessExample'
+    ToSLinkObjectResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ToSLinkObject'
+          examples:
+            ToSLinkObjectExample:
+              $ref: '#/components/examples/ToSLinkObjectExample'
+  examples:
+    UserObjectIndividualExample:
+      summary: User Object (Individual)
+      value:
+        id: 4d93ab4f-3983-4ac0-8c97-54bbc0f287fa
+        createdAt: '2025-09-24T19:12:20.541Z'
+        type: individual
+        email: john.doe@hifibridge.com
+        name: John Doe
+        wallets:
+          INDIVIDUAL:
+            ETHEREUM:
+              address: '0x43B343Bb48E23F58406271131B71448fF95787AD'
+            POLYGON:
+              address: '0x43B343Bb48E23F58406271131B71448fF95787AD'
+    TosLinkStatusObjectExample:
+      summary: ToS Link Status Object
+      value:
+        id: e6e0de1d-7d0b-4935-ba1a-71906064067e
+        createdAt: '2025-04-17T18:27:51.169Z'
+        expiredAt: '2025-04-22T18:27:51.091Z'
+        signed: true
+        sessionToken: e3a92e74-19e0-4137-ab75-ae537832f342
+    UserObjectBusinessExample:
+      summary: User Object (Business)
+      value:
+        id: 264484e0-979a-5fa3-9335-947f55e5999a
+        createdAt: '2025-09-24T19:03:41.107Z'
+        type: business
+        email: admin@randombizz.com
+        name: Random Bizz
+        wallets:
+          INDIVIDUAL:
+            ETHEREUM:
+              address: '0x2f78AEFA879819D7a5C9a87fE8BF5e7B961f5500'
+            POLYGON:
+              address: '0x2f78AEFA879819D7a5C9a87fE8BF5e7B961f5500'
+    UserObjectListExample:
+      summary: User Object List
+      value:
+        count: 2
+        users:
+        - id: 4d93ab4f-3983-4ac0-8c97-54bbc0f287fa
+          createdAt: '2025-09-24T19:12:20.541Z'
+          type: individual
+          email: john.doe@hifibridge.com
+          name: John Doe
+          wallets:
+            INDIVIDUAL:
+              ETHEREUM:
+                address: '0x43B343Bb48E23F58406271131B71448fF95787AD'
+              POLYGON:
+                address: '0x43B343Bb48E23F58406271131B71448fF95787AD'
+        - id: 264484e0-979a-5fa3-9335-947f55e5999a
+          createdAt: '2025-09-24T19:03:41.107Z'
+          type: business
+          email: admin@randombizz.com
+          name: Random Bizz
+          wallets:
+            INDIVIDUAL:
+              ETHEREUM:
+                address: '0x2f78AEFA879819D7a5C9a87fE8BF5e7B961f5500'
+              POLYGON:
+                address: '0x2f78AEFA879819D7a5C9a87fE8BF5e7B961f5500'
+        nextCursor: '2025-09-24T19:03:41.107Z'
+    ToSLinkObjectExample:
+      summary: ToS Link Object
+      value:
+        url: https://dashboard.hifibridge.com/accept-terms-of-service?sessionToken=e12d9c3f-75a8-4bd1-aa3d-97a2cfaf2c40&redirectUrl=undefined&templateId=2fb2da24-472a-4e5b-b160-038d9dc82a40
+        signedAgreementId: e12d9c3f-75a8-4bd1-aa3d-97a2cfaf2c40
+  requestBodies:
+    UserV2UpdateBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/IndividualUserV2Update'
+            - $ref: '#/components/schemas/BusinessUserV2Update'
+    UserV2CreateBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/IndividualUserV2Create'
+            - $ref: '#/components/schemas/BusinessUserV2Create'
+    ToSLinkBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ToSLink'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

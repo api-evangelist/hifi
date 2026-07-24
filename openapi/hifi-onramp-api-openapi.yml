@@ -1,0 +1,1317 @@
+openapi: 3.0.0
+info:
+  title: Hifi Account Onramp API
+  version: 2.0.0
+  description: API documentation for Hifi
+servers:
+- url: https://production.hifibridge.com
+  description: Production server
+- url: https://sandbox.hifibridge.com
+  description: Sandbox server
+security:
+- bearerAuth: []
+tags:
+- name: Onramp
+  description: Onramp endpoints
+paths:
+  /v2/onramps:
+    post:
+      summary: Create an onramp
+      description: "\nAn onramp facilitates the conversion of fiat to crypto. Once the fiat payment is received, HIFI will deliver the converted crypto to the receiving user’s wallet.\n\nThere are two types of onramp:\n\n* **Quote-based onramp**: This type of onramp first returns the conversion rate quote based on the best market rate, which you can accept through the [Accept an onramp quote](https://docs.hifibridge.com/api-reference/onramp/accept-an-onramp-quote) endpoint to initiate the onramp.  \n  Additionally, you can also refresh the onramp quote using the [Refresh an onramp quote](https://docs.hifibridge.com/api-reference/onramp/refresh-an-onramp-quote) endpoint to refresh the conversion rate associated with the onramp. To learn more about quote-based onramps, click [here](https://docs.hifibridge.com/guides/transfers/onramps/usd-usdc).\n\n* **Non-quote-based onramp**: This type of onramp will be initiated immediately upon creating an onramp.\n"
+      tags:
+      - Onramp
+      requestBody:
+        $ref: '#/components/requestBodies/CreateOnrampBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/FiatToCryptoTransferResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+    get:
+      summary: List all onramps
+      description: 'Returns a list of onramps associated with a user under your organization. The onramps are returned sorted by creation date, with the most recent onramps appearing first.
+
+        '
+      tags:
+      - Onramp
+      parameters:
+      - $ref: '#/components/parameters/UserIdOptionalParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      - $ref: '#/components/parameters/CreatedBeforeParameter'
+      - $ref: '#/components/parameters/CreatedAfterParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/FiatToCryptoAllRecordsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/onramps/{transferId}:
+    get:
+      summary: Retrieve an onramp
+      description: Retrieves an onramp.
+      tags:
+      - Onramp
+      parameters:
+      - $ref: '#/components/parameters/OnrampRecordIDPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/FiatToCryptoRecordResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/onramps/{transferId}/quote/accept:
+    post:
+      summary: Accept an onramp quote
+      description: 'Accept a quote-based onramp.
+
+
+        For example, an onramp from fiat currency `brl` to crypto currency `usdc` is quote-based so its initial status will be `OPEN_QUOTE`. After reviewing the onramp conversion rate quote information, you can accept it to initialize the onramp.
+
+        '
+      tags:
+      - Onramp
+      parameters:
+      - $ref: '#/components/parameters/OnrampRecordIDPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/FiatToCryptoAcceptQuoteResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/onramps/{transferId}/quote/refresh:
+    post:
+      summary: Refresh an onramp quote
+      description: 'Refresh the conversion rate quote that is associated with a quote-based onramp. You can only refresh an onramp quote with the status `OPEN_QUOTE`.
+
+        '
+      tags:
+      - Onramp
+      parameters:
+      - $ref: '#/components/parameters/OnrampRecordIDPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/FiatToCryptoRefreshQuoteResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/onramps/rates:
+    get:
+      summary: Retrieve an onramp rate
+      description: 'Onramp rates are estimated rates for onramp conversions from different fiat currencies into different cryptocurrencies.
+
+        '
+      tags:
+      - Onramp
+      parameters:
+      - $ref: '#/components/parameters/FromFiatCurrencyParameter'
+      - $ref: '#/components/parameters/ToCryptoCurrencyParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/FiatToCryptoConversionRateResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+components:
+  schemas:
+    CreateBrlOnramp:
+      type: object
+      title: Onramp (BRL)
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - gift
+          - bills
+          - groceries
+          - travel
+          - health
+          - entertainment
+          - housing
+          - school-fees
+          - other
+        isInstant:
+          type: boolean
+          default: false
+          description: 'instant onramp. coming soon ...
+
+            '
+        source:
+          type: object
+          description: onramp source
+          $ref: '#/components/schemas/BrlOnrampSource'
+        destination:
+          type: object
+          description: onramp destination
+          $ref: '#/components/schemas/OnrampDestination'
+        fee:
+          type: object
+          description: custom onramp fee, omit if no fee is charged
+          nullable: true
+          allOf:
+          - $ref: '#/components/schemas/OnrampFee'
+      required:
+      - requestId
+      - source
+      - destination
+    OnrampAcceptedQuoteObject:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/OnrampObject'
+      - type: object
+        properties:
+          depositInfo:
+            $ref: '#/components/schemas/OnrampDepositInfoObject'
+    MxnOnrampSource:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          minimum: 0
+          description: amount of fiat currency to send
+        currency:
+          type: string
+          enum:
+          - mxn
+          description: fiat currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is sending the fiat
+      required:
+      - currency
+      - userId
+    AfricaOnrampSource:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          minimum: 0
+          description: amount of fiat currency to send
+        currency:
+          type: string
+          description: 'fiat currency.
+
+            Look at the list of supported `currency` [here](https://docs.google.com/spreadsheets/d/1QxAWGoZMznB6_Ts4mzFcFD49ZOMUZNdNiR6wlr8NDL0/edit?gid=293141391#gid=293141391).
+
+            Make sure the `currency` enum is supported for the provided `accountId`.
+
+            '
+        accountId:
+          type: string
+          format: uuid
+          description: 'account the fiat comes from. eg. usd Plaid account
+
+
+            * this field is optional when onramping from `currency`: `usd`
+
+            * this field is not required when onramping from `currency`: `brl`
+
+            * this field is required when onramping from the rest of the currencies
+
+            '
+        userId:
+          type: string
+          format: uuid
+          description: user who is sending the fiat
+      required:
+      - currency
+      - userId
+      - accountId
+    OnrampSource:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          minimum: 0
+          description: amount of fiat currency to send
+        currency:
+          type: string
+          enum:
+          - usd
+          - ngn
+          - mwk
+          - bwp
+          - xaf
+          - ghs
+          - kes
+          - rwf
+          - zar
+          - tzs
+          - ugx
+          - xof
+          - zmw
+          - brl
+          - mxn
+          - eur
+          description: fiat currency
+        transferType:
+          type: string
+          enum:
+          - ach
+          - wire
+          description: 'payment network type
+
+
+            * this field is used when onramping from usd, default is `ach`
+
+            '
+        accountId:
+          type: string
+          format: uuid
+          description: 'account the fiat comes from. eg. usd Plaid account
+
+
+            * this field is optional when onramping from `currency`: `usd`
+
+            * this field is not required when onramping from `currency`: `brl`, `mxn`
+
+            * this field is required when onramping from the rest of the currencies
+
+            '
+        userId:
+          type: string
+          format: uuid
+          description: user who is sending the fiat
+      required:
+      - currency
+      - userId
+    OnrampDestination:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          minimum: 0
+          description: amount of crypto currency to receive
+        currency:
+          type: string
+          enum:
+          - usdc
+          - usdt
+          - usdHifi
+          description: 'crypto currency (note: `usdHifi` is only available in sandbox to simulate token movement)
+
+            '
+        chain:
+          type: string
+          enum:
+          - POLYGON
+          - ETHEREUM
+          - SOLANA
+          - BASE
+          description: chain of the crypto currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is receiving the crypto, required if `externalWalletId` is not provided
+        externalWalletId:
+          type: string
+          format: uuid
+          description: external wallet id who is receiving the crypto, required if `userId` is not provided
+    OnrampQuoteObject:
+      $ref: '#/components/schemas/OnrampObject'
+    BrlOnrampSource:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          minimum: 0
+          description: amount of fiat currency to send
+        currency:
+          type: string
+          enum:
+          - brl
+          description: fiat currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is sending the fiat
+      required:
+      - currency
+      - userId
+    OnrampAllRecordsObject:
+      type: object
+      properties:
+        count:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/OnrampRecordObject'
+        nextCursor:
+          type: string
+          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
+    CreateUsdOnramp:
+      type: object
+      title: Onramp (USD)
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        source:
+          type: object
+          description: onramp source
+          $ref: '#/components/schemas/UsdOnrampSource'
+        destination:
+          type: object
+          description: onramp destination
+          $ref: '#/components/schemas/OnrampDestination'
+        fee:
+          type: object
+          description: custom onramp fee, omit if no fee is charged
+          allOf:
+          - $ref: '#/components/schemas/OnrampFee'
+      required:
+      - requestId
+      - source
+      - destination
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    OnrampStatusEnum:
+      type: string
+      enum:
+      - NOT_INITIATED
+      - CREATED
+      - OPEN_QUOTE
+      - FIAT_INITIATED
+      - AWAITING_FUNDS
+      - FIAT_PENDING
+      - FIAT_PROCESSED
+      - CRYPTO_INITIATED
+      - CRYPTO_PENDING
+      - COMPLETED
+      - FIAT_FAILED
+      - FIAT_RETURNED
+      - CRYPTO_FAILED
+      - QUOTE_FAILED
+      - EXPIRED
+      - UNKNOWN
+      description: 'Refer to [here](https://docs.hifibridge.com/docs/transfers/onramps#transaction-status) for more details on each onramp status.
+
+        '
+    OnrampRecordObject:
+      $ref: '#/components/schemas/OnrampObject'
+    OnrampObject:
+      type: object
+      properties:
+        transferType:
+          type: string
+        transferDetails:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            requestId:
+              type: string
+              format: uuid
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+            status:
+              $ref: '#/components/schemas/OnrampStatusEnum'
+            failedReason:
+              type: string
+            source:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                currency:
+                  type: string
+                amount:
+                  type: number
+                  format: float
+                accountId:
+                  type: string
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    lastName:
+                      type: string
+                    firstName:
+                      type: string
+                    businessName:
+                      type: string
+                bankInfo:
+                  $ref: '#/components/schemas/InboundObject'
+            destination:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                currency:
+                  type: string
+                chain:
+                  type: string
+                walletAddress:
+                  type: string
+                externalWalletId:
+                  type: string
+                amount:
+                  type: number
+                  format: float
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    lastName:
+                      type: string
+                    firstName:
+                      type: string
+                    businessName:
+                      type: string
+            receipt:
+              type: object
+              properties:
+                transactionHash:
+                  type: string
+            developerFee:
+              type: object
+            quoteInformation:
+              type: object
+              properties:
+                sendGross:
+                  type: object
+                  properties:
+                    amount:
+                      type: string
+                    currency:
+                      type: string
+                sendNet:
+                  type: object
+                  properties:
+                    amount:
+                      type: string
+                    currency:
+                      type: string
+                railFee:
+                  type: object
+                  properties:
+                    amount:
+                      type: string
+                    currency:
+                      type: string
+                receiveGross:
+                  type: object
+                  properties:
+                    amount:
+                      type: string
+                    currency:
+                      type: string
+                receiveNet:
+                  type: object
+                  properties:
+                    amount:
+                      type: string
+                    currency:
+                      type: string
+                rate:
+                  type: string
+                expiresAt:
+                  type: string
+                  format: date-time
+            depositInfo:
+              $ref: '#/components/schemas/OnrampDepositInfoObject'
+    FiatToCryptoConversionRateObject:
+      type: object
+      properties:
+        fromCurrency:
+          type: string
+          enum:
+          - usd
+          - ugx
+          - ngn
+          - bwp
+          - tzs
+          - mwk
+          - xaf
+          - kes
+          description: source currency
+        toCurrency:
+          type: string
+          enum:
+          - usdc
+          description: target currency
+        conversionRate:
+          type: string
+        conversionRates:
+          type: array
+          items:
+            type: object
+            properties:
+              transferType:
+                type: string
+                description: when `transferType` is `default`, this is the conversion rate for the default transfer type
+              conversionRate:
+                type: string
+      example:
+        fromCurrency: usd
+        toCurrency: usdc
+        conversionRate: '1'
+        conversionRates:
+        - transferType: default
+          conversionRate: '1'
+    OnrampFee:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - FIX
+          - PERCENT
+        value:
+          type: number
+          format: float
+          minimum: 0
+          description: 'custom transaction fee (`0.01` represents `1%` when `type` is set to `PERCENT`, checkout https://docs.hifibridge.com/v2/docs/fee-collection for more information)
+
+            '
+      required:
+      - type
+      - value
+    OnrampDepositInfoObject:
+      type: object
+      properties:
+        bankName:
+          type: string
+        bankAddress:
+          type: string
+        swiftCode:
+          type: string
+        beneficiary:
+          type: object
+          properties:
+            name:
+              type: string
+            address:
+              type: string
+        ach:
+          type: object
+          properties:
+            routingNumber:
+              type: string
+            accountNumber:
+              type: string
+        wire:
+          type: object
+          properties:
+            routingNumber:
+              type: string
+            accountNumber:
+              type: string
+        rtp:
+          type: object
+          properties:
+            routingNumber:
+              type: string
+            accountNumber:
+              type: string
+        reference:
+          type: string
+        depositBy:
+          type: string
+          format: date-time
+        instruction:
+          type: string
+    InboundObject:
+      type: object
+      properties:
+        bankName:
+          type: string
+        senderName:
+          type: string
+        routingNumber:
+          type: string
+        accountNumber:
+          type: string
+        accountType:
+          type: string
+        fedBatchId:
+          type: string
+        imad:
+          type: string
+        omad:
+          type: string
+        traceNumber:
+          type: string
+        bankAddress:
+          type: string
+        description:
+          type: string
+        paymentRail:
+          type: string
+          enum:
+          - ach
+          - wire
+          - rtp
+    CreateAfricaOnramp:
+      type: object
+      title: Onramp (Africa)
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - gift
+          - bills
+          - groceries
+          - travel
+          - health
+          - entertainment
+          - housing
+          - school-fees
+          - other
+        isInstant:
+          type: boolean
+          default: false
+          description: 'instant onramp. coming soon ...
+
+            '
+        source:
+          type: object
+          description: onramp source
+          $ref: '#/components/schemas/AfricaOnrampSource'
+        destination:
+          type: object
+          description: onramp destination
+          $ref: '#/components/schemas/OnrampDestination'
+        fee:
+          type: object
+          description: custom onramp fee, omit if no fee is charged
+          nullable: true
+          allOf:
+          - $ref: '#/components/schemas/OnrampFee'
+      required:
+      - requestId
+      - source
+      - destination
+      - purposeOfPayment
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+    CreateOnramp:
+      type: object
+      title: Onramp
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - gift
+          - bills
+          - groceries
+          - travel
+          - health
+          - entertainment
+          - housing
+          - school-fees
+          - other
+        isInstant:
+          type: boolean
+          default: false
+          description: 'instant onramp. coming soon ...
+
+            '
+        source:
+          type: object
+          description: onramp source
+          $ref: '#/components/schemas/OnrampSource'
+        destination:
+          type: object
+          description: onramp destination
+          $ref: '#/components/schemas/OnrampDestination'
+        fee:
+          type: object
+          description: custom onramp fee, omit if no fee is charged
+          nullable: true
+          allOf:
+          - $ref: '#/components/schemas/OnrampFee'
+      required:
+      - requestId
+      - source
+      - destination
+    CreateMxnOnramp:
+      type: object
+      title: Onramp (MXN)
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - gift
+          - bills
+          - groceries
+          - travel
+          - health
+          - entertainment
+          - housing
+          - school-fees
+          - other
+        isInstant:
+          type: boolean
+          default: false
+          description: 'instant onramp. coming soon ...
+
+            '
+        source:
+          type: object
+          description: onramp source
+          $ref: '#/components/schemas/MxnOnrampSource'
+        destination:
+          type: object
+          description: onramp destination
+          $ref: '#/components/schemas/OnrampDestination'
+        fee:
+          type: object
+          description: custom onramp fee, omit if no fee is charged
+          nullable: true
+          allOf:
+          - $ref: '#/components/schemas/OnrampFee'
+      required:
+      - requestId
+      - source
+      - destination
+    UsdOnrampSource:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          minimum: 0
+          description: amount of fiat currency to send
+        currency:
+          type: string
+          enum:
+          - usd
+          description: fiat currency
+        transferType:
+          type: string
+          enum:
+          - ach
+          - wire
+          description: 'payment network type
+
+            '
+        accountId:
+          type: string
+          format: uuid
+          description: 'bank account to ACH pull from.
+
+            '
+        userId:
+          type: string
+          format: uuid
+          description: user who is funding the fiat.
+      required:
+      - transferType
+      - currency
+      - userId
+  examples:
+    OnrampObjectListExample:
+      summary: Onramp Object List
+      value:
+        count: 1
+        records:
+        - transferType: ONRAMP
+          transferDetails:
+            id: b26927e6-2771-423c-af44-a3c7a3e815c5
+            requestId: e1047def-6942-4fd7-be04-e62eb41813b6
+            createdAt: '2025-02-03T17:15:31.927121+00:00'
+            updatedAt: '2025-02-03T17:15:35.882+00:00'
+            status: FIAT_PENDING
+            failedReason: null
+            source:
+              userId: c15c0adf-3e45-4a62-b334-73aeec127649
+              currency: usd
+              amount: 10
+              accountId: null
+              user:
+                email: example@hifibridge.com
+                lastName: Wu
+                firstName: Henry
+                businessName: null
+              bankInfo:
+                bankName: Bank of America
+                beneficiaryName: Henry Wu
+                description: ''
+                routingNumber: 026009593
+                referenceNumber: HFD70579F
+                imad: ''
+                omad: ''
+                bankAddress: 100 N Tryon St, Charlotte, NC 28202, USA
+            destination:
+              userId: c15c0adf-3e45-4a62-b334-73aeec127649
+              currency: usdc
+              chain: POLYGON
+              walletAddress: '0x848732f6c834E05b17C56fa01E83EE095f72C3c3'
+              externalWalletId: null
+              amount: null
+              user:
+                email: example@hifibridge.com
+                lastName: Wu
+                firstName: Henry
+                businessName: null
+            receipt:
+              transactionHash: null
+            developerFee: null
+            virtualAccountId: null
+            quoteInformation:
+              sendGross:
+                amount: '10.00'
+                currency: usd
+              sendNet:
+                amount: '10.00'
+                currency: usd
+              railFee:
+                amount: '0.00'
+                currency: usdc
+              receiveGross:
+                amount: '10.00'
+                currency: usdc
+              receiveNet:
+                amount: '10.00'
+                currency: usdc
+              rate: '1.00'
+              expiresAt: N/A
+            depositInfo:
+              bankName: Bank of NoWhere
+              bankAddress: 123 Main St, New York, NY 10001, USA
+              beneficiary:
+                name: Henry Wu
+                address: Example St 1., Apt 123, New York, NY, 10010, US
+              ach:
+                routingNumber: 028000024
+                accountNumber: '123456789'
+              wire:
+                routingNumber: '021000021'
+                accountNumber: '123456789'
+              rtp:
+                routingNumber: '021000021'
+                accountNumber: '123456789'
+              reference: HFD70579F
+              depositBy: '2025-10-04T04:23:40.229Z'
+              instruction: Please deposit only one payment with the exact amount of usd and the reference code HFD70579F to the designated bank account by 2025-10-04T04:23:40.229Z. Missing or incorrect reference codes, discrepancies in the amount, or additional payments may result in the funds being lost. Ensure that the beneficiary name matches the provided account holder name, otherwise the payment may be rejected.
+        nextCursor: '2025-02-03T17:15:31.927121+00:00'
+    OnrampObjectUsdAwaitingFundsExample:
+      summary: Onramp Object (USD - AWAITING_FUNDS)
+      value:
+        transferType: ONRAMP
+        transferDetails:
+          id: b26927e6-2771-423c-af44-a3c7a3e815c5
+          requestId: e1047def-6942-4fd7-be04-e62eb41813b6
+          createdAt: '2025-02-03T17:15:31.927121+00:00'
+          updatedAt: '2025-02-03T17:15:35.882+00:00'
+          status: AWAITING_FUNDS
+          failedReason: null
+          source:
+            userId: c15c0adf-3e45-4a62-b334-73aeec127649
+            currency: usd
+            amount: 10
+            accountId: null
+            user:
+              email: example@hifibridge.com
+              lastName: Wu
+              firstName: Henry
+              businessName: null
+            bankInfo: null
+          destination:
+            userId: c15c0adf-3e45-4a62-b334-73aeec127649
+            currency: usdc
+            chain: POLYGON
+            walletAddress: '0x848732f6c834E05b17C56fa01E83EE095f72C3c3'
+            externalWalletId: null
+            amount: null
+            user:
+              email: example@hifibridge.com
+              lastName: Wu
+              firstName: Henry
+              businessName: null
+          receipt:
+            transactionHash: null
+          developerFee: null
+          virtualAccountId: null
+          quoteInformation:
+            sendGross:
+              amount: '10.00'
+              currency: usd
+            sendNet:
+              amount: '10.00'
+              currency: usd
+            railFee:
+              amount: '0.00'
+              currency: usdc
+            receiveGross:
+              amount: '10.00'
+              currency: usdc
+            receiveNet:
+              amount: '10.00'
+              currency: usdc
+            rate: '1.00'
+            expiresAt: N/A
+          depositInfo:
+            bankName: Bank of NoWhere
+            bankAddress: 123 Main St, New York, NY 10001, USA
+            beneficiary:
+              name: Henry Wu
+              address: Example St 1., Apt 123, New York, NY, 10010, US
+            ach:
+              routingNumber: 028000024
+              accountNumber: '123456789'
+            wire:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            rtp:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            reference: HFD70579F
+            depositBy: '2025-10-04T04:23:40.229Z'
+            instruction: Please deposit only one payment with the exact amount of usd and the reference code HFD70579F to the designated bank account by 2025-10-04T04:23:40.229Z. Missing or incorrect reference codes, discrepancies in the amount, or additional payments may result in the funds being lost. Ensure that the beneficiary name matches the provided account holder name, otherwise the payment may be rejected.
+    OnrampObjectUsdOpenQuoteExample:
+      summary: Onramp Object (USD - OPEN_QUOTE)
+      value:
+        transferType: ONRAMP
+        transferDetails:
+          id: b26927e6-2771-423c-af44-a3c7a3e815c5
+          requestId: e1047def-6942-4fd7-be04-e62eb41813b6
+          createdAt: '2025-02-03T17:15:31.927121+00:00'
+          updatedAt: '2025-02-03T17:15:35.882+00:00'
+          status: OPEN_QUOTE
+          failedReason: null
+          source:
+            userId: c15c0adf-3e45-4a62-b334-73aeec127649
+            currency: usd
+            amount: 10
+            accountId: null
+            user:
+              email: example@hifibridge.com
+              lastName: Wu
+              firstName: Henry
+              businessName: null
+            bankInfo: null
+          destination:
+            userId: c15c0adf-3e45-4a62-b334-73aeec127649
+            currency: usdc
+            chain: POLYGON
+            walletAddress: '0x848732f6c834E05b17C56fa01E83EE095f72C3c3'
+            externalWalletId: null
+            amount: null
+            user:
+              email: example@hifibridge.com
+              lastName: Wu
+              firstName: Henry
+              businessName: null
+          receipt:
+            transactionHash: null
+          developerFee: null
+          virtualAccountId: null
+          quoteInformation:
+            sendGross:
+              amount: '10.00'
+              currency: usd
+            sendNet:
+              amount: '10.00'
+              currency: usd
+            railFee:
+              amount: '0.00'
+              currency: usdc
+            receiveGross:
+              amount: '10.00'
+              currency: usdc
+            receiveNet:
+              amount: '10.00'
+              currency: usdc
+            rate: '1.00'
+            expiresAt: N/A
+          depositInfo: null
+    OnrampObjectUsdFiatPendingExample:
+      summary: Onramp Object (USD - FIAT_PENDING)
+      value:
+        transferType: ONRAMP
+        transferDetails:
+          id: b26927e6-2771-423c-af44-a3c7a3e815c5
+          requestId: e1047def-6942-4fd7-be04-e62eb41813b6
+          createdAt: '2025-02-03T17:15:31.927121+00:00'
+          updatedAt: '2025-02-03T17:15:35.882+00:00'
+          status: FIAT_PENDING
+          failedReason: null
+          source:
+            userId: c15c0adf-3e45-4a62-b334-73aeec127649
+            currency: usd
+            amount: 10
+            accountId: null
+            user:
+              email: example@hifibridge.com
+              lastName: Wu
+              firstName: Henry
+              businessName: null
+            bankInfo:
+              bankName: Bank of America
+              beneficiaryName: Henry Wu
+              description: ''
+              routingNumber: 026009593
+              referenceNumber: HFD70579F
+              imad: ''
+              omad: ''
+              bankAddress: 100 N Tryon St, Charlotte, NC 28202, USA
+          destination:
+            userId: c15c0adf-3e45-4a62-b334-73aeec127649
+            currency: usdc
+            chain: POLYGON
+            walletAddress: '0x848732f6c834E05b17C56fa01E83EE095f72C3c3'
+            externalWalletId: null
+            amount: null
+            user:
+              email: example@hifibridge.com
+              lastName: Wu
+              firstName: Henry
+              businessName: null
+          receipt:
+            transactionHash: null
+          developerFee: null
+          virtualAccountId: null
+          quoteInformation:
+            sendGross:
+              amount: '10.00'
+              currency: usd
+            sendNet:
+              amount: '10.00'
+              currency: usd
+            railFee:
+              amount: '0.00'
+              currency: usdc
+            receiveGross:
+              amount: '10.00'
+              currency: usdc
+            receiveNet:
+              amount: '10.00'
+              currency: usdc
+            rate: '1.00'
+            expiresAt: N/A
+          depositInfo:
+            bankName: Bank of NoWhere
+            bankAddress: 123 Main St, New York, NY 10001, USA
+            beneficiary:
+              name: Henry Wu
+              address: Example St 1., Apt 123, New York, NY, 10010, US
+            ach:
+              routingNumber: 028000024
+              accountNumber: '123456789'
+            wire:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            rtp:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            reference: HFD70579F
+            depositBy: '2025-10-04T04:23:40.229Z'
+            instruction: Please deposit only one payment with the exact amount of usd and the reference code HFD70579F to the designated bank account by 2025-10-04T04:23:40.229Z. Missing or incorrect reference codes, discrepancies in the amount, or additional payments may result in the funds being lost. Ensure that the beneficiary name matches the provided account holder name, otherwise the payment may be rejected.
+  parameters:
+    ToCryptoCurrencyParameter:
+      name: toCurrency
+      in: query
+      schema:
+        type: string
+        enum:
+        - usdc
+      required: true
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+    OnrampRecordIDPathParameter:
+      name: transferId
+      in: path
+      schema:
+        type: string
+      description: Transfer record ID.
+      required: true
+    UserIdOptionalParameter:
+      name: userId
+      in: query
+      schema:
+        type: string
+      description: The user ID.
+      required: false
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    CreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    FromFiatCurrencyParameter:
+      name: fromCurrency
+      in: query
+      schema:
+        type: string
+        enum:
+        - usd
+        - ugx
+        - ngn
+        - bwp
+        - tzs
+        - mwk
+        - xaf
+        - kes
+      required: true
+  responses:
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    FiatToCryptoAcceptQuoteResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OnrampAcceptedQuoteObject'
+          examples:
+            OnrampObjectUsdAwaitingFundsExample:
+              $ref: '#/components/examples/OnrampObjectUsdAwaitingFundsExample'
+    FiatToCryptoConversionRateResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FiatToCryptoConversionRateObject'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    FiatToCryptoTransferResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OnrampObject'
+          examples:
+            OnrampObjectUsdOpenQuoteExample:
+              $ref: '#/components/examples/OnrampObjectUsdOpenQuoteExample'
+    FiatToCryptoRefreshQuoteResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OnrampQuoteObject'
+          examples:
+            OnrampObjectUsdOpenQuoteExample:
+              $ref: '#/components/examples/OnrampObjectUsdOpenQuoteExample'
+    FiatToCryptoAllRecordsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OnrampAllRecordsObject'
+          examples:
+            OnrampObjectListExample:
+              $ref: '#/components/examples/OnrampObjectListExample'
+    FiatToCryptoRecordResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OnrampRecordObject'
+          examples:
+            OnrampObjectUsdFiatPendingExample:
+              $ref: '#/components/examples/OnrampObjectUsdFiatPendingExample'
+  requestBodies:
+    CreateOnrampBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/CreateOnramp'
+            - $ref: '#/components/schemas/CreateUsdOnramp'
+            - $ref: '#/components/schemas/CreateBrlOnramp'
+            - $ref: '#/components/schemas/CreateMxnOnramp'
+            - $ref: '#/components/schemas/CreateAfricaOnramp'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

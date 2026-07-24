@@ -1,0 +1,1535 @@
+openapi: 3.0.0
+info:
+  title: Hifi Account Crypto Transfer API
+  version: 2.0.0
+  description: API documentation for Hifi
+servers:
+- url: https://production.hifibridge.com
+  description: Production server
+- url: https://sandbox.hifibridge.com
+  description: Sandbox server
+security:
+- bearerAuth: []
+tags:
+- name: Crypto Transfer
+  description: Crypto Transfer endpoints
+paths:
+  /v2/wallets/transfers:
+    post:
+      summary: Create a crypto transfer
+      description: 'Create a crypto transfer between two wallet addresses among users.
+
+        '
+      tags:
+      - Crypto Transfer
+      requestBody:
+        $ref: '#/components/requestBodies/CreateCryptoTransferBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/CryptoToCryptoTransferResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+    get:
+      summary: List all crypto transfers
+      description: 'Returns a list of crypto transfers associated with a user under your organization. The crypto transfers are returned sorted by creation date, with the most recent crypto transfers appearing first.
+
+        '
+      tags:
+      - Crypto Transfer
+      parameters:
+      - $ref: '#/components/parameters/UserIdOptionalParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      - $ref: '#/components/parameters/CreatedBeforeParameter'
+      - $ref: '#/components/parameters/CreatedAfterParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/CryptoToCryptoAllRecordsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/wallets/transfers/{transferId}:
+    get:
+      summary: Retrieve a crypto transfer
+      tags:
+      - Crypto Transfer
+      parameters:
+      - $ref: '#/components/parameters/CryptoTransferRecordIDPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/CryptoToCryptoRecordResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/wallets/transfers/batches:
+    post:
+      summary: Create a batch crypto transfer
+      description: 'Create a batch crypto transfer from a single wallet address to multiple wallet addresses among users.
+
+        '
+      tags:
+      - Crypto Transfer
+      requestBody:
+        $ref: '#/components/requestBodies/CreateBatchCryptoTransferBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/BatchCryptoTransferResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+    get:
+      summary: List all batch crypto transfers
+      description: 'Returns a list of batch crypto transfers associated with a user under your organization. The batch crypto transfers are returned sorted by creation date, with the most recent batch crypto transfers appearing first.
+
+        '
+      tags:
+      - Crypto Transfer
+      parameters:
+      - $ref: '#/components/parameters/UserIdOptionalParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      - $ref: '#/components/parameters/CreatedBeforeParameter'
+      - $ref: '#/components/parameters/CreatedAfterParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/BatchCryptoTransferAllRecordsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/wallets/transfers/batches/{transferId}:
+    get:
+      summary: Retrieve a batch crypto transfer
+      tags:
+      - Crypto Transfer
+      parameters:
+      - $ref: '#/components/parameters/BatchCryptoTransferRecordIDPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/BatchCryptoTransferResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+components:
+  schemas:
+    CryptoToCryptoAllRecordsObject:
+      type: object
+      properties:
+        count:
+          type: integer
+        records:
+          type: array
+          items:
+            type: object
+            properties:
+              transferType:
+                type: string
+                example: WALLET.TRANSFER
+              transferDetails:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 006737ca-42d5-4780-b3c2-aeb63279c591
+                  requestId:
+                    type: string
+                    format: uuid
+                    example: d0d62bec-2623-4f61-afda-148d6a8e1009
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: '2025-02-03T16:11:36.654998+00:00'
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: '2025-02-03T16:12:41.503+00:00'
+                  chain:
+                    type: string
+                    example: POLYGON_MAINNET
+                  currency:
+                    type: string
+                    example: usdc
+                  contractAddress:
+                    type: string
+                    example: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'
+                  status:
+                    type: string
+                    example: CREATED
+                  failedReason:
+                    type: string
+                    example: ''
+                  approval:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: 006737ca-42d5-4780-b3c2-aeb63279c591
+                      status:
+                        type: string
+                        example: PENDING
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-02-03T16:11:36.654998+00:00'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2025-02-03T16:12:41.503+00:00'
+                      transferId:
+                        type: string
+                        format: uuid
+                        example: 006737ca-42d5-4780-b3c2-aeb63279c591
+                      transferType:
+                        type: string
+                        example: WALLET.TRANSFER
+                      fromDashboard:
+                        type: boolean
+                        example: true
+                      initiatorProfileId:
+                        type: string
+                        format: uuid
+                        example: aec66b02-4f3f-471c-839a-94820b36abb2
+                      votes:
+                        type: array
+                        description: Array of approval votes (only present when status is PENDING_APPROVAL or REJECTED)
+                        items:
+                          type: object
+                          properties:
+                            approverId:
+                              type: string
+                              format: uuid
+                              example: aec66b02-4f3f-471c-839a-94820b36abb2
+                            vote:
+                              type: string
+                              enum:
+                              - APPROVE
+                              - REJECT
+                              example: REJECT
+                            comment:
+                              type: string
+                              example: Transfer amount exceeds daily limit
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: '2025-02-03T16:12:41.503+00:00'
+                  source:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                        format: uuid
+                        example: aec66b02-4f3f-471c-839a-94820b36abb2
+                      walletAddress:
+                        type: string
+                        example: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+                      walletType:
+                        type: string
+                        example: INDIVIDUAL
+                      user:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            example: samuelyoon0@gmail.com
+                          lastName:
+                            type: string
+                            example: Yoon
+                          firstName:
+                            type: string
+                            example: Samuel
+                          businessName:
+                            type: string
+                            example: null
+                  destination:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                        format: uuid
+                        example: aec66b02-4f3f-471c-839a-94820b36abb2
+                      walletType:
+                        type: string
+                        example: INDIVIDUAL
+                      walletAddress:
+                        type: string
+                        example: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+                      user:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            example: samuelyoon0@gmail.com
+                          lastName:
+                            type: string
+                            example: Yoon
+                          firstName:
+                            type: string
+                            example: Samuel
+                          businessName:
+                            type: string
+                            example: null
+                  amount:
+                    type: number
+                    format: float
+                    example: 0.01
+                  amountIncludeDeveloperFee:
+                    type: number
+                    format: float
+                    example: 0.01
+                  receipt:
+                    type: object
+                    properties:
+                      transactionHash:
+                        type: string
+                        example: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
+                      userOpHash:
+                        type: string
+                        example: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+                  developerFee:
+                    type: object
+                    properties:
+                      feeId:
+                        type: string
+                        format: uuid
+                        example: 9b354c37-d20d-4d94-bcd8-c852353ca406
+                      feeType:
+                        type: string
+                        example: FIX
+                      feeAmount:
+                        type: number
+                        format: float
+                        example: 0.5
+                      feePercent:
+                        type: number
+                        format: float
+                        example: 0
+                      status:
+                        type: string
+                        example: CREATED
+                      transactionHash:
+                        type: string
+                        example: null
+                      failedReason:
+                        type: string
+                        example: null
+        nextCursor:
+          type: string
+          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
+      example:
+        count: 1
+        records:
+        - transferType: WALLET.TRANSFER
+          transferDetails:
+            id: 006737ca-42d5-4780-b3c2-aeb63279c591
+            requestId: d0d62bec-2623-4f61-afda-148d6a8e1009
+            createdAt: '2025-02-03T16:11:36.654+00:00'
+            updatedAt: '2025-02-03T16:12:41.503+00:00'
+            chain: POLYGON_MAINNET
+            currency: usdc
+            contractAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'
+            status: CREATED
+            failedReason: ''
+            source:
+              userId: aec66b02-4f3f-471c-839a-94820b36abb2
+              walletAddress: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+              walletType: INDIVIDUAL
+              user:
+                email: samuelyoon0@gmail.com
+                lastName: Yoon
+                firstName: Samuel
+                businessName: null
+            destination:
+              userId: aec66b02-4f3f-471c-839a-94820b36abb2
+              walletType: INDIVIDUAL
+              walletAddress: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+              user:
+                email: samuelyoon0@gmail.com
+                lastName: Yoon
+                firstName: Samuel
+                businessName: null
+            amount: 0.01
+            amountIncludeDeveloperFee: 0.01
+            receipt:
+              transactionHash: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
+              userOpHash: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+            developerFee:
+              feeId: 9b354c37-d20d-4d94-bcd8-c852353ca406
+              feeType: FIX
+              feeAmount: 0.5
+              feePercent: 0
+              status: CREATED
+              transactionHash: null
+              failedReason: null
+        nextCursor: '2025-02-03T16:11:36.654+00:00'
+    CreateBatchCryptoTransfer:
+      type: object
+      required:
+      - requestId
+      - currency
+      - chain
+      - source
+      - destination
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        currency:
+          type: string
+          enum:
+          - usdc
+          example: usdc
+        chain:
+          type: string
+          enum:
+          - POLYGON
+          example: POLYGON
+        source:
+          type: object
+          required:
+          - userId
+          properties:
+            userId:
+              type: string
+              format: uuid
+              example: a1f70737-3844-4782-a321-ad481108a8ec
+        destination:
+          type: object
+          required:
+          - batch
+          properties:
+            batch:
+              type: array
+              maxItems: 50
+              items:
+                type: object
+                required:
+                - amount
+                properties:
+                  userId:
+                    type: string
+                    format: uuid
+                    example: a1f70737-3844-4782-a321-ad481108a8ec
+                  walletAddress:
+                    type: string
+                    pattern: ^0x[a-fA-F0-9]{40}$
+                    example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+                  amount:
+                    type: string
+                    example: '0.01'
+        requireApproval:
+          type: boolean
+          description: 'Whether this batch transfer requires approval before processing.
+
+            - `true`: Transfer will enter approval workflow
+
+            - `false` or omitted: Transfer proceeds immediately
+
+            '
+          default: false
+          example: false
+    BatchCryptoTransferListObject:
+      type: object
+      required:
+      - count
+      - records
+      - nextCursor
+      properties:
+        count:
+          type: integer
+          example: 1
+        records:
+          type: array
+          items:
+            type: object
+            required:
+            - transferType
+            - transferDetails
+            properties:
+              transferType:
+                type: string
+                example: WALLET.TRANSFER.BATCH
+              transferDetails:
+                type: object
+                required:
+                - id
+                - requestId
+                - createdAt
+                - updatedAt
+                - chain
+                - currency
+                - contractAddress
+                - status
+                - source
+                - destination
+                - receipt
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: a671d42d-9417-4bb3-868e-06c868d0d4b8
+                  requestId:
+                    type: string
+                    format: uuid
+                    example: d2189ddd-2d32-4a46-9421-d25ebf602e6c
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: '2025-04-05T14:01:09.785Z'
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: '2025-04-05T14:01:37.708Z'
+                  chain:
+                    type: string
+                    enum:
+                    - POLYGON
+                    example: POLYGON
+                  currency:
+                    type: string
+                    enum:
+                    - usdc
+                    example: usdc
+                  contractAddress:
+                    type: string
+                    example: '0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582'
+                  status:
+                    type: string
+                    enum:
+                    - NOT_INITIATED
+                    - CREATED
+                    - INITIATED
+                    - PENDING
+                    - COMPLETED
+                    - FAILED
+                    - UNKNOWN
+                    example: COMPLETED
+                  failedReason:
+                    type: string
+                    nullable: true
+                    example: null
+                  source:
+                    type: object
+                    required:
+                    - userId
+                    - walletAddress
+                    - walletType
+                    properties:
+                      userId:
+                        type: string
+                        format: uuid
+                        example: a1f70737-3844-4782-a321-ad481108a8ec
+                      walletAddress:
+                        type: string
+                        pattern: ^0x[a-fA-F0-9]{40}$
+                        example: '0xAFD59de44048D33d964f720ec2Dec3465D8D887D'
+                      walletType:
+                        type: string
+                        enum:
+                        - INDIVIDUAL
+                        - BUSINESS
+                        example: INDIVIDUAL
+                  destination:
+                    type: object
+                    required:
+                    - batch
+                    properties:
+                      batch:
+                        type: array
+                        maxItems: 50
+                        items:
+                          type: object
+                          required:
+                          - amount
+                          properties:
+                            amount:
+                              type: string
+                              example: '0.01'
+                            userId:
+                              type: string
+                              format: uuid
+                              example: a1f70737-3844-4782-a321-ad481108a8ec
+                            walletAddress:
+                              type: string
+                              pattern: ^0x[a-fA-F0-9]{40}$
+                              example: null
+                  receipt:
+                    type: object
+                    required:
+                    - transactionHash
+                    properties:
+                      transactionHash:
+                        type: string
+                        example: '0xeef52c844f72f41717f025b160a8e6b34ebcd22ea77b5e70fd6ab4c5a42e98af'
+                      userOpHash:
+                        type: string
+                        example: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+                      approval:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                            example: 006737ca-42d5-4780-b3c2-aeb63279c591
+                          status:
+                            type: string
+                            example: PENDING
+                          createdAt:
+                            type: string
+                            format: date-time
+                            example: '2025-02-03T16:11:36.654998+00:00'
+                          updatedAt:
+                            type: string
+                            format: date-time
+                            example: '2025-02-03T16:12:41.503+00:00'
+                          transferId:
+                            type: string
+                            format: uuid
+                            example: 006737ca-42d5-4780-b3c2-aeb63279c591
+                          transferType:
+                            type: string
+                            example: WALLET.TRANSFER.BATCH
+                          fromDashboard:
+                            type: boolean
+                            example: true
+                          initiatorProfileId:
+                            type: string
+                            format: uuid
+                            example: aec66b02-4f3f-471c-839a-94820b36abb2
+                          votes:
+                            type: array
+                            description: Array of approval votes (only present when status is PENDING_APPROVAL or REJECTED)
+                            items:
+                              type: object
+                              properties:
+                                approverId:
+                                  type: string
+                                  format: uuid
+                                  example: aec66b02-4f3f-471c-839a-94820b36abb2
+                                vote:
+                                  type: string
+                                  enum:
+                                  - APPROVE
+                                  - REJECT
+                                  example: REJECT
+                                comment:
+                                  type: string
+                                  example: Transfer amount exceeds daily limit
+                                createdAt:
+                                  type: string
+                                  format: date-time
+                                  example: '2025-02-03T16:12:41.503+00:00'
+        nextCursor:
+          type: string
+          format: date-time
+          example: '2025-04-05T14:01:09.785Z'
+      example:
+        count: 1
+        records:
+        - transferType: WALLET.TRANSFER.BATCH
+          transferDetails:
+            id: a671d42d-9417-4bb3-868e-06c868d0d4b8
+            requestId: d2189ddd-2d32-4a46-9421-d25ebf602e6c
+            createdAt: '2025-04-05T14:01:09.785Z'
+            updatedAt: '2025-04-05T14:01:37.708Z'
+            chain: POLYGON
+            currency: usdc
+            contractAddress: '0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582'
+            status: COMPLETED
+            failedReason: null
+            source:
+              userId: a1f70737-3844-4782-a321-ad481108a8ec
+              walletAddress: '0xAFD59de44048D33d964f720ec2Dec3465D8D887D'
+              walletType: INDIVIDUAL
+            destination:
+              batch:
+              - amount: '0.01'
+                userId: a1f70737-3844-4782-a321-ad481108a8ec
+              - amount: '0.01'
+                userId: a1f70737-3844-4782-a321-ad481108a8ec
+              - amount: '0.01'
+                userId: a1f70737-3844-4782-a321-ad481108a8ec
+              - amount: '0.01'
+                userId: a1f70737-3844-4782-a321-ad481108a8ec
+              - amount: '0.01'
+                userId: a1f70737-3844-4782-a321-ad481108a8ec
+            receipt:
+              transactionHash: '0xeef52c844f72f41717f025b160a8e6b34ebcd22ea77b5e70fd6ab4c5a42e98af'
+              userOpHash: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+        nextCursor: '2025-04-05T14:01:09.785Z'
+    CryptoTransferFee:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - FIX
+          - PERCENT
+        value:
+          type: number
+          format: float
+          minimum: 0
+          description: 'custom transaction fee (`0.01` represents `1%` when `type` is set to `PERCENT`, checkout https://docs.hifibridge.com/v2/docs/fee-collection for more information)
+
+            '
+      required:
+      - type
+      - value
+    CryptoToCryptoTransferObject:
+      type: object
+      properties:
+        transferType:
+          type: string
+          example: WALLET.TRANSFER
+        transferDetails:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: 006737ca-42d5-4780-b3c2-aeb63279c591
+            requestId:
+              type: string
+              format: uuid
+              example: d0d62bec-2623-4f61-afda-148d6a8e1009
+            createdAt:
+              type: string
+              format: date-time
+              example: '2025-02-03T16:11:36.654998+00:00'
+            updatedAt:
+              type: string
+              format: date-time
+              example: '2025-02-03T16:12:41.503+00:00'
+            chain:
+              type: string
+              example: POLYGON_MAINNET
+            currency:
+              type: string
+              example: usdc
+            contractAddress:
+              type: string
+              example: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'
+            status:
+              type: string
+              example: CREATED
+            failedReason:
+              type: string
+              example: ''
+            source:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                  example: aec66b02-4f3f-471c-839a-94820b36abb2
+                walletAddress:
+                  type: string
+                  example: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+                walletType:
+                  type: string
+                  example: INDIVIDUAL
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: samuelyoon0@gmail.com
+                    lastName:
+                      type: string
+                      example: Yoon
+                    firstName:
+                      type: string
+                      example: Samuel
+                    businessName:
+                      type: string
+                      example: null
+            destination:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                  example: aec66b02-4f3f-471c-839a-94820b36abb2
+                walletType:
+                  type: string
+                  example: INDIVIDUAL
+                walletAddress:
+                  type: string
+                  example: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: samuelyoon0@gmail.com
+                    lastName:
+                      type: string
+                      example: Yoon
+                    firstName:
+                      type: string
+                      example: Samuel
+                    businessName:
+                      type: string
+                      example: null
+            amount:
+              type: number
+              format: float
+              example: 0.01
+            amountIncludeDeveloperFee:
+              type: number
+              format: float
+              example: 0.01
+            receipt:
+              type: object
+              properties:
+                transactionHash:
+                  type: string
+                  example: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
+                userOpHash:
+                  type: string
+                  example: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+            developerFee:
+              type: object
+              properties:
+                feeId:
+                  type: string
+                  format: uuid
+                  example: 9b354c37-d20d-4d94-bcd8-c852353ca406
+                feeType:
+                  type: string
+                  example: FIX
+                feeAmount:
+                  type: number
+                  format: float
+                  example: 0.5
+                feePercent:
+                  type: number
+                  format: float
+                  example: 0
+                status:
+                  type: string
+                  example: CREATED
+                transactionHash:
+                  type: string
+                  example: null
+                failedReason:
+                  type: string
+                  example: null
+            approval:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                  example: 006737ca-42d5-4780-b3c2-aeb63279c591
+                status:
+                  type: string
+                  example: PENDING
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: '2025-02-03T16:11:36.654998+00:00'
+                updatedAt:
+                  type: string
+                  format: date-time
+                  example: '2025-02-03T16:12:41.503+00:00'
+                transferId:
+                  type: string
+                  format: uuid
+                  example: 006737ca-42d5-4780-b3c2-aeb63279c591
+                transferType:
+                  type: string
+                  example: WALLET.TRANSFER
+                fromDashboard:
+                  type: boolean
+                  example: true
+                initiatorProfileId:
+                  type: string
+                  format: uuid
+                  example: aec66b02-4f3f-471c-839a-94820b36abb2
+                votes:
+                  type: array
+                  description: Array of approval votes (only present when status is PENDING_APPROVAL or REJECTED)
+                  items:
+                    type: object
+                    properties:
+                      approverId:
+                        type: string
+                        format: uuid
+                        example: aec66b02-4f3f-471c-839a-94820b36abb2
+                      vote:
+                        type: string
+                        enum:
+                        - APPROVE
+                        - REJECT
+                        example: REJECT
+                      comment:
+                        type: string
+                        example: Transfer amount exceeds daily limit
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2025-02-03T16:12:41.503+00:00'
+      example:
+        transferType: WALLET.TRANSFER
+        transferDetails:
+          id: 006737ca-42d5-4780-b3c2-aeb63279c591
+          requestId: d0d62bec-2623-4f61-afda-148d6a8e1009
+          createdAt: '2025-02-03T16:11:36.654998+00:00'
+          updatedAt: '2025-02-03T16:12:41.503+00:00'
+          chain: POLYGON_MAINNET
+          currency: usdc
+          contractAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'
+          status: CREATED
+          failedReason: ''
+          source:
+            userId: aec66b02-4f3f-471c-839a-94820b36abb2
+            walletAddress: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+            walletType: INDIVIDUAL
+            user:
+              email: samuelyoon0@gmail.com
+              lastName: Yoon
+              firstName: Samuel
+              businessName: null
+          destination:
+            userId: aec66b02-4f3f-471c-839a-94820b36abb2
+            walletType: INDIVIDUAL
+            walletAddress: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+            user:
+              email: samuelyoon0@gmail.com
+              lastName: Yoon
+              firstName: Samuel
+              businessName: null
+          amount: 0.01
+          amountIncludeDeveloperFee: 0.01
+          receipt:
+            transactionHash: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
+            userOpHash: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+          developerFee:
+            feeId: 9b354c37-d20d-4d94-bcd8-c852353ca406
+            feeType: FIX
+            feeAmount: 0.5
+            feePercent: 0
+            status: CREATED
+            transactionHash: null
+            failedReason: null
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    CreateCryptoTransfer:
+      type: object
+      title: Crypto Transfer
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the transfer request (recommend using uuid v4)
+        currency:
+          type: string
+          enum:
+          - usdc
+          - usdt
+          - usdHifi
+          description: 'crypto currency (note: `usdHifi` is only available in sandbox to simulate token movement)
+
+            '
+        amount:
+          type: number
+          format: float
+          minimum: 0
+          description: amount of crypto currency to send
+        chain:
+          type: string
+          enum:
+          - POLYGON
+          - ETHEREUM
+          - BASE
+          - SOLANA
+        source:
+          type: object
+          description: crypto transfer source
+          $ref: '#/components/schemas/CryptoTransferSource'
+        destination:
+          type: object
+          description: crypto transfer destination
+          $ref: '#/components/schemas/CryptoTransferDestination'
+        fee:
+          type: object
+          description: crypto transfer fee
+          $ref: '#/components/schemas/CryptoTransferFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this transfer requires approval before processing.
+
+            - `true`: Transfer will enter approval workflow
+
+            - `false` or omitted: Transfer proceeds immediately
+
+            '
+          default: false
+          example: false
+      required:
+      - requestId
+      - source
+      - destination
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+    CryptoTransferSource:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: user who is sending the crypto
+      required:
+      - userId
+    CryptoToCryptoRecordObject:
+      type: object
+      properties:
+        transferType:
+          type: string
+          example: WALLET.TRANSFER
+        transferDetails:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: 006737ca-42d5-4780-b3c2-aeb63279c591
+            requestId:
+              type: string
+              format: uuid
+              example: d0d62bec-2623-4f61-afda-148d6a8e1009
+            createdAt:
+              type: string
+              format: date-time
+              example: '2025-02-03T16:11:36.654998+00:00'
+            updatedAt:
+              type: string
+              format: date-time
+              example: '2025-02-03T16:12:41.503+00:00'
+            chain:
+              type: string
+              example: POLYGON_MAINNET
+            currency:
+              type: string
+              example: usdc
+            contractAddress:
+              type: string
+              example: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'
+            status:
+              type: string
+              example: CREATED
+            failedReason:
+              type: string
+              example: ''
+            source:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                  example: aec66b02-4f3f-471c-839a-94820b36abb2
+                walletAddress:
+                  type: string
+                  example: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+                walletType:
+                  type: string
+                  example: INDIVIDUAL
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: samuelyoon0@gmail.com
+                    lastName:
+                      type: string
+                      example: Yoon
+                    firstName:
+                      type: string
+                      example: Samuel
+                    businessName:
+                      type: string
+                      example: null
+            destination:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                  example: aec66b02-4f3f-471c-839a-94820b36abb2
+                walletType:
+                  type: string
+                  example: INDIVIDUAL
+                walletAddress:
+                  type: string
+                  example: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: samuelyoon0@gmail.com
+                    lastName:
+                      type: string
+                      example: Yoon
+                    firstName:
+                      type: string
+                      example: Samuel
+                    businessName:
+                      type: string
+                      example: null
+            amount:
+              type: number
+              format: float
+              example: 0.01
+            amountIncludeDeveloperFee:
+              type: number
+              format: float
+              example: 0.01
+            receipt:
+              type: object
+              properties:
+                transactionHash:
+                  type: string
+                  example: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
+                userOpHash:
+                  type: string
+                  example: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+            developerFee:
+              type: object
+              properties:
+                feeId:
+                  type: string
+                  format: uuid
+                  example: 9b354c37-d20d-4d94-bcd8-c852353ca406
+                feeType:
+                  type: string
+                  example: FIX
+                feeAmount:
+                  type: number
+                  format: float
+                  example: 0.5
+                feePercent:
+                  type: number
+                  format: float
+                  example: 0
+                status:
+                  type: string
+                  example: CREATED
+                transactionHash:
+                  type: string
+                  example: null
+                failedReason:
+                  type: string
+                  example: null
+      example:
+        transferType: WALLET.TRANSFER
+        transferDetails:
+          id: 006737ca-42d5-4780-b3c2-aeb63279c591
+          requestId: d0d62bec-2623-4f61-afda-148d6a8e1009
+          createdAt: '2025-02-03T16:11:36.654998+00:00'
+          updatedAt: '2025-02-03T16:12:41.503+00:00'
+          chain: POLYGON_MAINNET
+          currency: usdc
+          contractAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'
+          status: CREATED
+          failedReason: ''
+          source:
+            userId: aec66b02-4f3f-471c-839a-94820b36abb2
+            walletAddress: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+            walletType: INDIVIDUAL
+            user:
+              email: samuelyoon0@gmail.com
+              lastName: Yoon
+              firstName: Samuel
+              businessName: null
+          destination:
+            userId: aec66b02-4f3f-471c-839a-94820b36abb2
+            walletType: INDIVIDUAL
+            walletAddress: '0xA25641cB6056C371CB65F28aC02450c9206e0fAA'
+            user:
+              email: samuelyoon0@gmail.com
+              lastName: Yoon
+              firstName: Samuel
+              businessName: null
+          amount: 0.01
+          amountIncludeDeveloperFee: 0.01
+          receipt:
+            transactionHash: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
+            userOpHash: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+          developerFee:
+            feeId: 9b354c37-d20d-4d94-bcd8-c852353ca406
+            feeType: FIX
+            feeAmount: 0.5
+            feePercent: 0
+            status: CREATED
+            transactionHash: null
+            failedReason: null
+    BatchCryptoTransferObject:
+      type: object
+      required:
+      - transferType
+      - transferDetails
+      properties:
+        transferType:
+          type: string
+          example: WALLET.TRANSFER.BATCH
+        transferDetails:
+          type: object
+          required:
+          - id
+          - requestId
+          - createdAt
+          - updatedAt
+          - chain
+          - currency
+          - contractAddress
+          - status
+          - source
+          - destination
+          - receipt
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: 879af7af-67bf-469f-b718-d262a39d4857
+            requestId:
+              type: string
+              format: uuid
+              example: 14a84906-b72e-4847-b34d-51b9048fa6a5
+            createdAt:
+              type: string
+              format: date-time
+              example: '2025-04-05T00:55:50.609Z'
+            updatedAt:
+              type: string
+              format: date-time
+              example: '2025-04-05T00:56:33.236Z'
+            chain:
+              type: string
+              enum:
+              - POLYGON
+              example: POLYGON
+            currency:
+              type: string
+              enum:
+              - usdc
+              example: usdc
+            contractAddress:
+              type: string
+              example: '0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582'
+            status:
+              type: string
+              enum:
+              - NOT_INITIATED
+              - CREATED
+              - INITIATED
+              - PENDING
+              - COMPLETED
+              - FAILED
+              - UNKNOWN
+              example: COMPLETED
+            source:
+              type: object
+              required:
+              - userId
+              - walletAddress
+              - walletType
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                  example: 6a13bd30-b3a3-4d44-af33-0b32e58261be
+                walletAddress:
+                  type: string
+                  pattern: ^0x[a-fA-F0-9]{40}$
+                  example: '0x99a8c5ED386d217BC6ff0AA1b3585606D475432B'
+                walletType:
+                  type: string
+                  enum:
+                  - INDIVIDUAL
+                  - BUSINESS
+                  example: INDIVIDUAL
+            destination:
+              type: object
+              required:
+              - batch
+              properties:
+                batch:
+                  type: array
+                  maxItems: 50
+                  items:
+                    type: object
+                    required:
+                    - amount
+                    properties:
+                      amount:
+                        type: string
+                        example: '0.04'
+                      userId:
+                        type: string
+                        format: uuid
+                        example: 6a13bd30-b3a3-4d44-af33-0b32e58261be
+            receipt:
+              type: object
+              required:
+              - transactionHash
+              properties:
+                transactionHash:
+                  type: string
+                  example: '0x57f0cd3429ea425d982882243428ef4a1eda5f1be2157c1b34ea48b49b24fe7f'
+                userOpHash:
+                  type: string
+                  example: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+                approval:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      example: 006737ca-42d5-4780-b3c2-aeb63279c591
+                    status:
+                      type: string
+                      example: PENDING
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: '2025-02-03T16:11:36.654998+00:00'
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: '2025-02-03T16:12:41.503+00:00'
+                    transferId:
+                      type: string
+                      format: uuid
+                      example: 006737ca-42d5-4780-b3c2-aeb63279c591
+                    transferType:
+                      type: string
+                      example: WALLET.TRANSFER.BATCH
+                    fromDashboard:
+                      type: boolean
+                      example: true
+                    initiatorProfileId:
+                      type: string
+                      format: uuid
+                      example: aec66b02-4f3f-471c-839a-94820b36abb2
+                    votes:
+                      type: array
+                      description: Array of approval votes (only present when status is PENDING_APPROVAL or REJECTED)
+                      items:
+                        type: object
+                        properties:
+                          approverId:
+                            type: string
+                            format: uuid
+                            example: aec66b02-4f3f-471c-839a-94820b36abb2
+                          vote:
+                            type: string
+                            enum:
+                            - APPROVE
+                            - REJECT
+                            example: REJECT
+                          comment:
+                            type: string
+                            example: Transfer amount exceeds daily limit
+                          createdAt:
+                            type: string
+                            format: date-time
+                            example: '2025-02-03T16:12:41.503+00:00'
+      example:
+        transferType: WALLET.TRANSFER.BATCH
+        transferDetails:
+          id: 879af7af-67bf-469f-b718-d262a39d4857
+          requestId: 14a84906-b72e-4847-b34d-51b9048fa6a5
+          createdAt: '2025-04-05T00:55:50.609Z'
+          updatedAt: '2025-04-05T00:56:33.236Z'
+          chain: POLYGON
+          currency: usdc
+          contractAddress: '0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582'
+          status: COMPLETED
+          source:
+            userId: 6a13bd30-b3a3-4d44-af33-0b32e58261be
+            walletAddress: '0x99a8c5ED386d217BC6ff0AA1b3585606D475432B'
+            walletType: INDIVIDUAL
+          destination:
+            batch:
+            - amount: '0.04'
+              userId: 6a13bd30-b3a3-4d44-af33-0b32e58261be
+            - amount: '0.05'
+              userId: 6a13bd30-b3a3-4d44-af33-0b32e58261be
+            - amount: '0.06'
+              userId: 6a13bd30-b3a3-4d44-af33-0b32e58261be
+            - amount: '0.03'
+              userId: 6a13bd30-b3a3-4d44-af33-0b32e58261be
+            - amount: '0.03'
+              userId: 6a13bd30-b3a3-4d44-af33-0b32e58261be
+          receipt:
+            transactionHash: '0x57f0cd3429ea425d982882243428ef4a1eda5f1be2157c1b34ea48b49b24fe7f'
+            userOpHash: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+    CryptoTransferDestination:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: 'user who is receiving the crypto (should provide either `userId` or `walletAddress`)
+
+            '
+        walletAddress:
+          type: string
+          description: 'wallet address that is receiving the crypto (should provide either `userId` or `walletAddress`)
+
+            '
+      required:
+      - userId
+  responses:
+    CryptoToCryptoAllRecordsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CryptoToCryptoAllRecordsObject'
+    BatchCryptoTransferResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BatchCryptoTransferObject'
+    CryptoToCryptoRecordResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CryptoToCryptoRecordObject'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    CryptoToCryptoTransferResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CryptoToCryptoTransferObject'
+    BatchCryptoTransferAllRecordsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BatchCryptoTransferListObject'
+  requestBodies:
+    CreateCryptoTransferBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateCryptoTransfer'
+    CreateBatchCryptoTransferBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateBatchCryptoTransfer'
+  parameters:
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+    UserIdOptionalParameter:
+      name: userId
+      in: query
+      schema:
+        type: string
+      description: The user ID.
+      required: false
+    CryptoTransferRecordIDPathParameter:
+      name: transferId
+      in: path
+      schema:
+        type: string
+      description: Transfer record ID.
+      required: true
+    BatchCryptoTransferRecordIDPathParameter:
+      name: transferId
+      in: path
+      schema:
+        type: string
+      description: Transfer record ID.
+      required: true
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    CreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
