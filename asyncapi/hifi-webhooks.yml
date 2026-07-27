@@ -1,0 +1,43 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.hifi.com/webhooks
+type: Webhooks
+transport: https
+registration: >-
+  Webhook endpoints are configured in the Hifi Dashboard under Developer >
+  Webhooks. The endpoint must be HTTPS. On registration you receive a webhook
+  secret (public key) used for signature verification.
+signature:
+  scheme: JWT
+  algorithm: RS256
+  header: 'Authorization: Bearer <token>'
+  verification: >-
+    Extract the JWT from the Authorization header and verify it with your
+    webhook public key using RS256; reject with 401 if verification fails.
+delivery:
+  ack: Endpoint must return a 2xx status to acknowledge receipt.
+  retry: Failed deliveries are retried for up to 24 hours with exponential
+    backoff. 4xx responses are not retried.
+envelope:
+  fields:
+    eventId: Unique identifier for the event
+    eventCategory: Domain category of the event
+    eventType: CATEGORY.OPERATION style event type
+    eventAction: CREATE | UPDATE | DELETE
+    data: Event-specific payload
+    createdAt: ISO timestamp when the event was generated
+    timestamp: ISO timestamp when the event was delivered
+    version: Envelope version (v2)
+event_categories:
+- name: User
+  description: User creation and updates
+- name: KYC
+  description: KYC data and status changes
+- name: Wallet
+  description: Wallet transfers, bridges, and token balance updates
+- name: Account
+  description: Onramp, offramp, and virtual account creation/updates
+- name: Onramp
+  description: Onramp transfer creation and status updates
+- name: Offramp
+  description: Offramp transfer creation and status updates

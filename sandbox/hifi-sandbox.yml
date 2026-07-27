@@ -1,0 +1,37 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.hifi.com/sandbox
+environments:
+  sandbox:
+    base_url: https://sandbox.hifibridge.com/v2/
+    ping: https://sandbox.hifibridge.com/v2/ping
+    network: testnet
+    tokens: testnet tokens with no real value
+    wallets: addresses are on blockchain testnets
+  production:
+    base_url: https://production.hifibridge.com/v2/
+    network: mainnet
+    tokens: real cryptocurrency
+test_vs_live:
+- Sandbox and production use entirely separate API keys; a sandbox key must
+  never be used against production and vice versa. There is no documented
+  key prefix distinguishing the two.
+- Sandbox operates on blockchain testnets (no real value); production runs on
+  mainnet with real cryptocurrency.
+access:
+  request: https://app.hifi.com/request-access
+  keys: Generated in the Developer Dashboard under "Sandbox".
+simulation:
+  kyc: >-
+    KYC submissions in sandbox are typically auto-approved within minutes;
+    dummy/test personal information and documents are acceptable. PEP screening
+    may still block approval.
+  deposits: >-
+    Virtual-account deposits can be simulated via the simulate-deposit endpoint
+    (POST /v2/users/{userId}/virtual-accounts/{accountId}/simulate-deposit).
+  canton: Canton testing is available in Sandbox by request.
+notes:
+- No published test card numbers or magic bank-account identifiers; sandbox uses
+  testnet blockchain addresses and simulated deposits rather than card fixtures.
+- Transitioning to production requires removing simulate-deposit calls, supplying
+  real KYC documentation, and swapping base URLs and API keys.

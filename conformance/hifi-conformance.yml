@@ -1,0 +1,38 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/hifi-openapi-original.json
+standards:
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 securitySchemes; auth is http bearer API key.
+- id: oidc
+  conforms: false
+- id: http-bearer-auth
+  conforms: true
+  evidence: components.securitySchemes.bearerAuth type http scheme bearer (JWT).
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors use a custom {code,error,errorDetails} envelope, not application/problem+json.
+- id: idempotency
+  conforms: true
+  evidence: Client-supplied requestId (uuid v4) enforces idempotent transaction creation.
+- id: webhooks-signed
+  conforms: true
+  evidence: Webhook payloads are signed as RS256 JWTs verified with a per-endpoint public key.
+- id: pagination
+  conforms: true
+  evidence: List endpoints expose limit/offset/page query parameters.
+- id: openapi-3
+  conforms: true
+  evidence: OpenAPI 3.0.0 document published at docs.hifi.com/openapi.json.
+- id: kyc-aml
+  conforms: true
+  evidence: Dedicated KYC/UBO/compliance operations; Sumsub-backed verification; MSB registration.
+- id: fhir-r4
+  conforms: false
+- id: scim
+  conforms: false
+regulatory:
+  msb: true
+  banking_partner: Cross River Bank
+  note: Registered Money Services Business; regulated banking via Cross River Bank.

@@ -1,0 +1,118 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/hifi-openapi-original.json
+note: Entity-relationship graph derived from OpenAPI resource paths (298 component schemas) and id-reference
+  fields. User is the aggregate root; most money-movement objects belong to a user.
+entities:
+- User
+- Kyc
+- Ubo
+- Wallet
+- ExternalWallet
+- Account
+- VirtualAccount
+- Onramp
+- Offramp
+- CryptoTransfer
+- BatchCryptoTransfer
+- TokenSwap
+- CrossChainBridge
+- SettlementRule
+- TransferApproval
+- File
+- Metric
+- Deposit
+- ToSLink
+id_reference_fields:
+- accountId
+- approvalId
+- approverId
+- declareId
+- developerId
+- feeId
+- fileId
+- gpiId
+- profileId
+- rateId
+- recipientId
+- referenceId
+- requestId
+- sellerId
+- storeId
+- templateId
+- transferId
+- uboId
+- userId
+relationships:
+- from: User
+  type: has_many
+  to: Account
+  via: userId
+- from: User
+  type: has_many
+  to: VirtualAccount
+  via: userId
+- from: User
+  type: has_many
+  to: Wallet
+  via: userId
+- from: User
+  type: has_many
+  to: ExternalWallet
+  via: userId
+- from: User
+  type: has_one
+  to: Kyc
+  via: userId
+- from: Kyc
+  type: has_many
+  to: Ubo
+  via: userId
+- from: Kyc
+  type: has_many
+  to: File
+  via: documentId
+- from: Onramp
+  type: belongs_to
+  to: User
+  via: userId
+- from: Offramp
+  type: belongs_to
+  to: User
+  via: userId
+- from: Offramp
+  type: belongs_to
+  to: Account
+  via: accountId
+- from: CryptoTransfer
+  type: belongs_to
+  to: User
+  via: userId
+- from: BatchCryptoTransfer
+  type: has_many
+  to: CryptoTransfer
+  via: transferId
+- from: TokenSwap
+  type: belongs_to
+  to: User
+  via: userId
+- from: CrossChainBridge
+  type: belongs_to
+  to: User
+  via: userId
+- from: VirtualAccount
+  type: has_many
+  to: SettlementRule
+  via: ruleId
+- from: SettlementRule
+  type: has_one
+  to: Account
+  via: accountId
+- from: TransferApproval
+  type: belongs_to
+  to: User
+  via: userId
+- from: Deposit
+  type: belongs_to
+  to: Wallet
+  via: walletId

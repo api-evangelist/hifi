@@ -1,7 +1,29 @@
 aid: hifi
 name: Hifi
-description: Hifi is a company surfaced as a portfolio company of dcvc and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Hifi is a stablecoin and money-movement infrastructure company that provides
+  composable financial APIs for moving, converting, routing, and settling value
+  across bank rails and stablecoins. The platform covers fiat on-ramps and
+  off-ramps, crypto transfers, token swaps, cross-chain bridging, virtual
+  accounts, wallets and custody, KYC and compliance onboarding, settlement rules
+  and orchestration addresses, transfer approvals, and reporting. Hifi is
+  registered as a Money Services Business and partners with Cross River Bank for
+  regulated banking, letting developers build global payouts, treasury
+  automation, escrow flows, and multi-chain settlement programmatically over a
+  single REST API secured with bearer API keys.
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://www.hifi.com/seo/hifi-opengraph.png
 url: https://raw.githubusercontent.com/api-evangelist/hifi/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -11,12 +33,297 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
-apis: []
+- Stablecoins
+- Payments
+- Money Movement
+- On-Ramp
+- Off-Ramp
+- Crypto
+- Fintech
+- KYC
+- Virtual Accounts
+- Cross-Chain
+- Financial Infrastructure
+apis:
+- aid: hifi:hifi-account-api
+  name: Hifi Account API
+  description: Account endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Account
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-account-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-common-api
+  name: Hifi Common API
+  description: Common endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Common
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-common-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-cross-chain-bridge-api
+  name: Hifi Cross-Chain Bridge API
+  description: Cross-Chain Bridge endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Cross-Chain Bridge
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-cross-chain-bridge-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-crypto-transfer-api
+  name: Hifi Crypto Transfer API
+  description: Crypto Transfer endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Crypto Transfer
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-crypto-transfer-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-file-api
+  name: Hifi File API
+  description: File endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - File
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-file-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-kyc-api
+  name: Hifi Kyc API
+  description: Kyc endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Kyc
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-kyc-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-offramp-api
+  name: Hifi Offramp API
+  description: Offramp endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Offramp
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-offramp-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-onramp-api
+  name: Hifi Onramp API
+  description: Onramp endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Onramp
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-onramp-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-reporting-api
+  name: Hifi Reporting API
+  description: Reporting and metrics endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Reporting
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-reporting-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-settlement-rules-api
+  name: Hifi Settlement Rules API
+  description: The Settlement Rules API from Hifi — 5 operation(s) for settlement rules.
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Settlement Rules
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-settlement-rules-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-token-swap-api
+  name: Hifi Token Swap API
+  description: Token Swap endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Token Swap
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-token-swap-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-transfer-approvals-api
+  name: Hifi Transfer Approvals API
+  description: Transfer approval workflow and admin actions
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Transfer Approvals
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-transfer-approvals-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-user-api
+  name: Hifi User API
+  description: User endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - User
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-user-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-virtual-account-api
+  name: Hifi Virtual Account API
+  description: Virtual Account endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Virtual Account
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-virtual-account-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-wallet-api
+  name: Hifi Wallet API
+  description: Wallet endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Wallet
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-wallet-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hifi.com/guides/quickstart
+  - type: APIReference
+    url: https://docs.hifi.com/api-reference
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+common:
+- type: DomainSecurity
+  url: security/hifi-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/hifi-agentic-access.yml
+- type: Authentication
+  url: authentication/hifi-authentication.yml
+- type: Website
+  url: https://hifi.com
+- type: DeveloperPortal
+  url: https://docs.hifi.com
+- type: Documentation
+  url: https://docs.hifi.com/guides/quickstart
+- type: APIReference
+  url: https://docs.hifi.com/api-reference
+- type: GettingStarted
+  url: https://docs.hifi.com/guides/quickstart
+- type: Support
+  url: https://hifi.com/contact
+- type: Blog
+  url: https://hifi.com/blog
+- type: TermsOfService
+  url: https://hifi.com/terms-conditions
+- type: PrivacyPolicy
+  url: https://hifi.com/privacy-policy
+- type: SignUp
+  url: https://app.hifi.com/request-access
+- type: Login
+  url: https://app.hifi.com
+- type: OpenAPI
+  url: openapi/hifi-openapi-original.json
+- type: LLMsTxt
+  url: llms/hifi-llms.txt
+- type: ErrorCatalog
+  url: errors/hifi-error-codes.yml
+- type: Conventions
+  url: conventions/hifi-conventions.yml
+- type: Idempotency
+  url: conventions/hifi-conventions.yml
+- type: Sandbox
+  url: sandbox/hifi-sandbox.yml
+- type: ChangeLog
+  url: changelog/hifi-changelog.yml
+- type: Lifecycle
+  url: lifecycle/hifi-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/hifi-lifecycle.yml
+- type: Webhooks
+  url: asyncapi/hifi-webhooks.yml
+- type: Conformance
+  url: conformance/hifi-conformance.yml
+- type: DataModel
+  url: data-model/hifi-data-model.yml
+- type: MCPServer
+  url: mcp/hifi-mcp.yml
+- type: Overlay
+  url: overlays/hifi-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

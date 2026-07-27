@@ -1,0 +1,167 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.hifi.com/api/errors
+format: custom-envelope
+envelope:
+  shape: |
+    {
+      "code": 100001,
+      "error": "FIELD_VALIDATION_ERROR",
+      "errorDetails": "Fields provided are either missing or invalid"
+    }
+  fields:
+    code: Numeric error code, format SSCEE (service id, category, sequence)
+    error: Stable machine-readable error name
+    errorDetails: Human-readable description of the error
+  rfc9457: false
+code_scheme: >-
+  Codes follow an SSCEE numbering pattern: the first two digits are the service
+  id, the next digits the category, and the trailing digits the sequence within
+  that category. Ranges: 10xxxx common, 20xxxx auth/authorization, 30xxxx user,
+  40xxxx transaction, 50xxxx bank account, 60xxxx wallet, 70xxxx internal.
+errors:
+- code: 100001
+  error: FIELD_VALIDATION_ERROR
+  message: Fields provided are either missing or invalid
+  category: common
+- code: 100002
+  error: METHOD_NOT_ALLOWED
+  message: Method not allowed
+  category: common
+- code: 100003
+  error: INVALID_VERSION
+  message: Invalid version
+  category: common
+- code: 100004
+  error: DEPRECATED_RESOURCE
+  message: This resource has been deprecated
+  category: common
+- code: 100005
+  error: RESOURCE_CONFLICT
+  message: Resource conflict, please try a different request id
+  category: common
+  note: Surfaces on idempotency-key (requestId) collisions.
+- code: 200001
+  error: INVALID_API_KEY
+  message: Invalid API key
+  category: auth
+- code: 200201
+  error: PRODUCTION_NOT_ENABLED
+  message: Production is not enabled for this profile
+  category: authorization
+- code: 200202
+  error: USER_ROLE_NOT_ALLOWED
+  message: User role not allowed to perform this action
+  category: authorization
+- code: 200203
+  error: UNAUTHORIZED
+  message: Unauthorized
+  category: authorization
+- code: 200204
+  error: PROFILE_FROZEN
+  message: Profile is not authorized to access this resource
+  category: authorization
+- code: 200301
+  error: BILLING_CONFIG_NOT_FOUND
+  message: Billing configuration not found
+  category: authorization
+- code: 200301
+  error: KEY_DOES_NOT_EXIST
+  message: Key does not exist
+  category: authorization
+- code: 300001
+  error: USER_ALREADY_EXISTS
+  message: User already exists
+  category: user
+- code: 300201
+  error: USER_ACTION_NOT_ALLOWED
+  message: User is not allowed to perform this action
+  category: user
+- code: 300201
+  error: USER_COMPLIANCE_VERIFICATION_FAILED
+  message: User compliance information is not approved
+  category: user
+- code: 300202
+  error: USER_COMPLIANCE_DATA_INVALID
+  message: User compliance data is invalid
+  category: user
+- code: 300202
+  error: USER_FROZEN
+  message: User is not authorized to access this resource
+  category: user
+- code: 300301
+  error: USER_NOT_FOUND
+  message: User not found
+  category: user
+- code: 400001
+  error: INVALID_TRANSACTION_ROUTE
+  message: Invalid transaction route (combination of currency, crypto, and rail)
+  category: transaction
+- code: 400002
+  error: INVALID_ACCOUNT_FOR_TRANSACTION
+  message: Invalid bank account for the transaction
+  category: transaction
+- code: 400003
+  error: TRANSACTION_REQUEST_ALREADY_EXISTS
+  message: Transaction request already exists
+  category: transaction
+- code: 400005
+  error: QUOTE_NOT_READY
+  message: Quote is not ready yet
+  category: transaction
+- code: 400006
+  error: INVALID_QUOTE
+  message: Expired or invalid quote
+  category: transaction
+- code: 400301
+  error: TRANSACTION_NOT_FOUND
+  message: Transaction not found
+  category: transaction
+- code: 400302
+  error: QUOTE_NOT_FOUND
+  message: Quote not found
+  category: transaction
+- code: 400401
+  error: INSUFFICIENT_BALANCE
+  message: Insufficient balance for transaction
+  category: transaction
+- code: 400402
+  error: INSUFFICIENT_CREDIT_BALANCE
+  message: Insufficient credit balance for transaction fee
+  category: transaction
+- code: 400403
+  error: TRANSACTION_INITIATION_FAILED
+  message: Transaction initiation failed
+  category: transaction
+- code: 500001
+  error: INVALID_ACCOUNT_DATA
+  message: Invalid bank account data provided
+  category: bank-account
+- code: 500301
+  error: ACCOUNT_NOT_FOUND
+  message: Bank account ID not found
+  category: bank-account
+- code: 500501
+  error: INACTIVE_ACCOUNT
+  message: Bank account is not active
+  category: bank-account
+- code: 600001
+  error: INVALID_WALLET_CONFIG
+  message: Invalid wallet configuration provided
+  category: wallet
+- code: 600001
+  error: WALLET_ALREADY_EXISTS
+  message: Wallet already exists for this configuration
+  category: wallet
+- code: 600301
+  error: WALLET_NOT_FOUND
+  message: Wallet not found for the user
+  category: wallet
+- code: 600501
+  error: INACTIVE_WALLET
+  message: Wallet is not active
+  category: wallet
+- code: 700401
+  error: INTERNAL_SERVER_ERROR
+  message: Internal server error
+  category: internal

@@ -1,0 +1,202 @@
+# HIFI Docs
+
+> Developer Documentation for HIFI
+
+## Docs
+
+- [Offramp Accounts](https://docs.hifi.com/accounts/offramp-accounts.md): An Offramp Account is a user's external bank account where they receive fiat money from stablecoin conversions. When users offramp, their stablecoins are converted to fiat and sent directly to this registered account.
+- [Onramp Accounts](https://docs.hifi.com/accounts/onramp-accounts.md): An Onramp Account is a one-time generated account for a single onramp transaction. When you create an onramp, HIFI generates unique deposit details (bank account and reference ID) for that transaction; the user sends fiat to that account and receives stablecoins.
+- [Virtual Accounts](https://docs.hifi.com/accounts/virtual-accounts.md): A Virtual Account is a dedicated bank account that automatically converts fiat deposits into stablecoins. When users send money to a virtual account via bank transfer, the funds are instantly converted to stablecoins and delivered to their wallet.
+- [Create an account](https://docs.hifi.com/api-reference/account/create-an-account.md): Create an onramp or offramp account for different account types by providing your bank account information.
+- [Delete an account](https://docs.hifi.com/api-reference/account/delete-an-account.md): Delete an existing onramp or offramp account.
+- [List all accounts](https://docs.hifi.com/api-reference/account/list-all-accounts.md): List all accounts associated with a user under your organization.
+- [Retrieve an account](https://docs.hifi.com/api-reference/account/retrieve-an-account.md): Get an existing onramp or offramp account detail.
+- [Accept a Canton offer](https://docs.hifi.com/api-reference/canton-offers/accept-a-canton-offer.md): Accept a Canton offer. The offer must be in RECEIVED status and not expired. Upon acceptance, the offer status will change to PENDING and a job will be created to process the acceptance.
+- [List all offers for a wallet](https://docs.hifi.com/api-reference/canton-offers/list-all-offers-for-a-wallet.md): Retrieve all Canton offers associated with a specific wallet. Offers can be filtered by creation date and limited by count.
+- [Reject a Canton offer](https://docs.hifi.com/api-reference/canton-offers/reject-a-canton-offer.md): Reject a Canton offer. The offer must be in RECEIVED status and not expired. Upon rejection, the offer status will change to PENDING and a job will be created to process the rejection.
+- [Retrieve a Canton offer](https://docs.hifi.com/api-reference/canton-offers/retrieve-a-canton-offer.md): Get details of a specific Canton offer by its ID. The offer must belong to the specified wallet.
+- [Ping](https://docs.hifi.com/api-reference/common/ping.md)
+- [Accept a bridging request](https://docs.hifi.com/api-reference/cross-chain-bridge/accept-a-bridging-request.md): Accept a bridging request to initialize the bridging of crypto assets across chains.
+- [Create a bridging request](https://docs.hifi.com/api-reference/cross-chain-bridge/create-a-bridging-request.md): Create a bridging request to bridge crypto assets across chains.
+- [List all bridging requests](https://docs.hifi.com/api-reference/cross-chain-bridge/list-all-bridging-requests.md): Returns a list of bridging requests associated with a user under your organization.
+- [Retrieve a bridging request](https://docs.hifi.com/api-reference/cross-chain-bridge/retrieve-a-bridging-request.md)
+- [Create a batch crypto transfer](https://docs.hifi.com/api-reference/crypto-transfer/create-a-batch-crypto-transfer.md): Create a batch crypto transfer from a single wallet address to multiple wallet addresses among users.
+- [Create a crypto transfer](https://docs.hifi.com/api-reference/crypto-transfer/create-a-crypto-transfer.md): Create a crypto transfer between two wallet addresses among users.
+- [List all batch crypto transfers](https://docs.hifi.com/api-reference/crypto-transfer/list-all-batch-crypto-transfers.md): Returns a list of batch crypto transfers associated with a user under your organization. The batch crypto transfers are returned sorted by creation date, with the most recent batch crypto transfers appearing first.
+- [List all crypto transfers](https://docs.hifi.com/api-reference/crypto-transfer/list-all-crypto-transfers.md): Returns a list of crypto transfers associated with a user under your organization. The crypto transfers are returned sorted by creation date, with the most recent crypto transfers appearing first.
+- [Retrieve a batch crypto transfer](https://docs.hifi.com/api-reference/crypto-transfer/retrieve-a-batch-crypto-transfer.md)
+- [Retrieve a crypto transfer](https://docs.hifi.com/api-reference/crypto-transfer/retrieve-a-crypto-transfer.md)
+- [Upload a file](https://docs.hifi.com/api-reference/file/upload-a-file.md): Upload a file.
+- [Add a UBO](https://docs.hifi.com/api-reference/kyc/add-a-ubo.md): Add a UBO to the user.
+- [Add documents](https://docs.hifi.com/api-reference/kyc/add-documents.md): Add documents to the user's KYC.
+- [Generate a KYC link](https://docs.hifi.com/api-reference/kyc/generate-a-kyc-link.md): Generate a KYC link to create a user, unlock rails for a user, or submit KYC for a user.
+- [List all documents](https://docs.hifi.com/api-reference/kyc/list-all-documents.md): Get all documents associated with the user.
+- [List all KYC statuses](https://docs.hifi.com/api-reference/kyc/list-all-kyc-statuses.md): List all KYC statuses based on the provided filters.
+- [List all UBOs](https://docs.hifi.com/api-reference/kyc/list-all-ubos.md): Get all UBOs associated with the user.
+- [Retrieve a document](https://docs.hifi.com/api-reference/kyc/retrieve-a-document.md): Get a specific document associated with the user or ubo.
+- [Retrieve a UBO](https://docs.hifi.com/api-reference/kyc/retrieve-a-ubo.md): Get a specific UBO associated with the user.
+- [Retrieve KYC information](https://docs.hifi.com/api-reference/kyc/retrieve-kyc-information.md): Get the KYC information the user currently holds.
+- [Retrieve KYC requirements](https://docs.hifi.com/api-reference/kyc/retrieve-kyc-requirements.md): Get the required and optional KYC fields for a specific rail, along with any invalid KYC fields currently held by the user for unlocking the rail.
+- [Retrieve KYC status](https://docs.hifi.com/api-reference/kyc/retrieve-kyc-status.md): Get the user's latest KYC status for a specific rail after a KYC submission. If no KYC submission has been made for the rail, it will have an `INACTIVE` status.
+- [Submit KYC](https://docs.hifi.com/api-reference/kyc/submit-kyc.md): Submit the user's current KYC data to unlock a specific rail. Any updates to the user's KYC data prior to submission should be made using the [Update KYC](https://docs.hifi.com/api-reference/kyc/update-kyc-information) endpoint.)
+- [Update a document](https://docs.hifi.com/api-reference/kyc/update-a-document.md): Update a document for the user.
+- [Update a UBO](https://docs.hifi.com/api-reference/kyc/update-a-ubo.md): Update a UBO for the user.
+- [Update KYC information](https://docs.hifi.com/api-reference/kyc/update-kyc-information.md): Update the user's KYC information.
+- [Accept an offramp quote](https://docs.hifi.com/api-reference/offramp/accept-an-offramp-quote.md): Accept and initiate a quote-based offramp.
+- [Cancel an offramp](https://docs.hifi.com/api-reference/offramp/cancel-an-offramp.md): Cancel an offramp that is in review. Only offramps with status `IN_REVIEW` can be cancelled.
+- [Create an offramp](https://docs.hifi.com/api-reference/offramp/create-an-offramp.md): An offramp facilitates the conversion of crypto to fiat. Once the crypto transfer is confirmed, HIFI will deposit the converted fiat into the receiving user’s bank account.
+- [List all offramps](https://docs.hifi.com/api-reference/offramp/list-all-offramps.md): Returns a list of offramps associated with a user under your organization. The offramps are returned sorted by creation date, with the most recent offramps appearing first.
+- [Retrieve an offramp](https://docs.hifi.com/api-reference/offramp/retrieve-an-offramp.md): Retrieves an offramp.
+- [Retrieve an offramp rate](https://docs.hifi.com/api-reference/offramp/retrieve-an-offramp-rate.md): Offramp rates are estimated rates for offramp conversions from different cryptocurrencies on different networks into all the different fiat currencies.
+- [Accept an onramp quote](https://docs.hifi.com/api-reference/onramp/accept-an-onramp-quote.md): Accept a quote-based onramp.
+- [Cancel an onramp](https://docs.hifi.com/api-reference/onramp/cancel-an-onramp.md): Cancel an onramp that is in review. Only onramps with status `IN_REVIEW` can be cancelled.
+- [Create an onramp](https://docs.hifi.com/api-reference/onramp/create-an-onramp.md): An onramp facilitates the conversion of fiat to crypto. Once the fiat payment is received, HIFI will deliver the converted crypto to the receiving user’s wallet.
+- [List all onramps](https://docs.hifi.com/api-reference/onramp/list-all-onramps.md): Returns a list of onramps associated with a user under your organization. The onramps are returned sorted by creation date, with the most recent onramps appearing first.
+- [Refresh an onramp quote](https://docs.hifi.com/api-reference/onramp/refresh-an-onramp-quote.md): Refresh the conversion rate quote that is associated with a quote-based onramp. You can only refresh an onramp quote with the status `OPEN_QUOTE`.
+- [Retrieve an onramp](https://docs.hifi.com/api-reference/onramp/retrieve-an-onramp.md): Retrieves an onramp.
+- [Retrieve an onramp rate](https://docs.hifi.com/api-reference/onramp/retrieve-an-onramp-rate.md): Onramp rates are estimated rates for onramp conversions from different fiat currencies into different cryptocurrencies.
+- [Create an orchestration address](https://docs.hifi.com/api-reference/orchestration-address/create-an-orchestration-address.md): Create a persistent on-chain wallet that automatically offramps any stablecoin deposit to a USD bank account.
+- [Deactivate an orchestration address](https://docs.hifi.com/api-reference/orchestration-address/deactivate-an-orchestration-address.md): Soft-delete the address: sets `status=DEACTIVATED` and `deactivatedAt=now()`. Requires a `walletAddress` in the body — any deposits still `PENDING` (not yet rolled into a batch) are refunded in-kind to it. The claim and refund run atomically under the address row lock, so a deposit can never be both…
+- [List batches for an orchestration address](https://docs.hifi.com/api-reference/orchestration-address/list-batches-for-an-orchestration-address.md): List batches produced from this address's deposits. Each batch carries the IDs of the deposits it rolled up and (once the worker runs) the `offrampTransactionId` of the produced offramp.
+- [List deposits for an orchestration address](https://docs.hifi.com/api-reference/orchestration-address/list-deposits-for-an-orchestration-address.md): List on-chain deposits detected for the address, most recent first. Filterable by status, batch ID, and a created-at window.
+- [List orchestration addresses](https://docs.hifi.com/api-reference/orchestration-address/list-orchestration-addresses.md): Return all orchestration addresses owned by the user, most recent first. Includes both `ACTIVE` and `DEACTIVATED` addresses.
+- [Manually trigger an orchestration](https://docs.hifi.com/api-reference/orchestration-address/manually-trigger-an-orchestration.md): Force an immediate batch of all currently-`PENDING` deposits for the address, regardless of the configured mode. Useful for `SCHEDULED` addresses that you want to drain ahead of schedule, for `THRESHOLD` addresses that haven't crossed yet, or simply for operational backfill.
+- [Retrieve a batch](https://docs.hifi.com/api-reference/orchestration-address/retrieve-a-batch.md): Fetch a single batch by ID. Returns `404 RESOURCE_NOT_FOUND` if the batch doesn't exist, doesn't belong to the named orchestration address, or the orchestration address doesn't belong to the named user.
+- [Retrieve a deposit](https://docs.hifi.com/api-reference/orchestration-address/retrieve-a-deposit.md): Fetch a single deposit by ID. Returns `404 RESOURCE_NOT_FOUND` if the deposit doesn't exist, doesn't belong to the named orchestration address, or the orchestration address doesn't belong to the named user.
+- [Retrieve an orchestration address](https://docs.hifi.com/api-reference/orchestration-address/retrieve-an-orchestration-address.md): Fetch a single orchestration address by ID. Returns `404 RESOURCE_NOT_FOUND` if the address doesn't exist *or* doesn't belong to the specified user — the API never discloses whether a foreign address exists.
+- [Update an orchestration address](https://docs.hifi.com/api-reference/orchestration-address/update-an-orchestration-address.md): Partial update of an existing orchestration address. Any combination of `mode`, `schedule`, `thresholdAmount`, and `destination.accountId` may be passed.
+- [Create Saved Metric](https://docs.hifi.com/api-reference/reporting/create-saved-metric.md): Creates and saves a new metric configuration to the database. This does not execute the report, but stores the parameters for future use.
+- [Delete Saved Metric](https://docs.hifi.com/api-reference/reporting/delete-saved-metric.md): Permanently removes a saved metric configuration from the profile.
+- [Execute Saved Metric](https://docs.hifi.com/api-reference/reporting/execute-saved-metric.md): Runs the calculation for an existing saved metric and returns the dataset.
+- [Get Available Metric Templates](https://docs.hifi.com/api-reference/reporting/get-available-metric-templates.md): Retrieves a list of all available metric templates (e.g., GROSS_VOLUME, TRANSACTION_COUNT). Templates define the logic, supported parameters, and breakdown options available for building reports.
+- [Get Metric Details](https://docs.hifi.com/api-reference/reporting/get-metric-details.md): Retrieves the configuration details of a specific saved metric by its UUID.
+- [Get Parameter Options](https://docs.hifi.com/api-reference/reporting/get-parameter-options.md): Fetches valid options for specific parameters (e.g., transactionTypes, transactionStatuses) to help validate input or populate UI dropdowns. Supports pagination via query parameters.
+- [Get Template Details](https://docs.hifi.com/api-reference/reporting/get-template-details.md): Returns the specific definition for a template, including its description, the list of fields you can pass as parameters, and the dimensions available for breakdowns.
+- [List Saved Metrics](https://docs.hifi.com/api-reference/reporting/list-saved-metrics.md): Retrieves all saved metric configurations associated with the authenticated profile.
+- [Preview Metric Results](https://docs.hifi.com/api-reference/reporting/preview-metric-results.md): Executes a metric calculation on the fly without saving it to the database. Useful for testing parameters or ad-hoc analysis.
+- [Update Saved Metric](https://docs.hifi.com/api-reference/reporting/update-saved-metric.md): Updates the name, description, or parameters of an existing metric configuration. Supports partial updates.
+- [Apply settlement rule to virtual account](https://docs.hifi.com/api-reference/settlement-rules/apply-settlement-rule-to-virtual-account.md): Apply a settlement rule to a specific virtual account. This will enable the fee structure defined in the rule for transactions on that account.
+- [Create a settlement rule](https://docs.hifi.com/api-reference/settlement-rules/create-a-settlement-rule.md): Create a new settlement rule for virtual accounts. Settlement rules define how fees are calculated and distributed when processing an onramp transaction.
+- [Delete a settlement rule](https://docs.hifi.com/api-reference/settlement-rules/delete-a-settlement-rule.md): Delete an existing settlement rule.
+- [List all settlement rules](https://docs.hifi.com/api-reference/settlement-rules/list-all-settlement-rules.md): List all settlement rules available for virtual accounts.
+- [Remove settlement rule from virtual account](https://docs.hifi.com/api-reference/settlement-rules/remove-settlement-rule-from-virtual-account.md): Remove a settlement rule from a specific virtual account. This will disable the fee structure for that account.
+- [Retrieve a settlement rule](https://docs.hifi.com/api-reference/settlement-rules/retrieve-a-settlement-rule.md): Get an existing settlement rule detail.
+- [Update a settlement rule](https://docs.hifi.com/api-reference/settlement-rules/update-a-settlement-rule.md): Update an existing settlement rule. This will replace all existing rules with the new configuration.
+- [Accept a swap](https://docs.hifi.com/api-reference/token-swap/accept-a-swap.md): Accept a swap request to execute the cryptocurrency exchange.
+- [Create a swap](https://docs.hifi.com/api-reference/token-swap/create-a-swap.md): Create a swap request to exchange one cryptocurrency for another within the same chain or across chains.
+- [List all swaps](https://docs.hifi.com/api-reference/token-swap/list-all-swaps.md): Returns a list of swaps associated with a user under your organization. The swaps are returned sorted by creation date, with the most recent swaps appearing first.
+- [Retrieve a swap](https://docs.hifi.com/api-reference/token-swap/retrieve-a-swap.md): Retrieve details of a specific swap by its ID.
+- [Approve a transfer](https://docs.hifi.com/api-reference/transfer-approvals/approve-a-transfer.md): Approve a pending transfer. If enough approvals are received, the transfer will be queued for execution.
+- [Get a transfer approval](https://docs.hifi.com/api-reference/transfer-approvals/get-a-transfer-approval.md): Retrieve detailed information about a specific transfer approval
+- [List all pending transfer approvals](https://docs.hifi.com/api-reference/transfer-approvals/list-all-pending-transfer-approvals.md): Retrieve all pending transfer approvals that require admin action
+- [Reject a transfer](https://docs.hifi.com/api-reference/transfer-approvals/reject-a-transfer.md): Reject a pending transfer. This will cancel the transfer and return funds to the sender.
+- [Create a user](https://docs.hifi.com/api-reference/user/create-a-user.md): Create a new Hifi user (Individual/Business)
+- [Generate a terms of service link](https://docs.hifi.com/api-reference/user/generate-a-terms-of-service-link.md): The Terms of Service page must be displayed to the end user. This page can be whitelabeled upon request.
+- [List all users](https://docs.hifi.com/api-reference/user/list-all-users.md): Get all existing Hifi users
+- [Retrieve a terms of service link](https://docs.hifi.com/api-reference/user/retrieve-a-terms-of-service-link.md): Retrieve the status of a terms of service link
+- [Retrieve a user](https://docs.hifi.com/api-reference/user/retrieve-a-user.md): Get an existing Hifi user
+- [Update a user](https://docs.hifi.com/api-reference/user/update-a-user.md): Update an existing Hifi user.
+- [Create a virtual account](https://docs.hifi.com/api-reference/virtual-account/create-a-virtual-account.md): Generate a virtual bank account to onramp from `sourceCurrency` to `destinationCurrency` on chain `destinationChain`. (note: virtual accounts are billable)
+- [Deactivate a virtual account](https://docs.hifi.com/api-reference/virtual-account/deactivate-a-virtual-account.md): Deactivate an existing virtual account.
+- [List all virtual accounts](https://docs.hifi.com/api-reference/virtual-account/list-all-virtual-accounts.md): List all virtual accounts associated with a user under your organization.
+- [Reactivate a virtual account](https://docs.hifi.com/api-reference/virtual-account/reactivate-a-virtual-account.md): Reactivate an existing virtual account.
+- [Retrieve a virtual account](https://docs.hifi.com/api-reference/virtual-account/retrieve-a-virtual-account.md): Get an existing virtual bank account detail.
+- [Simulate a deposit to a virtual account](https://docs.hifi.com/api-reference/virtual-account/simulate-a-deposit-to-a-virtual-account.md): Simulate a deposit to a virtual account in sandbox environment. This endpoint is only available in sandbox and allows testing deposit flows.
+- [Update a virtual account](https://docs.hifi.com/api-reference/virtual-account/update-a-virtual-account.md): Update an existing virtual account.
+- [Add external wallets to a user](https://docs.hifi.com/api-reference/wallet/add-external-wallets-to-a-user.md): Add external wallets to a user
+- [Add wallets to a user](https://docs.hifi.com/api-reference/wallet/add-wallets-to-a-user.md): Add wallets to a user
+- [Get an external wallet](https://docs.hifi.com/api-reference/wallet/get-an-external-wallet.md): Get an external wallet
+- [Get an inbound deposit](https://docs.hifi.com/api-reference/wallet/get-an-inbound-deposit.md): Get an inbound deposit for a user's wallet
+- [Get external wallets for a user](https://docs.hifi.com/api-reference/wallet/get-external-wallets-for-a-user.md): Get external wallets for a user
+- [Get inbound deposits](https://docs.hifi.com/api-reference/wallet/get-inbound-deposits.md): Get inbound deposits for a user's wallet
+- [Retrieve wallet balance](https://docs.hifi.com/api-reference/wallet/retrieve-wallet-balance.md): Get the latest balance of a user's wallet, including details like the blockchain network and currency.
+- [Authentication](https://docs.hifi.com/api/authentication.md): All requests to the HIFI API must be authenticated using API keys. This guide covers how to create, secure, and manage your keys.
+- [Error Codes](https://docs.hifi.com/api/errors.md): This document provides a comprehensive guide to the error handling system used in the HIFI API. Understanding these error codes will help you effectively handle exceptions and communicate issues to your users.
+- [Responses](https://docs.hifi.com/api/responses.md): All HIFI API endpoints return structured JSON responses containing the requested data. Understanding the response format and how to work with API responses is essential for building reliable integrations.
+- [Availability](https://docs.hifi.com/availability.md): We operate on weekdays - Monday through Friday, excluding Federal Reserve holidays (for USD transactions).
+- [Changelog](https://docs.hifi.com/changelog.md): Product updates and announcements
+- [Documents](https://docs.hifi.com/compliance/documents.md): Documents enable programmatic upload and management of KYC verification documents. Upload identity documents, proof of address, and business documents through the Documents API.
+- [ID Verification](https://docs.hifi.com/compliance/documents/identity.md): Identity documents are required for KYC verification. The accepted document types and requirements vary by country. Use the [Identity Documents](/docs/references/identity-documents) reference to determine which documents are accepted for each country and their required subtypes.
+- [Proof of Address](https://docs.hifi.com/compliance/documents/proof-of-address.md): Proof of Address (PoA) documents are required to verify a user's residential or business address. Requirements differ for individual and business users.
+- [Industries](https://docs.hifi.com/compliance/industries.md): HIFI operates with strict compliance and risk management policies to ensure the safety and integrity of our platform. Certain industries are prohibited or require enhanced due diligence due to regulatory requirements, compliance obligations, and risk management considerations.
+- [Regions](https://docs.hifi.com/compliance/regions.md): HIFI operates globally with services available to individuals and businesses all over the world. However, due to regulatory requirements, certain jurisdictions are restricted from using our services.
+- [Coverage](https://docs.hifi.com/coverage.md): HIFI enables inflows and outflows across multiple regions. Here are the countries and currencies we support by rail.
+- [Dashboard](https://docs.hifi.com/dashboard.md): The HIFI Dashboard is a web application for managing your keys, data, transactions and settings. Access the same capabilities as the API through an intuitive web interface—no code required.
+- [ACH Disputes](https://docs.hifi.com/disputes.md)
+- [Batch Transfers](https://docs.hifi.com/features/batch-transfers.md): Batch transfers send stablecoins to up to 50 recipients in a single blockchain transaction. This reduces gas costs and simplifies bulk distributions like payroll, airdrops, or rewards.
+- [Overview](https://docs.hifi.com/features/canton/overview.md)
+- [Transfer Offer](https://docs.hifi.com/features/canton/transfer-offer.md)
+- [USDCx Bridging](https://docs.hifi.com/features/canton/usdcx-bridging.md)
+- [Developer Fees](https://docs.hifi.com/features/developer-fees.md): Developer Fees enable automated calculation and distribution of fees for offramp transactions. Fees can be configured to be distributed to up to 10 different beneficiary wallets.
+- [Exchange Rates](https://docs.hifi.com/features/exchange-rates.md): Exchange Rates provide estimated conversion rates for transactions between stablecoins and fiat. Use these rates to display pricing information to users before creating offramp or onramp requests.
+- [KYC Links](https://docs.hifi.com/features/kyc-links.md): KYC Links enable you to collect Know Your Customer (KYC) information from users through a secure, hosted flow. Use KYC links to create a user, unlock rails for a user, or submit KYC for a user.
+- [Orchestration Addresses](https://docs.hifi.com/features/orchestration-addresses.md): An Orchestration Address is a persistent on-chain wallet attached to a USD payout account. Stablecoins sent to it are automatically off-ramped to fiat — immediately, on a schedule, or when an aggregate amount is reached. The user never has to create an offramp manually; HIFI does it for them.
+- [Settlement Rules](https://docs.hifi.com/features/settlement-rules.md): Settlement Rules allow you to configure automated fee calculations and distributions for Virtual Account transactions. Automatically deduct fees using fixed amounts, percentages, or tiered pricing models, and send them to specified wallet addresses.
+- [KYC Token Import (Beta)](https://docs.hifi.com/features/token-sharing.md): KYC Token Import allows you to onboard users who have already completed identity verification with Sumsub on your platform. Share their existing KYC directly into HIFI without requiring users to re-submit their information.
+- [Transfer Approvals](https://docs.hifi.com/features/transfer-approvals.md): Transfer approvals provide multi-party authorization for transactions, adding security and compliance controls to your organization's transaction workflow. Require approval before executing high-value or sensitive transactions.
+- [Global Transfers](https://docs.hifi.com/guides/global-transfers.md): Enable businesses to send money internationally through stablecoins with instant settlement. Leverage HIFI's global network to reach recipients in multiple countries with low fees and transparent exchange rates.
+- [Marketplace Payments](https://docs.hifi.com/guides/market-payments.md): Facilitate marketplace payments where buyers can pay sellers across regions and currencies, with structured payout flows that reflect how modern marketplaces operate. Support common marketplace behaviors such as holding funds until conditions are met, confirming completed orders, and releasing payou…
+- [Quickstart](https://docs.hifi.com/guides/quickstart.md): In this guide, you'll learn how to use the HIFI Sandbox API to simulate money movement. You'll create users, complete KYC, set up a virtual account, simulate a deposit to fund a wallet, and execute a transfer between wallets.
+- [Receive Money](https://docs.hifi.com/guides/receive-money.md): This guide shows you how to receive money - converting fiat currency (like USD) into stablecoins (like USDC) and depositing them into a user's wallet.
+- [Remittances](https://docs.hifi.com/guides/remittances.md): Build remittance products that enable users to send money home to family and friends across borders. Our platform provides the infrastructure you need to create seamless, compliant international money transfer experiences.
+- [Reporting](https://docs.hifi.com/guides/reporting.md): Learn how to use the Metrics API with detailed examples. This guide covers common patterns, step-by-step workflows, and code samples for tracking transaction volume, activity patterns, and user growth.
+- [Send EUR Offramps](https://docs.hifi.com/guides/send-eur-offramps.md): Settle stablecoins to EUR through SEPA.
+- [Send Money](https://docs.hifi.com/guides/send-money.md): This guide shows you how to send money - converting stablecoins (like USDC) into fiat currency (like USD) and sending it to a user's bank account.
+- [Split Payments](https://docs.hifi.com/guides/split-payments.md): Facilitate split payment services where a single payment is divided among multiple recipients. Perfect for splitting bills, shared expenses, or distributing funds to multiple stakeholders efficiently.
+- [Submit KYC](https://docs.hifi.com/guides/submit-kyc.md): This guide shows you how to submit KYC (Know Your Customer) information programmatically using the HIFI API. Users must complete KYC verification to unlock rails (payment corridors that enable currency conversions between fiat and stablecoins).
+- [Welcome to HIFI](https://docs.hifi.com/index.md): Infrastructure for money
+- [Overview](https://docs.hifi.com/kyc.md): To comply with financial regulations, HIFI enforces KYC (Know Your Customer) and KYB (Know Your Business) checks before a User can receive funds from fiat (onramps) or pay out to fiat (offramps).
+- [KYB Status](https://docs.hifi.com/kyc/kyb-status.md): To check where a business's verification stands, diagnose issues, and confirm when they're ready to use a rail, use the [KYC Status endpoint](https://docs.hifi.com/api-reference/kyc/retrieve-kyc-status). This guide focuses on interpreting the business-specific response.
+- [KYC Requirements](https://docs.hifi.com/kyc/kyc-requirements.md): The KYC Requirements endpoint tells you exactly which data points and documents are needed to unlock a given rail for a specific user.
+- [KYC Status](https://docs.hifi.com/kyc/kyc-status.md): Use the KYC Status endpoint to check where a user's verification stands, diagnose issues, and confirm when they're ready to use a rail.
+- [Platform Overview](https://docs.hifi.com/overview.md): HIFI provides infrastructure for money through three core product pillars: Inflows, Controls, and Outflows.
+- [About Rails](https://docs.hifi.com/rails.md): Unlocking a Rail enables a user's access to specific payment networks and geographic regions.
+- [Africa Rail (Beta)](https://docs.hifi.com/rails/africa.md): The Africa Rail (beta) enables local currency pay-ins and pay-outs across multiple African countries through bank transfers and mobile money.
+- [Global Network Rail](https://docs.hifi.com/rails/global-network.md): The Global Network Rail enables payouts across multiple regions with support for multiple currencies.
+- [USD Rail](https://docs.hifi.com/rails/usd.md): The USD Rail enables pay-ins and pay-outs from stablecoins to USD. It also enables Virtual Accounts for recurring payments.
+- [Account Purposes](https://docs.hifi.com/references/account-purposes.md): Reference for acceptable account purpose values and their descriptions
+- [Administrative & Support Services](https://docs.hifi.com/references/business-industries/administrative-support-services.md): Reference table of administrative and support services industry codes and classifications.
+- [Agriculture & Forestry](https://docs.hifi.com/references/business-industries/agriculture-forestry.md): Reference table of agriculture and forestry industry codes and classifications.
+- [Arts, Recreation & Entertainment](https://docs.hifi.com/references/business-industries/arts-recreation-entertainment.md): Reference table of arts, recreation and entertainment industry codes and classifications.
+- [Construction](https://docs.hifi.com/references/business-industries/construction.md): Reference table of construction industry codes and classifications.
+- [Education](https://docs.hifi.com/references/business-industries/education.md): Reference table of education industry codes and classifications.
+- [Finance & Insurance](https://docs.hifi.com/references/business-industries/finance-insurance.md): Reference table of finance and insurance industry codes and classifications.
+- [Health & Social Services](https://docs.hifi.com/references/business-industries/health-social-services.md): Reference table of health and social services industry codes and classifications.
+- [Hospitality & Food](https://docs.hifi.com/references/business-industries/hospitality-food.md): Reference table of hospitality and food industry codes and classifications.
+- [Information & Media](https://docs.hifi.com/references/business-industries/information-media.md): Reference table of information and media industry codes and classifications.
+- [Manufacturing](https://docs.hifi.com/references/business-industries/manufacturing.md): Reference table of manufacturing industry codes and classifications.
+- [Mining & Energy](https://docs.hifi.com/references/business-industries/mining-energy.md): Reference table of mining and energy industry codes and classifications.
+- [Other Services](https://docs.hifi.com/references/business-industries/other-services.md): Reference table of other services industry codes and classifications.
+- [Professional & Technical Services](https://docs.hifi.com/references/business-industries/professional-technical-services.md): Reference table of professional and technical services industry codes and classifications.
+- [Public Administration](https://docs.hifi.com/references/business-industries/public-administration.md): Reference table of public administration industry codes and classifications.
+- [Real Estate & Leasing](https://docs.hifi.com/references/business-industries/real-estate-leasing.md): Reference table of real estate and leasing industry codes and classifications.
+- [Transportation & Logistics](https://docs.hifi.com/references/business-industries/transportation-logistics.md): Reference table of transportation and logistics industry codes and classifications.
+- [Wholesale & Retail Trade](https://docs.hifi.com/references/business-industries/wholesale-retail-trade.md): Reference table of wholesale and retail trade industry codes and classifications.
+- [Currencies](https://docs.hifi.com/references/currencies.md): With HIFI, you can convert fiat currencies into stablecoins and vice versa using various local payment methods. This page outlines supported currencies and payment methods across regions.
+- [Export Categories](https://docs.hifi.com/references/export-categories.md): Reference table listing export categories and their codes.
+- [Identity Documents](https://docs.hifi.com/references/identity-documents.md): Reference table of supported government-issued identity documents by country and document type.
+- [Individual Occupations](https://docs.hifi.com/references/occupations.md): Reference table of supported occupation titles and codes for individuals. Useful for KYC and onboarding forms.
+- [Product & Service Categories](https://docs.hifi.com/references/product-service-categories.md): Reference table of product and service categories with their corresponding item codes for business classification.
+- [Metrics](https://docs.hifi.com/reporting/metrics.md): Track transaction volume, activity patterns, and user growth with configurable metrics. Build custom views using templates, apply filters, and break down data by dimensions like transaction type or user.
+- [Sandbox](https://docs.hifi.com/sandbox.md): Our sandbox environment provides a safe testing space to integrate our APIs. All transactions are simulated and hold no real-world value.
+- [Bridging](https://docs.hifi.com/transactions/bridging.md): Bridging transfers stablecoins across different blockchain networks. Move assets from one chain to another, such as transferring USDC from Ethereum to Polygon or Solana.
+- [Offramps](https://docs.hifi.com/transactions/offramps.md): Offramps convert stablecoins into fiat currency and send it to external bank accounts. Users must accept a quote before the conversion executes.
+- [Onramps](https://docs.hifi.com/transactions/onramps.md): Onramps convert fiat currency into stablecoins and deliver them to wallets. Users can onramp through virtual accounts (reusable) or the Onramp API (one-time virtual accounts).
+- [Overview](https://docs.hifi.com/transactions/overview.md): HIFI supports five types of transactions: transfers, onramps, offramps, bridging, and swaps. Each type serves a distinct purpose for moving value between wallets, fiat, and chains.
+- [Swaps](https://docs.hifi.com/transactions/swaps.md): Swaps let you exchange one stablecoin for another within HIFI wallets. All swaps follow a two-step process: create the swap request, then accept it to execute the exchange.
+- [Transfers](https://docs.hifi.com/transactions/transfers.md): Wallet transfers allow you to send stablecoins between wallets on blockchain networks. Transactions can be sent to other HIFI users or external wallet addresses.
+- [Overview](https://docs.hifi.com/users/overview.md): A User represents an individual or business on the HIFI platform. Users are the foundation of all transaction activity - every onramp, offramp, and transfer is associated with a user.
+- [Terms of Service](https://docs.hifi.com/users/tos.md): Users must accept HIFI's terms before you can create their account. You have two options for collecting this consent:
+- [Wallets](https://docs.hifi.com/wallets.md): A Wallet is a cryptocurrency account that holds and moves digital assets on the HIFI platform. Every wallet belongs to a user and can hold balances in supported stablecoins across multiple blockchain networks.
+- [Events & Webhooks](https://docs.hifi.com/webhooks.md): Webhooks deliver real-time event notifications from HIFI to your application. When events occur in your HIFI account, HIFI sends HTTP POST requests to your registered webhook endpoints, enabling your systems to respond immediately.
+- [Account Events](https://docs.hifi.com/webhooks/account-events.md): You can expect to receive webhook events whenever an account is successfully created.
+- [KYC Events](https://docs.hifi.com/webhooks/kyc-events.md): You can expect to receive KYC webhook events whenever you update a user's KYC data, submit KYC to unlock a rail, or receive KYC status updates for any rail you've submitted.
+- [Offramp Events](https://docs.hifi.com/webhooks/offramp-events.md): You can expect to receive webhook events whenever an offramp transfer is created or its status is updated.
+- [Onramp Events](https://docs.hifi.com/webhooks/onramp-events.md): You can expect to receive webhook events whenever an onramp transfer is created or its status is updated.
+- [Swap Events](https://docs.hifi.com/webhooks/onramp-events-copied-1.md): You can expect to receive webhook events whenever an token swap is created or its status is updated.
+- [User Events](https://docs.hifi.com/webhooks/user-events.md): You can expect to receive webhook events whenever you successfully create or update a user.
+- [Wallet Events](https://docs.hifi.com/webhooks/wallet-events.md): You can expect to receive webhook events whenever you successfully initiate a wallet transfer, bridge assets, or update a wallet token balance.
+
+## OpenAPI Specs
+
+- [openapi](https://docs.hifi.com/openapi.json)

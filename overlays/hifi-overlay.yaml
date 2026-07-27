@@ -1,0 +1,25 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Hifi API
+  version: 1.0.0
+extends: openapi/hifi-openapi-original.json
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: hifi
+    x-apievangelist-category: stablecoin-money-movement
+    x-apievangelist-idempotency:
+      supported: true
+      field: requestId
+      format: uuid-v4
+    x-apievangelist-error-envelope: '{ code, error, errorDetails }'
+    x-apievangelist-webhooks: asyncapi/hifi-webhooks.yml
+    x-apievangelist-notes: >-
+      The original spec declares no operationIds and no application/problem+json
+      error responses; errors use a custom {code,error,errorDetails} envelope
+      documented at docs.hifi.com/api/errors. Idempotency is client-driven via a
+      requestId body field. Gaps to raise with the provider: add operationIds and
+      formalize the error schema in-spec.
+- target: $.tags[*]
+  update:
+    x-apievangelist-reviewed: true

@@ -1,0 +1,31 @@
+generated: '2026-07-19'
+method: probed
+note: >-
+  Probed the standard /.well-known/ discovery surface on the website and both
+  API hosts. No document returned 200, so no raw files were saved and no
+  WellKnown/SecurityTxt pointer is wired. Absence is valid recorded data.
+hosts:
+- host: https://hifi.com
+  documents:
+  - {path: /.well-known/security.txt, status: 308}
+  - {path: /.well-known/openid-configuration, status: 308}
+  - {path: /.well-known/oauth-authorization-server, status: 308}
+  - {path: /.well-known/api-catalog, status: 308}
+  - {path: /.well-known/ai-plugin.json, status: 308}
+- host: https://docs.hifi.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+- host: https://production.hifibridge.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+- host: https://sandbox.hifibridge.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}

@@ -1,0 +1,26 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.hifi.com
+versioning:
+  scheme: uri-path
+  current: v2
+  notes: All documented endpoints are served under the /v2 path prefix.
+deprecation:
+  supported: true
+  evidence:
+  - DEPRECATED_RESOURCE (code 100004, "This resource has been deprecated") in the
+    error registry signals resource-level deprecation.
+  - INVALID_VERSION (code 100003) guards version selection.
+  policy_url: null
+  sunset_header: unknown
+sla:
+  url: null
+  uptime_target: null
+status_page:
+  url: null
+  notes: >-
+    The marketing site references a "System Status" indicator but publishes no
+    dedicated public status page URL; hifi.statuspage.io and hifi.instatus.com
+    resolve only to vendor placeholder pages, so no StatusPage pointer is wired.
+changelog: https://docs.hifi.com/changelog
+deprecated_operations: []

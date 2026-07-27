@@ -1,0 +1,272 @@
+generated: '2026-07-19'
+method: derived
+status: candidate
+source: openapi/hifi-openapi-original.json
+note: No official hosted Hifi MCP server was found. Candidate tool list derived one-per-operation from
+  the OpenAPI (87 operations). The spec declares no operationIds, so source_operation references the HTTP
+  method + path.
+server:
+  name: hifi
+  transport: http
+tools:
+- name: create_files
+  description: Upload a file
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/files
+- name: create_kyc_link
+  description: Generate a KYC link
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/kyc-link
+- name: get_kyc_status
+  description: List all KYC statuses
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/kyc/status
+- name: create_offramps
+  description: Create an offramp
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/offramps
+- name: get_offramps
+  description: List all offramps
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/offramps
+- name: get_offramps_rates
+  description: Retrieve an offramp rate
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/offramps/rates
+- name: get_offramps_by_transferId
+  description: Retrieve an offramp
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/offramps/{transferId}
+- name: create_offramps_by_transferId_quote_accept
+  description: Accept an offramp quote
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/offramps/{transferId}/quote/accept
+- name: create_onramps
+  description: Create an onramp
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/onramps
+- name: get_onramps
+  description: List all onramps
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/onramps
+- name: get_onramps_rates
+  description: Retrieve an onramp rate
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/onramps/rates
+- name: get_onramps_by_transferId
+  description: Retrieve an onramp
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/onramps/{transferId}
+- name: create_onramps_by_transferId_quote_accept
+  description: Accept an onramp quote
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/onramps/{transferId}/quote/accept
+- name: create_onramps_by_transferId_quote_refresh
+  description: Refresh an onramp quote
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/onramps/{transferId}/quote/refresh
+- name: get_ping
+  description: Ping
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/ping
+- name: create_reporting_metrics
+  description: Create Saved Metric
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/reporting/metrics
+- name: get_reporting_metrics
+  description: List Saved Metrics
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/reporting/metrics
+- name: create_reporting_metrics_preview
+  description: Preview Metric Results
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/reporting/metrics/preview
+- name: get_reporting_metrics_by_id
+  description: Get Metric Details
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/reporting/metrics/{id}
+- name: create_reporting_metrics_by_id
+  description: Update Saved Metric
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/reporting/metrics/{id}
+- name: delete_reporting_metrics_by_id
+  description: Delete Saved Metric
+  source_operation: openapi/hifi-openapi-original.json#DELETE /v2/reporting/metrics/{id}
+- name: get_reporting_metrics_by_id_results
+  description: Execute Saved Metric
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/reporting/metrics/{id}/results
+- name: get_reporting_params_by_name_options
+  description: Get Parameter Options
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/reporting/params/{name}/options
+- name: get_reporting_templates
+  description: Get Available Metric Templates
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/reporting/templates
+- name: get_reporting_templates_by_name
+  description: Get Template Details
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/reporting/templates/{name}
+- name: create_tos_link
+  description: Generate a terms of service link
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/tos-link
+- name: get_tos_link_by_signedAgreementId
+  description: Retrieve a terms of service link
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/tos-link/{signedAgreementId}
+- name: get_transfer_approvals
+  description: List all pending transfer approvals
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/transfer-approvals
+- name: get_transfer_approvals_by_approvalId
+  description: Get a transfer approval
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/transfer-approvals/{approvalId}
+- name: create_transfer_approvals_by_approvalId_approve
+  description: Approve a transfer
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/transfer-approvals/{approvalId}/approve
+- name: create_transfer_approvals_by_approvalId_reject
+  description: Reject a transfer
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/transfer-approvals/{approvalId}/reject
+- name: create_users
+  description: Create a user
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users
+- name: get_users
+  description: List all users
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users
+- name: get_users_by_userId
+  description: Retrieve a user
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}
+- name: create_users_by_userId
+  description: Update a user
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}
+- name: create_users_by_userId_accounts
+  description: Create an account
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/accounts
+- name: get_users_by_userId_accounts
+  description: List all accounts
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/accounts
+- name: get_users_by_userId_accounts_by_accountId
+  description: Retrieve an account
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/accounts/{accountId}
+- name: delete_users_by_userId_accounts_by_accountId
+  description: Delete an account
+  source_operation: openapi/hifi-openapi-original.json#DELETE /v2/users/{userId}/accounts/{accountId}
+- name: create_users_by_userId_kyc
+  description: Update KYC information
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/kyc
+- name: get_users_by_userId_kyc
+  description: Retrieve KYC information
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/kyc
+- name: create_users_by_userId_kyc_documents
+  description: Add documents
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/kyc/documents
+- name: get_users_by_userId_kyc_documents
+  description: List all documents
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/kyc/documents
+- name: create_users_by_userId_kyc_documents_by_documentId
+  description: Update a document
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/kyc/documents/{documentId}
+- name: get_users_by_userId_kyc_documents_by_documentId
+  description: Retrieve a document
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/kyc/documents/{documentId}
+- name: get_users_by_userId_kyc_requirements
+  description: Retrieve KYC requirements
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/kyc/requirements
+- name: get_users_by_userId_kyc_status
+  description: Retrieve KYC status
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/kyc/status
+- name: create_users_by_userId_kyc_submissions
+  description: Submit KYC
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/kyc/submissions
+- name: create_users_by_userId_kyc_ubos
+  description: Add a UBO
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/kyc/ubos
+- name: get_users_by_userId_kyc_ubos
+  description: List all UBOs
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/kyc/ubos
+- name: create_users_by_userId_kyc_ubos_by_uboId
+  description: Update a UBO
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/kyc/ubos/{uboId}
+- name: get_users_by_userId_kyc_ubos_by_uboId
+  description: Retrieve a UBO
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/kyc/ubos/{uboId}
+- name: create_users_by_userId_virtual_accounts
+  description: Create a virtual account
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/virtual-accounts
+- name: get_users_by_userId_virtual_accounts
+  description: List all virtual accounts
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/virtual-accounts
+- name: get_users_by_userId_virtual_accounts_by_accountId
+  description: Retrieve a virtual account
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/virtual-accounts/{accountId}
+- name: create_users_by_userId_virtual_accounts_by_accountId_deactiv
+  description: Deactivate a virtual account
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/virtual-accounts/{accountId}/deactivate
+- name: create_users_by_userId_virtual_accounts_by_accountId_reactiv
+  description: Reactivate a virtual account
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/virtual-accounts/{accountId}/reactivate
+- name: delete_users_by_userId_virtual_accounts_by_accountId_settlem
+  description: Remove settlement rule from virtual account
+  source_operation: openapi/hifi-openapi-original.json#DELETE /v2/users/{userId}/virtual-accounts/{accountId}/settlement-rules
+- name: create_users_by_userId_virtual_accounts_by_accountId_settlem
+  description: Apply settlement rule to virtual account
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/virtual-accounts/{accountId}/settlement-rules/{ruleId}
+- name: create_users_by_userId_virtual_accounts_by_accountId_simulat
+  description: Simulate a deposit to a virtual account
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/virtual-accounts/{accountId}/simulate-deposit
+- name: create_users_by_userId_virtual_accounts_by_accountId_update
+  description: Update a virtual account
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/virtual-accounts/{accountId}/update
+- name: create_users_by_userId_wallets_add
+  description: Add wallets to a user
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/wallets/add
+- name: get_users_by_userId_wallets_balance
+  description: Retrieve wallet balance
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/wallets/balance
+- name: get_users_by_userId_wallets_deposits
+  description: Get inbound deposits
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/wallets/deposits
+- name: get_users_by_userId_wallets_deposits_by_depositId
+  description: Get an inbound deposit
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/wallets/deposits/{depositId}
+- name: get_users_by_userId_wallets_external
+  description: Get external wallets for a user
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/wallets/external
+- name: create_users_by_userId_wallets_external
+  description: Add external wallets to a user
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/users/{userId}/wallets/external
+- name: get_users_by_userId_wallets_external_by_externalWalletId
+  description: Get an external wallet
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/users/{userId}/wallets/external/{externalWalletId}
+- name: create_virtual_accounts_settlement_rules
+  description: Create a settlement rule
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/virtual-accounts/settlement-rules
+- name: get_virtual_accounts_settlement_rules
+  description: List all settlement rules
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/virtual-accounts/settlement-rules
+- name: get_virtual_accounts_settlement_rules_by_ruleId
+  description: Retrieve a settlement rule
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/virtual-accounts/settlement-rules/{ruleId}
+- name: delete_virtual_accounts_settlement_rules_by_ruleId
+  description: Delete a settlement rule
+  source_operation: openapi/hifi-openapi-original.json#DELETE /v2/virtual-accounts/settlement-rules/{ruleId}
+- name: create_virtual_accounts_settlement_rules_by_ruleId_update
+  description: Update a settlement rule
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/virtual-accounts/settlement-rules/{ruleId}/update
+- name: create_wallets_bridges
+  description: Create a bridging request
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/wallets/bridges
+- name: get_wallets_bridges
+  description: List all bridging requests
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/wallets/bridges
+- name: get_wallets_bridges_by_transferId
+  description: Retrieve a bridging request
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/wallets/bridges/{transferId}
+- name: create_wallets_bridges_by_transferId_accept
+  description: Accept a bridging request
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/wallets/bridges/{transferId}/accept
+- name: create_wallets_swaps
+  description: Create a swap
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/wallets/swaps
+- name: get_wallets_swaps
+  description: List all swaps
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/wallets/swaps
+- name: get_wallets_swaps_by_swapId
+  description: Retrieve a swap
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/wallets/swaps/{swapId}
+- name: create_wallets_swaps_by_swapId_accept
+  description: Accept a swap
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/wallets/swaps/{swapId}/accept
+- name: create_wallets_transfers
+  description: Create a crypto transfer
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/wallets/transfers
+- name: get_wallets_transfers
+  description: List all crypto transfers
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/wallets/transfers
+- name: create_wallets_transfers_batches
+  description: Create a batch crypto transfer
+  source_operation: openapi/hifi-openapi-original.json#POST /v2/wallets/transfers/batches
+- name: get_wallets_transfers_batches
+  description: List all batch crypto transfers
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/wallets/transfers/batches
+- name: get_wallets_transfers_batches_by_transferId
+  description: Retrieve a batch crypto transfer
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/wallets/transfers/batches/{transferId}
+- name: get_wallets_transfers_by_transferId
+  description: Retrieve a crypto transfer
+  source_operation: openapi/hifi-openapi-original.json#GET /v2/wallets/transfers/{transferId}

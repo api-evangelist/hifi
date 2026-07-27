@@ -1,0 +1,47 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.hifi.com
+authentication:
+  style: bearer-api-key
+  header: 'Authorization: Bearer YOUR_API_KEY'
+  ref: authentication/hifi-authentication.yml
+idempotency:
+  supported: true
+  mechanism: client-supplied request identifier
+  field: requestId
+  also: idempotencyKey (e.g. on the terms-of-service link resource)
+  location: request body
+  format: uuid (v4 recommended)
+  retention: >-
+    Reusing a requestId for an already-created resource returns the existing
+    resource / a RESOURCE_CONFLICT (code 100005, "please try a different request
+    id") rather than creating a duplicate transaction.
+  evidence:
+  - 38 request-body schemas in the OpenAPI expose a requestId field described as
+    "Unique identifier for the request (recommend using uuid v4)".
+  - RESOURCE_CONFLICT and TRANSACTION_REQUEST_ALREADY_EXISTS errors enforce
+    idempotent transaction creation.
+pagination:
+  style: offset
+  params:
+  - limit
+  - offset
+  - page
+  notes: List endpoints accept limit/offset/page query parameters.
+versioning:
+  style: uri-path
+  current: v2
+request_tracing:
+  request_id_field: requestId
+  notes: The client-supplied requestId doubles as the idempotency key and a
+    correlation identifier for a request.
+error_envelope:
+  shape: '{ "code": <int>, "error": "<NAME>", "errorDetails": "<message>" }'
+  rfc9457: false
+  ref: errors/hifi-error-codes.yml
+webhooks:
+  ref: asyncapi/hifi-webhooks.yml
+  signing: RS256 JWT in the Authorization header, verified with the endpoint's
+    webhook public key.
+rate_limiting:
+  signalling: not documented

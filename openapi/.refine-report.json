@@ -1,0 +1,44 @@
+{
+  "provider": "hifi",
+  "sources": [
+    "hifi-account-api-openapi.yml",
+    "hifi-common-api-openapi.yml",
+    "hifi-cross-chain-bridge-api-openapi.yml",
+    "hifi-crypto-transfer-api-openapi.yml",
+    "hifi-file-api-openapi.yml",
+    "hifi-kyc-api-openapi.yml",
+    "hifi-offramp-api-openapi.yml",
+    "hifi-onramp-api-openapi.yml",
+    "hifi-reporting-api-openapi.yml",
+    "hifi-settlement-rules-api-openapi.yml",
+    "hifi-token-swap-api-openapi.yml",
+    "hifi-transfer-approvals-api-openapi.yml",
+    "hifi-user-api-openapi.yml",
+    "hifi-virtual-account-api-openapi.yml",
+    "hifi-wallet-api-openapi.yml"
+  ],
+  "outputs": [
+    "hifi-account-api-openapi.yml",
+    "hifi-common-api-openapi.yml",
+    "hifi-cross-chain-bridge-api-openapi.yml",
+    "hifi-crypto-transfer-api-openapi.yml",
+    "hifi-file-api-openapi.yml",
+    "hifi-kyc-api-openapi.yml",
+    "hifi-offramp-api-openapi.yml",
+    "hifi-onramp-api-openapi.yml",
+    "hifi-reporting-api-openapi.yml",
+    "hifi-settlement-rules-api-openapi.yml",
+    "hifi-token-swap-api-openapi.yml",
+    "hifi-transfer-approvals-api-openapi.yml",
+    "hifi-user-api-openapi.yml",
+    "hifi-virtual-account-api-openapi.yml",
+    "hifi-wallet-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [
+    "hifi-offramp-api-openapi.yml: dangling $ref: #/components/schemas/OfframpFee"
+  ],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

@@ -1,0 +1,37 @@
+generated: '2026-07-19'
+method: generated
+note: >-
+  Agent Skills generated from the Hifi OpenAPI (docs.hifi.com/openapi.json) and
+  the conventions/errors artifacts in this repo. The spec declares no
+  operationIds, so steps are grounded in the real HTTP method + path of each
+  operation (all verified present in the spec).
+skills:
+- file: hifi-onramp-fiat-to-crypto.md
+  name: Create a fiat-to-crypto on-ramp
+  api: openapi/hifi-openapi-original.json
+  operations:
+  - POST /v2/users
+  - POST /v2/users/{userId}/kyc
+  - GET /v2/users/{userId}/kyc/status
+  - GET /v2/onramps/rates
+  - POST /v2/onramps
+  - POST /v2/onramps/{transferId}/quote/accept
+  - GET /v2/onramps/{transferId}
+- file: hifi-offramp-crypto-to-fiat.md
+  name: Create a crypto-to-fiat off-ramp payout
+  api: openapi/hifi-openapi-original.json
+  operations:
+  - POST /v2/users/{userId}/accounts
+  - GET /v2/offramps/rates
+  - POST /v2/offramps
+  - POST /v2/offramps/{transferId}/quote/accept
+  - GET /v2/offramps/{transferId}
+- file: hifi-virtual-account-deposits.md
+  name: Provision a virtual account and settle deposits
+  api: openapi/hifi-openapi-original.json
+  operations:
+  - POST /v2/users/{userId}/virtual-accounts
+  - POST /v2/virtual-accounts/settlement-rules
+  - POST /v2/users/{userId}/virtual-accounts/{accountId}/settlement-rules/{ruleId}
+  - POST /v2/users/{userId}/virtual-accounts/{accountId}/simulate-deposit
+  - GET /v2/users/{userId}/virtual-accounts/{accountId}

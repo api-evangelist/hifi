@@ -1,0 +1,58 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.hifi.com/changelog
+scheme: dated
+current_version: v2
+window: recent
+entries:
+- date: '2026-06-26'
+  title: Orchestration Addresses & Sumsub KYC Token Sharing
+  type: additions
+  highlights:
+  - Orchestration addresses let you define how incoming funds move and route to
+    wallets, bank accounts, and fiat destinations.
+  - Sumsub token sharing enables reusing KYC verifications across platforms to
+    reduce onboarding friction.
+- date: '2026-06-19'
+  title: Nigeria Business Accounts & Dashboard Improvements
+  type: additions
+  highlights:
+  - Virtual accounts now available for Nigerian businesses to receive USD deposits.
+  - Streamlined and advanced transaction-creation workflows.
+- date: '2026-06-05'
+  title: Developer Dashboard Improvements
+  type: additions
+  highlights:
+  - Billing notifications at 48/24 hours and past due with Sequence payment links.
+  - External wallet support integrated into transaction workflows.
+- date: '2026-05-29'
+  title: Canton Sandbox & Proof of Address Streamlining
+  type: additions
+  highlights:
+  - Canton testing available in Sandbox (access by request).
+  - US/Canada users can satisfy Proof of Address automatically with a valid
+    driver's license, state ID, or residence permit.
+- date: '2026-05-22'
+  title: Dashboard UX Enhancements
+  type: fixes
+  highlights:
+  - Fixed currency/chain selection dropdown visibility.
+  - KYC link redirects now pass user ID as a query parameter.
+- date: '2026-05-15'
+  title: EUR Payouts & Supplementary Info
+  type: additions
+  highlights:
+  - EUR payouts launched across 41 European countries via SEPA, SEPA Instant, and SWIFT.
+  - New supplementaryInfo and supplementaryUrl fields for proactive compliance docs.
+- date: '2026-05-07'
+  title: Dashboard Command Palette & Enhanced Features
+  type: additions
+  highlights:
+  - Global Command Palette with keyboard shortcuts.
+  - Offramp account deletion enabled.
+- date: '2026-05-01'
+  title: Virtual Accounts & Transfer Approvals
+  type: additions
+  highlights:
+  - Micro-deposit visibility added to the virtual account drawer.
+  - Admins can opt in/out of transfer approval emails.
