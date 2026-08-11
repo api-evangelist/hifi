@@ -293,7 +293,7 @@ common:
 - type: Login
   url: https://app.hifi.com
 - type: OpenAPI
-  url: openapi/hifi-openapi-original.json
+  url: openapi/_original/hifi-openapi-original.json
 - type: LLMsTxt
   url: llms/hifi-llms.txt
 - type: ErrorCatalog
