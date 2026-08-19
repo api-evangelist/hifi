@@ -1,0 +1,231 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Hifi Account Wallet API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Wallet",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve wallet balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/wallets/balance",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "chain",
+                "value": "",
+                "type": "query",
+                "description": "The blockchain network to retrieve the wallet balance from."
+              },
+              {
+                "name": "currency",
+                "value": "",
+                "type": "query",
+                "description": "The type of currency to check the balance for. Currently, only usdc is supported."
+              }
+            ]
+          },
+          "docs": "Get the latest balance of a user's wallet, including details like the blockchain network and currency."
+        },
+        {
+          "info": {
+            "name": "Add wallets to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/wallets/add",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add wallets to a user"
+        },
+        {
+          "info": {
+            "name": "Get external wallets for a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/wallets/external",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              }
+            ]
+          },
+          "docs": "Get external wallets for a user"
+        },
+        {
+          "info": {
+            "name": "Add external wallets to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/wallets/external",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add external wallets to a user"
+        },
+        {
+          "info": {
+            "name": "Get an external wallet",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/wallets/external/:externalWalletId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "externalWalletId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the external wallet"
+              }
+            ]
+          },
+          "docs": "Get an external wallet"
+        },
+        {
+          "info": {
+            "name": "Get inbound deposits",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/wallets/deposits",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "chain",
+                "value": "",
+                "type": "query",
+                "description": "The blockchain network to retrieve the wallet balance from."
+              },
+              {
+                "name": "currency",
+                "value": "",
+                "type": "query",
+                "description": "The type of currency to check the balance for. Currently, only usdc is supported."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Status of the deposit, CONFIRMED indicates the deposit is found in the blockchain, COMPLETED indicates the deposit is completed and unlikely to be reverted."
+              },
+              {
+                "name": "createdAfter",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              },
+              {
+                "name": "createdBefore",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "default to 10, maximum to 100"
+              },
+              {
+                "name": "minAmount",
+                "value": "",
+                "type": "query",
+                "description": "Minimum amount of the deposit, default is 0.01"
+              }
+            ]
+          },
+          "docs": "Get inbound deposits for a user's wallet"
+        },
+        {
+          "info": {
+            "name": "Get an inbound deposit",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/wallets/deposits/:depositId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "depositId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the deposit"
+              }
+            ]
+          },
+          "docs": "Get an inbound deposit for a user's wallet"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

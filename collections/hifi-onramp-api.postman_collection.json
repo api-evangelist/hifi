@@ -1,0 +1,1628 @@
+{
+  "item": [
+    {
+      "id": "0058ca6d-a1ca-444a-9c5d-565f1e0a98af",
+      "name": "Onramp",
+      "description": {
+        "content": "Onramp endpoints",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "21aed666-1c25-4074-9ebd-44f53e5c3380",
+          "name": "Create an onramp",
+          "request": {
+            "name": "Create an onramp",
+            "description": {
+              "content": "\nAn onramp facilitates the conversion of fiat to crypto. Once the fiat payment is received, HIFI will deliver the converted crypto to the receiving user’s wallet.\n\nThere are two types of onramp:\n\n* **Quote-based onramp**: This type of onramp first returns the conversion rate quote based on the best market rate, which you can accept through the [Accept an onramp quote](https://docs.hifibridge.com/api-reference/onramp/accept-an-onramp-quote) endpoint to initiate the onramp.  \n  Additionally, you can also refresh the onramp quote using the [Refresh an onramp quote](https://docs.hifibridge.com/api-reference/onramp/refresh-an-onramp-quote) endpoint to refresh the conversion rate associated with the onramp. To learn more about quote-based onramps, click [here](https://docs.hifibridge.com/guides/transfers/onramps/usd-usdc).\n\n* **Non-quote-based onramp**: This type of onramp will be initiated immediately upon creating an onramp.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "onramps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestId\": \"<string>\",\n  \"source\": {\n    \"currency\": \"<string>\",\n    \"userId\": \"<uuid>\",\n    \"amount\": \"<float>\",\n    \"transferType\": \"<string>\",\n    \"accountId\": \"<uuid>\"\n  },\n  \"destination\": {\n    \"amount\": \"<float>\",\n    \"currency\": \"<string>\",\n    \"chain\": \"<string>\",\n    \"userId\": \"<uuid>\",\n    \"externalWalletId\": \"<uuid>\"\n  },\n  \"purposeOfPayment\": \"<string>\",\n  \"isInstant\": false,\n  \"fee\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "480363ca-969e-43f3-ae25-4e11b51085de",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"ONRAMP\",\n  \"transferDetails\": {\n    \"id\": \"b26927e6-2771-423c-af44-a3c7a3e815c5\",\n    \"requestId\": \"e1047def-6942-4fd7-be04-e62eb41813b6\",\n    \"createdAt\": \"2025-02-03T17:15:31.927121+00:00\",\n    \"updatedAt\": \"2025-02-03T17:15:35.882+00:00\",\n    \"status\": \"OPEN_QUOTE\",\n    \"failedReason\": null,\n    \"source\": {\n      \"userId\": \"c15c0adf-3e45-4a62-b334-73aeec127649\",\n      \"currency\": \"usd\",\n      \"amount\": 10,\n      \"accountId\": null,\n      \"user\": {\n        \"email\": \"example@hifibridge.com\",\n        \"lastName\": \"Wu\",\n        \"firstName\": \"Henry\",\n        \"businessName\": null\n      },\n      \"bankInfo\": null\n    },\n    \"destination\": {\n      \"userId\": \"c15c0adf-3e45-4a62-b334-73aeec127649\",\n      \"currency\": \"usdc\",\n      \"chain\": \"POLYGON\",\n      \"walletAddress\": \"0x848732f6c834E05b17C56fa01E83EE095f72C3c3\",\n      \"externalWalletId\": null,\n      \"amount\": null,\n      \"user\": {\n        \"email\": \"example@hifibridge.com\",\n        \"lastName\": \"Wu\",\n        \"firstName\": \"Henry\",\n        \"businessName\": null\n      }\n    },\n    \"receipt\": {\n      \"transactionHash\": null\n    },\n    \"developerFee\": null,\n    \"virtualAccountId\": null,\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usd\"\n      },\n      \"sendNet\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usd\"\n      },\n      \"railFee\": {\n        \"amount\": \"0.00\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usdc\"\n      },\n      \"rate\": \"1.00\",\n      \"expiresAt\": \"N/A\"\n    },\n    \"depositInfo\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8ff64cd6-a799-48e8-a39a-2a60b51354e1",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "706291cc-eb67-4b1d-80b3-aa3f8437e501",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7efdd5a4-bd40-49f9-bd6a-60ba21c315f0",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f420590a-2ae7-4d5a-b7b9-32f6c0407d0b",
+          "name": "List all onramps",
+          "request": {
+            "name": "List all onramps",
+            "description": {
+              "content": "Returns a list of onramps associated with a user under your organization. The onramps are returned sorted by creation date, with the most recent onramps appearing first.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "onramps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "userId",
+                  "value": "<string>",
+                  "description": "The user ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<string>",
+                  "description": "default to 10, maximum to 100"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdBefore",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdAfter",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "115e26f7-09e5-41dd-87bc-ddbf5c4c28d6",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 1,\n  \"records\": [\n    {\n      \"transferType\": \"ONRAMP\",\n      \"transferDetails\": {\n        \"id\": \"b26927e6-2771-423c-af44-a3c7a3e815c5\",\n        \"requestId\": \"e1047def-6942-4fd7-be04-e62eb41813b6\",\n        \"createdAt\": \"2025-02-03T17:15:31.927121+00:00\",\n        \"updatedAt\": \"2025-02-03T17:15:35.882+00:00\",\n        \"status\": \"FIAT_PENDING\",\n        \"failedReason\": null,\n        \"source\": {\n          \"userId\": \"c15c0adf-3e45-4a62-b334-73aeec127649\",\n          \"currency\": \"usd\",\n          \"amount\": 10,\n          \"accountId\": null,\n          \"user\": {\n            \"email\": \"example@hifibridge.com\",\n            \"lastName\": \"Wu\",\n            \"firstName\": \"Henry\",\n            \"businessName\": null\n          },\n          \"bankInfo\": {\n            \"bankName\": \"Bank of America\",\n            \"beneficiaryName\": \"Henry Wu\",\n            \"description\": \"\",\n            \"routingNumber\": 26009593,\n            \"referenceNumber\": \"HFD70579F\",\n            \"imad\": \"\",\n            \"omad\": \"\",\n            \"bankAddress\": \"100 N Tryon St, Charlotte, NC 28202, USA\"\n          }\n        },\n        \"destination\": {\n          \"userId\": \"c15c0adf-3e45-4a62-b334-73aeec127649\",\n          \"currency\": \"usdc\",\n          \"chain\": \"POLYGON\",\n          \"walletAddress\": \"0x848732f6c834E05b17C56fa01E83EE095f72C3c3\",\n          \"externalWalletId\": null,\n          \"amount\": null,\n          \"user\": {\n            \"email\": \"example@hifibridge.com\",\n            \"lastName\": \"Wu\",\n            \"firstName\": \"Henry\",\n            \"businessName\": null\n          }\n        },\n        \"receipt\": {\n          \"transactionHash\": null\n        },\n        \"developerFee\": null,\n        \"virtualAccountId\": null,\n        \"quoteInformation\": {\n          \"sendGross\": {\n            \"amount\": \"10.00\",\n            \"currency\": \"usd\"\n          },\n          \"sendNet\": {\n            \"amount\": \"10.00\",\n            \"currency\": \"usd\"\n          },\n          \"railFee\": {\n            \"amount\": \"0.00\",\n            \"currency\": \"usdc\"\n          },\n          \"receiveGross\": {\n            \"amount\": \"10.00\",\n            \"currency\": \"usdc\"\n          },\n          \"receiveNet\": {\n            \"amount\": \"10.00\",\n            \"currency\": \"usdc\"\n          },\n          \"rate\": \"1.00\",\n          \"expiresAt\": \"N/A\"\n        },\n        \"depositInfo\": {\n          \"bankName\": \"Bank of NoWhere\",\n          \"bankAddress\": \"123 Main St, New York, NY 10001, USA\",\n          \"beneficiary\": {\n            \"name\": \"Henry Wu\",\n            \"address\": \"Example St 1., Apt 123, New York, NY, 10010, US\"\n          },\n          \"ach\": {\n            \"routingNumber\": 28000024,\n            \"accountNumber\": \"123456789\"\n          },\n          \"wire\": {\n            \"routingNumber\": \"021000021\",\n            \"accountNumber\": \"123456789\"\n          },\n          \"rtp\": {\n            \"routingNumber\": \"021000021\",\n            \"accountNumber\": \"123456789\"\n          },\n          \"reference\": \"HFD70579F\",\n          \"depositBy\": \"2025-10-04T04:23:40.229Z\",\n          \"instruction\": \"Please deposit only one payment with the exact amount of usd and the reference code HFD70579F to the designated bank account by 2025-10-04T04:23:40.229Z. Missing or incorrect reference codes, discrepancies in the amount, or additional payments may result in the funds being lost. Ensure that the beneficiary name matches the provided account holder name, otherwise the payment may be rejected.\"\n        }\n      }\n    }\n  ],\n  \"nextCursor\": \"2025-02-03T17:15:31.927121+00:00\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "84b481e5-221b-46ca-a3e0-d43ded69cbc9",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "205d8430-6a7b-427f-b917-9e5df3519245",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "faa42952-c475-436f-adc3-3af2a8a4da46",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ad9332db-4db2-46c1-96b9-3d01d9146134",
+          "name": "Retrieve an onramp",
+          "request": {
+            "name": "Retrieve an onramp",
+            "description": {
+              "content": "Retrieves an onramp.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "onramps",
+                ":transferId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transferId",
+                  "description": "(Required) Transfer record ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c58441ea-82ca-406a-9f2a-edaae6d28424",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"ONRAMP\",\n  \"transferDetails\": {\n    \"id\": \"b26927e6-2771-423c-af44-a3c7a3e815c5\",\n    \"requestId\": \"e1047def-6942-4fd7-be04-e62eb41813b6\",\n    \"createdAt\": \"2025-02-03T17:15:31.927121+00:00\",\n    \"updatedAt\": \"2025-02-03T17:15:35.882+00:00\",\n    \"status\": \"FIAT_PENDING\",\n    \"failedReason\": null,\n    \"source\": {\n      \"userId\": \"c15c0adf-3e45-4a62-b334-73aeec127649\",\n      \"currency\": \"usd\",\n      \"amount\": 10,\n      \"accountId\": null,\n      \"user\": {\n        \"email\": \"example@hifibridge.com\",\n        \"lastName\": \"Wu\",\n        \"firstName\": \"Henry\",\n        \"businessName\": null\n      },\n      \"bankInfo\": {\n        \"bankName\": \"Bank of America\",\n        \"beneficiaryName\": \"Henry Wu\",\n        \"description\": \"\",\n        \"routingNumber\": 26009593,\n        \"referenceNumber\": \"HFD70579F\",\n        \"imad\": \"\",\n        \"omad\": \"\",\n        \"bankAddress\": \"100 N Tryon St, Charlotte, NC 28202, USA\"\n      }\n    },\n    \"destination\": {\n      \"userId\": \"c15c0adf-3e45-4a62-b334-73aeec127649\",\n      \"currency\": \"usdc\",\n      \"chain\": \"POLYGON\",\n      \"walletAddress\": \"0x848732f6c834E05b17C56fa01E83EE095f72C3c3\",\n      \"externalWalletId\": null,\n      \"amount\": null,\n      \"user\": {\n        \"email\": \"example@hifibridge.com\",\n        \"lastName\": \"Wu\",\n        \"firstName\": \"Henry\",\n        \"businessName\": null\n      }\n    },\n    \"receipt\": {\n      \"transactionHash\": null\n    },\n    \"developerFee\": null,\n    \"virtualAccountId\": null,\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usd\"\n      },\n      \"sendNet\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usd\"\n      },\n      \"railFee\": {\n        \"amount\": \"0.00\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usdc\"\n      },\n      \"rate\": \"1.00\",\n      \"expiresAt\": \"N/A\"\n    },\n    \"depositInfo\": {\n      \"bankName\": \"Bank of NoWhere\",\n      \"bankAddress\": \"123 Main St, New York, NY 10001, USA\",\n      \"beneficiary\": {\n        \"name\": \"Henry Wu\",\n        \"address\": \"Example St 1., Apt 123, New York, NY, 10010, US\"\n      },\n      \"ach\": {\n        \"routingNumber\": 28000024,\n        \"accountNumber\": \"123456789\"\n      },\n      \"wire\": {\n        \"routingNumber\": \"021000021\",\n        \"accountNumber\": \"123456789\"\n      },\n      \"rtp\": {\n        \"routingNumber\": \"021000021\",\n        \"accountNumber\": \"123456789\"\n      },\n      \"reference\": \"HFD70579F\",\n      \"depositBy\": \"2025-10-04T04:23:40.229Z\",\n      \"instruction\": \"Please deposit only one payment with the exact amount of usd and the reference code HFD70579F to the designated bank account by 2025-10-04T04:23:40.229Z. Missing or incorrect reference codes, discrepancies in the amount, or additional payments may result in the funds being lost. Ensure that the beneficiary name matches the provided account holder name, otherwise the payment may be rejected.\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "084a660d-f5af-41b7-96d9-bbaa161c2261",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "17d3bfd5-941e-4254-b2fe-0e3db4caccb2",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ad35e92e-f1bf-4664-94a0-2f5df727b52c",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c73ce841-e87a-4d5c-b735-c426c3ef2356",
+          "name": "Accept an onramp quote",
+          "request": {
+            "name": "Accept an onramp quote",
+            "description": {
+              "content": "Accept a quote-based onramp.\n\nFor example, an onramp from fiat currency `brl` to crypto currency `usdc` is quote-based so its initial status will be `OPEN_QUOTE`. After reviewing the onramp conversion rate quote information, you can accept it to initialize the onramp.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "onramps",
+                ":transferId",
+                "quote",
+                "accept"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transferId",
+                  "description": "(Required) Transfer record ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a10d3d28-1838-4dac-a2ff-9986f1c04f0b",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId",
+                    "quote",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"ONRAMP\",\n  \"transferDetails\": {\n    \"id\": \"b26927e6-2771-423c-af44-a3c7a3e815c5\",\n    \"requestId\": \"e1047def-6942-4fd7-be04-e62eb41813b6\",\n    \"createdAt\": \"2025-02-03T17:15:31.927121+00:00\",\n    \"updatedAt\": \"2025-02-03T17:15:35.882+00:00\",\n    \"status\": \"AWAITING_FUNDS\",\n    \"failedReason\": null,\n    \"source\": {\n      \"userId\": \"c15c0adf-3e45-4a62-b334-73aeec127649\",\n      \"currency\": \"usd\",\n      \"amount\": 10,\n      \"accountId\": null,\n      \"user\": {\n        \"email\": \"example@hifibridge.com\",\n        \"lastName\": \"Wu\",\n        \"firstName\": \"Henry\",\n        \"businessName\": null\n      },\n      \"bankInfo\": null\n    },\n    \"destination\": {\n      \"userId\": \"c15c0adf-3e45-4a62-b334-73aeec127649\",\n      \"currency\": \"usdc\",\n      \"chain\": \"POLYGON\",\n      \"walletAddress\": \"0x848732f6c834E05b17C56fa01E83EE095f72C3c3\",\n      \"externalWalletId\": null,\n      \"amount\": null,\n      \"user\": {\n        \"email\": \"example@hifibridge.com\",\n        \"lastName\": \"Wu\",\n        \"firstName\": \"Henry\",\n        \"businessName\": null\n      }\n    },\n    \"receipt\": {\n      \"transactionHash\": null\n    },\n    \"developerFee\": null,\n    \"virtualAccountId\": null,\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usd\"\n      },\n      \"sendNet\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usd\"\n      },\n      \"railFee\": {\n        \"amount\": \"0.00\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usdc\"\n      },\n      \"rate\": \"1.00\",\n      \"expiresAt\": \"N/A\"\n    },\n    \"depositInfo\": {\n      \"bankName\": \"Bank of NoWhere\",\n      \"bankAddress\": \"123 Main St, New York, NY 10001, USA\",\n      \"beneficiary\": {\n        \"name\": \"Henry Wu\",\n        \"address\": \"Example St 1., Apt 123, New York, NY, 10010, US\"\n      },\n      \"ach\": {\n        \"routingNumber\": 28000024,\n        \"accountNumber\": \"123456789\"\n      },\n      \"wire\": {\n        \"routingNumber\": \"021000021\",\n        \"accountNumber\": \"123456789\"\n      },\n      \"rtp\": {\n        \"routingNumber\": \"021000021\",\n        \"accountNumber\": \"123456789\"\n      },\n      \"reference\": \"HFD70579F\",\n      \"depositBy\": \"2025-10-04T04:23:40.229Z\",\n      \"instruction\": \"Please deposit only one payment with the exact amount of usd and the reference code HFD70579F to the designated bank account by 2025-10-04T04:23:40.229Z. Missing or incorrect reference codes, discrepancies in the amount, or additional payments may result in the funds being lost. Ensure that the beneficiary name matches the provided account holder name, otherwise the payment may be rejected.\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "377daf7e-7ce8-4ad4-8ebf-532eea81c903",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId",
+                    "quote",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d0f9d31f-c65d-4ff4-8fb2-2889d3c99856",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId",
+                    "quote",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5ad0ed8c-a951-483a-8393-a68c157e3006",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId",
+                    "quote",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "14577dd9-48fc-4cdf-a3c1-27cc263d0162",
+          "name": "Refresh an onramp quote",
+          "request": {
+            "name": "Refresh an onramp quote",
+            "description": {
+              "content": "Refresh the conversion rate quote that is associated with a quote-based onramp. You can only refresh an onramp quote with the status `OPEN_QUOTE`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "onramps",
+                ":transferId",
+                "quote",
+                "refresh"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transferId",
+                  "description": "(Required) Transfer record ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9c4cc5fe-24ed-4e5c-b033-1bb5fcf73729",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId",
+                    "quote",
+                    "refresh"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"ONRAMP\",\n  \"transferDetails\": {\n    \"id\": \"b26927e6-2771-423c-af44-a3c7a3e815c5\",\n    \"requestId\": \"e1047def-6942-4fd7-be04-e62eb41813b6\",\n    \"createdAt\": \"2025-02-03T17:15:31.927121+00:00\",\n    \"updatedAt\": \"2025-02-03T17:15:35.882+00:00\",\n    \"status\": \"OPEN_QUOTE\",\n    \"failedReason\": null,\n    \"source\": {\n      \"userId\": \"c15c0adf-3e45-4a62-b334-73aeec127649\",\n      \"currency\": \"usd\",\n      \"amount\": 10,\n      \"accountId\": null,\n      \"user\": {\n        \"email\": \"example@hifibridge.com\",\n        \"lastName\": \"Wu\",\n        \"firstName\": \"Henry\",\n        \"businessName\": null\n      },\n      \"bankInfo\": null\n    },\n    \"destination\": {\n      \"userId\": \"c15c0adf-3e45-4a62-b334-73aeec127649\",\n      \"currency\": \"usdc\",\n      \"chain\": \"POLYGON\",\n      \"walletAddress\": \"0x848732f6c834E05b17C56fa01E83EE095f72C3c3\",\n      \"externalWalletId\": null,\n      \"amount\": null,\n      \"user\": {\n        \"email\": \"example@hifibridge.com\",\n        \"lastName\": \"Wu\",\n        \"firstName\": \"Henry\",\n        \"businessName\": null\n      }\n    },\n    \"receipt\": {\n      \"transactionHash\": null\n    },\n    \"developerFee\": null,\n    \"virtualAccountId\": null,\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usd\"\n      },\n      \"sendNet\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usd\"\n      },\n      \"railFee\": {\n        \"amount\": \"0.00\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"10.00\",\n        \"currency\": \"usdc\"\n      },\n      \"rate\": \"1.00\",\n      \"expiresAt\": \"N/A\"\n    },\n    \"depositInfo\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4b61109-d3e7-4c3c-9cba-8dfd20b5a965",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId",
+                    "quote",
+                    "refresh"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "64abb895-1d2f-4e29-b333-ea7c33e9d23d",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId",
+                    "quote",
+                    "refresh"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f406418a-f381-4ec4-8bfe-1b5bd4f805df",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    ":transferId",
+                    "quote",
+                    "refresh"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0193bf33-1513-48cb-8952-57161ad90bc6",
+          "name": "Retrieve an onramp rate",
+          "request": {
+            "name": "Retrieve an onramp rate",
+            "description": {
+              "content": "Onramp rates are estimated rates for onramp conversions from different fiat currencies into different cryptocurrencies.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "onramps",
+                "rates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fromCurrency",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "toCurrency",
+                  "value": "<string>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "88c10d70-0f70-47f2-b31b-d2c5a9873cf9",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    "rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromCurrency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toCurrency",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"fromCurrency\": \"usd\",\n  \"toCurrency\": \"usdc\",\n  \"conversionRate\": \"1\",\n  \"conversionRates\": [\n    {\n      \"transferType\": \"default\",\n      \"conversionRate\": \"1\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "55ade881-6042-47e6-9e84-57dc66c8873f",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    "rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromCurrency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toCurrency",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fc1f9f4f-d3df-4099-ab11-50cd343e3eb2",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    "rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromCurrency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toCurrency",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3ec39f23-8a77-44b5-9ebe-10e6aac32691",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "onramps",
+                    "rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromCurrency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toCurrency",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://production.hifibridge.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "02d93664-02be-4c49-9221-3fe0cff0e3d9",
+    "name": "Hifi Account Onramp API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API documentation for Hifi",
+      "type": "text/plain"
+    }
+  }
+}

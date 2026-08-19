@@ -1,0 +1,206 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Hifi Account Reporting API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Reporting",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Available Metric Templates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/reporting/templates"
+          },
+          "docs": "Retrieves a list of all available metric templates (e.g., GROSS_VOLUME, TRANSACTION_COUNT). Templates define the logic, supported parameters, and breakdown options available for building reports."
+        },
+        {
+          "info": {
+            "name": "Get Template Details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/reporting/templates/:name",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the metric template (e.g., GROSS_VOLUME, TRANSACTION_COUNT, NEW_USERS)"
+              }
+            ]
+          },
+          "docs": "Returns the specific definition for a template, including its description, the list of fields you can pass as parameters, and the dimensions available for breakdowns."
+        },
+        {
+          "info": {
+            "name": "Get Parameter Options",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/reporting/params/:name/options",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the parameter (e.g., transactionTypes, transactionStatuses, userIds)"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for pagination (defaults to 1)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of items per page (defaults to 100, max 1000)"
+              }
+            ]
+          },
+          "docs": "Fetches valid options for specific parameters (e.g., transactionTypes, transactionStatuses) to help validate input or populate UI dropdowns. Supports pagination via query parameters."
+        },
+        {
+          "info": {
+            "name": "List Saved Metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/reporting/metrics"
+          },
+          "docs": "Retrieves all saved metric configurations associated with the authenticated profile."
+        },
+        {
+          "info": {
+            "name": "Create Saved Metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/reporting/metrics",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates and saves a new metric configuration to the database. This does not execute the report, but stores the parameters for future use."
+        },
+        {
+          "info": {
+            "name": "Get Metric Details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/reporting/metrics/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The UUID of the saved metric"
+              }
+            ]
+          },
+          "docs": "Retrieves the configuration details of a specific saved metric by its UUID."
+        },
+        {
+          "info": {
+            "name": "Update Saved Metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/reporting/metrics/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The UUID of the saved metric to update"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the name, description, or parameters of an existing metric configuration. Supports partial updates."
+        },
+        {
+          "info": {
+            "name": "Delete Saved Metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://production.hifibridge.com/v2/reporting/metrics/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The UUID of the saved metric to delete"
+              }
+            ]
+          },
+          "docs": "Permanently removes a saved metric configuration from the profile."
+        },
+        {
+          "info": {
+            "name": "Preview Metric Results",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/reporting/metrics/preview",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes a metric calculation on the fly without saving it to the database. Useful for testing parameters or ad-hoc analysis."
+        },
+        {
+          "info": {
+            "name": "Execute Saved Metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/reporting/metrics/:id/results",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The UUID of the saved metric to execute"
+              }
+            ]
+          },
+          "docs": "Runs the calculation for an existing saved metric and returns the dataset."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

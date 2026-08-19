@@ -1,0 +1,156 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Hifi Account Onramp API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Onramp",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all onramps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/onramps",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "query",
+                "description": "The user ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "default to 10, maximum to 100"
+              },
+              {
+                "name": "createdBefore",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              },
+              {
+                "name": "createdAfter",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              }
+            ]
+          },
+          "docs": "Returns a list of onramps associated with a user under your organization. The onramps are returned sorted by creation date, with the most recent onramps appearing first.\n"
+        },
+        {
+          "info": {
+            "name": "Create an onramp",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/onramps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "\nAn onramp facilitates the conversion of fiat to crypto. Once the fiat payment is received, HIFI will deliver the converted crypto to the receiving user’s wallet.\n\nThere are two types of onramp:\n\n* **Quote-based onramp**: This type of onramp first returns the conversion rate quote based on the best market rate, which you can accept through the [Accept an onramp quote](https://docs.hifibridge.com/api-reference/onramp/accept-an-onramp-quote) endpoint to initiate the onramp.  \n  Additionally, you c"
+        },
+        {
+          "info": {
+            "name": "Retrieve an onramp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/onramps/:transferId",
+            "params": [
+              {
+                "name": "transferId",
+                "value": "",
+                "type": "path",
+                "description": "Transfer record ID."
+              }
+            ]
+          },
+          "docs": "Retrieves an onramp."
+        },
+        {
+          "info": {
+            "name": "Accept an onramp quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/onramps/:transferId/quote/accept",
+            "params": [
+              {
+                "name": "transferId",
+                "value": "",
+                "type": "path",
+                "description": "Transfer record ID."
+              }
+            ]
+          },
+          "docs": "Accept a quote-based onramp.\n\nFor example, an onramp from fiat currency `brl` to crypto currency `usdc` is quote-based so its initial status will be `OPEN_QUOTE`. After reviewing the onramp conversion rate quote information, you can accept it to initialize the onramp.\n"
+        },
+        {
+          "info": {
+            "name": "Refresh an onramp quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/onramps/:transferId/quote/refresh",
+            "params": [
+              {
+                "name": "transferId",
+                "value": "",
+                "type": "path",
+                "description": "Transfer record ID."
+              }
+            ]
+          },
+          "docs": "Refresh the conversion rate quote that is associated with a quote-based onramp. You can only refresh an onramp quote with the status `OPEN_QUOTE`.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve an onramp rate",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/onramps/rates",
+            "params": [
+              {
+                "name": "fromCurrency",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "toCurrency",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Onramp rates are estimated rates for onramp conversions from different fiat currencies into different cryptocurrencies.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

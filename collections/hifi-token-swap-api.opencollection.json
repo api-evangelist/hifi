@@ -1,0 +1,114 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Hifi Account Token Swap API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Token Swap",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all swaps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/wallets/swaps",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "query",
+                "description": "The user ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "default to 10, maximum to 100"
+              },
+              {
+                "name": "createdBefore",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              },
+              {
+                "name": "createdAfter",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              }
+            ]
+          },
+          "docs": "Returns a list of swaps associated with a user under your organization. The swaps are returned sorted by creation date, with the most recent swaps appearing first.\n"
+        },
+        {
+          "info": {
+            "name": "Create a swap",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/wallets/swaps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a swap request to exchange one cryptocurrency for another within the same chain.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a swap",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/wallets/swaps/:swapId",
+            "params": [
+              {
+                "name": "swapId",
+                "value": "",
+                "type": "path",
+                "description": "Swap transfer record ID."
+              }
+            ]
+          },
+          "docs": "Retrieve details of a specific swap by its ID.\n"
+        },
+        {
+          "info": {
+            "name": "Accept a swap",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/wallets/swaps/:swapId/accept",
+            "params": [
+              {
+                "name": "swapId",
+                "value": "",
+                "type": "path",
+                "description": "Swap transfer record ID."
+              }
+            ]
+          },
+          "docs": "Accept a swap request to execute the cryptocurrency exchange.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

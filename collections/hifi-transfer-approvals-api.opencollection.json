@@ -1,0 +1,114 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Hifi Account Transfer Approvals API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transfer Approvals",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all pending transfer approvals",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/transfer-approvals",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of approvals to return"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of approvals to skip"
+              }
+            ]
+          },
+          "docs": "Retrieve all pending transfer approvals that require admin action"
+        },
+        {
+          "info": {
+            "name": "Approve a transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/transfer-approvals/:approvalId/approve",
+            "params": [
+              {
+                "name": "approvalId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the transfer approval"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Approve a pending transfer. If enough approvals are received, the transfer will be queued for execution."
+        },
+        {
+          "info": {
+            "name": "Reject a transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/transfer-approvals/:approvalId/reject",
+            "params": [
+              {
+                "name": "approvalId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the transfer approval"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reject a pending transfer. This will cancel the transfer and return funds to the sender."
+        },
+        {
+          "info": {
+            "name": "Get a transfer approval",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/transfer-approvals/:approvalId",
+            "params": [
+              {
+                "name": "approvalId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the transfer approval"
+              }
+            ]
+          },
+          "docs": "Retrieve detailed information about a specific transfer approval"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

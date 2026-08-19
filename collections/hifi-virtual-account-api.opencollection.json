@@ -1,0 +1,253 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Hifi Account Virtual Account API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Virtual Account",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all virtual accounts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/virtual-accounts",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "sourceCurrency",
+                "value": "",
+                "type": "query",
+                "description": "Source currency"
+              },
+              {
+                "name": "destinationCurrency",
+                "value": "",
+                "type": "query",
+                "description": "Destination currency"
+              },
+              {
+                "name": "destinationChain",
+                "value": "",
+                "type": "query",
+                "description": "Destination chain"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "default to 10, maximum to 100"
+              },
+              {
+                "name": "createdBefore",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              },
+              {
+                "name": "createdAfter",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              }
+            ]
+          },
+          "docs": "List all virtual accounts associated with a user under your organization."
+        },
+        {
+          "info": {
+            "name": "Create a virtual account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/virtual-accounts",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generate a virtual bank account to onramp from `sourceCurrency` to `destinationCurrency` on chain `destinationChain`. (note: virtual accounts are billable)\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a virtual account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/virtual-accounts/:accountId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the virtual account"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of micro deposit records return for the virtual account, default to 10 maximum to 100"
+              },
+              {
+                "name": "createdBefore",
+                "value": "",
+                "type": "query",
+                "description": "Return the micro deposit records that created before this eventId"
+              },
+              {
+                "name": "createdAfter",
+                "value": "",
+                "type": "query",
+                "description": "Return the micro deposit records that created after this eventId"
+              }
+            ]
+          },
+          "docs": "Get an existing virtual bank account detail."
+        },
+        {
+          "info": {
+            "name": "Update a virtual account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/virtual-accounts/:accountId/update",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the virtual account"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update an existing virtual account.\n"
+        },
+        {
+          "info": {
+            "name": "Deactivate a virtual account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/virtual-accounts/:accountId/deactivate",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the virtual account"
+              }
+            ]
+          },
+          "docs": "Deactivate an existing virtual account."
+        },
+        {
+          "info": {
+            "name": "Reactivate a virtual account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/virtual-accounts/:accountId/reactivate",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the virtual account"
+              }
+            ]
+          },
+          "docs": "Reactivate an existing virtual account."
+        },
+        {
+          "info": {
+            "name": "Simulate a deposit to a virtual account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/virtual-accounts/:accountId/simulate-deposit",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the virtual account"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Simulate a deposit to a virtual account in sandbox environment. This endpoint is only available in sandbox and allows testing deposit flows.\n\n**Note:** This endpoint is only available in sandbox environment.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

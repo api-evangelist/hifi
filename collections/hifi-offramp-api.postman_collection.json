@@ -1,0 +1,1361 @@
+{
+  "item": [
+    {
+      "id": "4e3d4f03-e08d-4318-8297-b04f1f45e6e1",
+      "name": "Offramp",
+      "description": {
+        "content": "Offramp endpoints",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "51e413e1-1266-4a1c-8df2-975ab01e0be5",
+          "name": "Create an offramp",
+          "request": {
+            "name": "Create an offramp",
+            "description": {
+              "content": "\nAn offramp facilitates the conversion of crypto to fiat. Once the crypto transfer is confirmed, HIFI will deposit the converted fiat into the receiving user’s bank account. \n\nThere are two types of offramp:\n\n* **Quote-based offramp**: This type of offramp first returns the conversion rate quote based on the best market rate, which you can accept through the [Accept an offramp quote](https://docs.hifibridge.com/api-reference/offramp/accept-an-offramp-quote) endpoint to initiate the offramp.  \n To learn more about quote-based offramps, click [here](https://docs.hifibridge.com/guides/transfers/onramps/usd-usdc).\n\n* **Non-quote-based offramp**: This type of offramp will be initiated immediately upon creating an offramp.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "offramps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestId\": \"<string>\",\n  \"source\": {\n    \"currency\": \"<string>\",\n    \"chain\": \"<string>\",\n    \"amount\": \"<float>\",\n    \"userId\": \"<uuid>\",\n    \"externalWalletId\": \"<uuid>\"\n  },\n  \"destination\": {\n    \"currency\": \"<string>\",\n    \"accountId\": \"<uuid>\",\n    \"amount\": \"<float>\",\n    \"userId\": \"<uuid>\",\n    \"sameDayAch\": false,\n    \"achReference\": \"<string>\",\n    \"sepaReference\": \"<string>\",\n    \"wireMessage\": \"<string>\",\n    \"paymentReference\": \"<string>\",\n    \"swiftReference\": \"<string>\",\n    \"swiftCharges\": \"<string>\"\n  },\n  \"purposeOfPayment\": \"<string>\",\n  \"supportingDocumentType\": \"<string>\",\n  \"supportingDocumentUrl\": \"<string>\",\n  \"description\": \"<string>\",\n  \"developerFee\": [\n    {\n      \"fees\": [\n        {\n          \"type\": \"<string>\",\n          \"value\": \"<string>\",\n          \"walletAddress\": \"<string>\"\n        },\n        {\n          \"type\": \"<string>\",\n          \"value\": \"<string>\",\n          \"walletAddress\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"fees\": [\n        {\n          \"type\": \"<string>\",\n          \"value\": \"<string>\",\n          \"walletAddress\": \"<string>\"\n        },\n        {\n          \"type\": \"<string>\",\n          \"value\": \"<string>\",\n          \"walletAddress\": \"<string>\"\n        }\n      ]\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0e9de04d-4949-4e40-9ec6-5c4887c2d387",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"OFFRAMP\",\n  \"transferDetails\": {\n    \"id\": \"173c1e89-7bbd-4352-9e5d-73807681510d\",\n    \"requestId\": \"201ca31d-700f-4c76-ac4b-961623acbb79\",\n    \"createdAt\": \"2025-02-03T16:12:04.331652+00:00\",\n    \"updatedAt\": \"2025-02-03T16:12:08.732+00:00\",\n    \"status\": \"OPEN_QUOTE\",\n    \"failedReason\": null,\n    \"source\": {\n      \"userId\": \"7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee\",\n      \"chain\": \"POLYGON\",\n      \"currency\": \"usdc\",\n      \"amount\": 10,\n      \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D6\",\n      \"user\": {\n        \"email\": \"john.doe@hifibridge.com\",\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"businessName\": null\n      }\n    },\n    \"destination\": {\n      \"userId\": \"7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee\",\n      \"amount\": 0,\n      \"currency\": \"usd\",\n      \"wireMessage\": \"Wire message\",\n      \"achReference\": \"ACH reference\",\n      \"paymentReference\": \"Payment reference\",\n      \"user\": {\n        \"email\": \"john.doe@hifibridge.com\",\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"businessName\": null\n      },\n      \"accountId\": \"12c1c496-8f57-41a1-8292-dbe6547791ce\"\n    },\n    \"receipt\": {\n      \"transactionHash\": null,\n      \"paymentTracking\": null\n    },\n    \"developerFee\": {\n      \"id\": \"1c3d24c1-6136-574c-a647-e7eb6a9fb6ed\",\n      \"transactionHash\": null,\n      \"fees\": [\n        {\n          \"type\": \"PERCENTAGE\",\n          \"value\": \"0.0005\",\n          \"amount\": \"0.000515\",\n          \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D7\"\n        },\n        {\n          \"type\": \"FLAT\",\n          \"value\": \"0.01\",\n          \"amount\": \"0.010000\",\n          \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D7\"\n        }\n      ]\n    },\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"sendNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usd\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usd\"\n      },\n      \"rate\": \"1\"\n    },\n    \"depositInformation\": []\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0da87582-26cb-450e-b2df-26d6a23552ec",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f0283f49-92b5-485b-8e6e-c4b974d2d74a",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "712de252-62ed-4bab-bea0-ba5f2b8594c3",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a23b44f0-5030-4714-af17-0545adbc5dfc",
+          "name": "List all offramps",
+          "request": {
+            "name": "List all offramps",
+            "description": {
+              "content": "Returns a list of offramps associated with a user under your organization. The offramps are returned sorted by creation date, with the most recent offramps appearing first.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "offramps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "userId",
+                  "value": "<string>",
+                  "description": "The user ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<string>",
+                  "description": "default to 10, maximum to 100"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdBefore",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdAfter",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "79b37db6-0abd-4eab-adb0-7f2052d7c57b",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 1,\n  \"records\": [\n    {\n      \"transferType\": \"OFFRAMP\",\n      \"transferDetails\": {\n        \"id\": \"173c1e89-7bbd-4352-9e5d-73807681510d\",\n        \"requestId\": \"201ca31d-700f-4c76-ac4b-961623acbb79\",\n        \"createdAt\": \"2025-02-03T16:12:04.331652+00:00\",\n        \"updatedAt\": \"2025-02-03T16:12:08.732+00:00\",\n        \"status\": \"COMPLETED\",\n        \"failedReason\": null,\n        \"source\": {\n          \"userId\": \"7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee\",\n          \"chain\": \"POLYGON\",\n          \"currency\": \"usdc\",\n          \"amount\": 10,\n          \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D6\",\n          \"user\": {\n            \"email\": \"john.doe@hifibridge.com\",\n            \"firstName\": \"John\",\n            \"lastName\": \"Doe\",\n            \"businessName\": null\n          }\n        },\n        \"destination\": {\n          \"userId\": \"7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee\",\n          \"amount\": 0,\n          \"currency\": \"usd\",\n          \"wireMessage\": \"Wire message\",\n          \"achReference\": \"ACH reference\",\n          \"paymentReference\": \"Payment reference\",\n          \"user\": {\n            \"email\": \"john.doe@hifibridge.com\",\n            \"firstName\": \"John\",\n            \"lastName\": \"Doe\",\n            \"businessName\": null\n          },\n          \"accountId\": \"12c1c496-8f57-41a1-8292-dbe6547791ce\"\n        },\n        \"receipt\": {\n          \"transactionHash\": null,\n          \"paymentTracking\": {\n            \"imad\": \"20250827SIM14AE0135526\",\n            \"omad\": \"20250827SIM22390135526\",\n            \"paymentRail\": \"wire\"\n          }\n        },\n        \"developerFee\": {\n          \"id\": \"1c3d24c1-6136-574c-a647-e7eb6a9fb6ed\",\n          \"transactionHash\": null,\n          \"fees\": [\n            {\n              \"type\": \"PERCENTAGE\",\n              \"value\": \"0.0005\",\n              \"amount\": \"0.000515\",\n              \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D7\"\n            },\n            {\n              \"type\": \"FLAT\",\n              \"value\": \"0.01\",\n              \"amount\": \"0.010000\",\n              \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D7\"\n            }\n          ]\n        },\n        \"quoteInformation\": {\n          \"sendGross\": {\n            \"amount\": \"10\",\n            \"currency\": \"usdc\"\n          },\n          \"sendNet\": {\n            \"amount\": \"10\",\n            \"currency\": \"usdc\"\n          },\n          \"receiveGross\": {\n            \"amount\": \"10\",\n            \"currency\": \"usd\"\n          },\n          \"receiveNet\": {\n            \"amount\": \"10\",\n            \"currency\": \"usd\"\n          },\n          \"rate\": \"1\"\n        },\n        \"depositInformation\": []\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dfb6a428-0a6e-4acb-be96-b50b7ac45150",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "68eced18-aefa-401f-ad7d-7903963e0a03",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "13a10bfb-4a85-4146-a42a-c8721141b079",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "feda7058-f50f-4c86-aca0-6959ca68f4df",
+          "name": "Retrieve an offramp",
+          "request": {
+            "name": "Retrieve an offramp",
+            "description": {
+              "content": "Retrieves an offramp.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "offramps",
+                ":transferId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transferId",
+                  "description": "(Required) Transfer record ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d3bff026-8961-4f3f-8e36-cf04fa78871f",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"OFFRAMP\",\n  \"transferDetails\": {\n    \"id\": \"173c1e89-7bbd-4352-9e5d-73807681510d\",\n    \"requestId\": \"201ca31d-700f-4c76-ac4b-961623acbb79\",\n    \"createdAt\": \"2025-02-03T16:12:04.331652+00:00\",\n    \"updatedAt\": \"2025-02-03T16:12:08.732+00:00\",\n    \"status\": \"COMPLETED\",\n    \"failedReason\": null,\n    \"source\": {\n      \"userId\": \"7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee\",\n      \"chain\": \"POLYGON\",\n      \"currency\": \"usdc\",\n      \"amount\": 10,\n      \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D6\",\n      \"user\": {\n        \"email\": \"john.doe@hifibridge.com\",\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"businessName\": null\n      }\n    },\n    \"destination\": {\n      \"userId\": \"7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee\",\n      \"amount\": 0,\n      \"currency\": \"usd\",\n      \"wireMessage\": \"Wire message\",\n      \"achReference\": \"ACH reference\",\n      \"paymentReference\": \"Payment reference\",\n      \"user\": {\n        \"email\": \"john.doe@hifibridge.com\",\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"businessName\": null\n      },\n      \"accountId\": \"12c1c496-8f57-41a1-8292-dbe6547791ce\"\n    },\n    \"receipt\": {\n      \"transactionHash\": null,\n      \"paymentTracking\": {\n        \"imad\": \"20250827SIM14AE0135526\",\n        \"omad\": \"20250827SIM22390135526\",\n        \"paymentRail\": \"wire\"\n      }\n    },\n    \"developerFee\": {\n      \"id\": \"1c3d24c1-6136-574c-a647-e7eb6a9fb6ed\",\n      \"transactionHash\": null,\n      \"fees\": [\n        {\n          \"type\": \"PERCENTAGE\",\n          \"value\": \"0.0005\",\n          \"amount\": \"0.000515\",\n          \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D7\"\n        },\n        {\n          \"type\": \"FLAT\",\n          \"value\": \"0.01\",\n          \"amount\": \"0.010000\",\n          \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D7\"\n        }\n      ]\n    },\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"sendNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usd\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usd\"\n      },\n      \"rate\": \"1\"\n    },\n    \"depositInformation\": []\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6af3c313-09a0-40c2-86df-7cf9d6f7eadf",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "716d7796-a4fe-48b0-ace1-1064003e7127",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aa005342-55fb-4b67-afd0-f1d6b98d1329",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "84ea1792-862e-4b7b-ad2a-e13011b3bce5",
+          "name": "Accept an offramp quote",
+          "request": {
+            "name": "Accept an offramp quote",
+            "description": {
+              "content": "Accept and initiate a quote-based offramp.\n\nFor example, an offramp from crypto currency `usdc` to fiat currency `brl` is quote-based so its initial status will be `OPEN_QUOTE`. After reviewing the offramp conversion rate quote information, you can accept it to initialize the offramp.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "offramps",
+                ":transferId",
+                "quote",
+                "accept"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transferId",
+                  "description": "(Required) Transfer record ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5725acf9-5304-47f9-b277-3665485b4a67",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    ":transferId",
+                    "quote",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"OFFRAMP\",\n  \"transferDetails\": {\n    \"id\": \"173c1e89-7bbd-4352-9e5d-73807681510d\",\n    \"requestId\": \"201ca31d-700f-4c76-ac4b-961623acbb79\",\n    \"createdAt\": \"2025-02-03T16:12:04.331652+00:00\",\n    \"updatedAt\": \"2025-02-03T16:12:08.732+00:00\",\n    \"status\": \"CRYPTO_INITIATED\",\n    \"failedReason\": null,\n    \"source\": {\n      \"userId\": \"7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee\",\n      \"chain\": \"POLYGON\",\n      \"currency\": \"usdc\",\n      \"amount\": 10,\n      \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D6\",\n      \"user\": {\n        \"email\": \"john.doe@hifibridge.com\",\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"businessName\": null\n      }\n    },\n    \"destination\": {\n      \"userId\": \"7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee\",\n      \"amount\": 0,\n      \"currency\": \"usd\",\n      \"user\": {\n        \"email\": \"john.doe@hifibridge.com\",\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"businessName\": null\n      },\n      \"accountId\": \"12c1c496-8f57-41a1-8292-dbe6547791ce\"\n    },\n    \"receipt\": {\n      \"transactionHash\": null,\n      \"paymentTracking\": null\n    },\n    \"developerFee\": {\n      \"id\": \"1c3d24c1-6136-574c-a647-e7eb6a9fb6ed\",\n      \"transactionHash\": null,\n      \"fees\": [\n        {\n          \"type\": \"PERCENTAGE\",\n          \"value\": \"0.0005\",\n          \"amount\": \"0.000515\",\n          \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D7\"\n        },\n        {\n          \"type\": \"FLAT\",\n          \"value\": \"0.01\",\n          \"amount\": \"0.010000\",\n          \"walletAddress\": \"0x366B759bAA089Fa57a08edd3F2E028E86b97f8D7\"\n        }\n      ]\n    },\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"sendNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usd\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usd\"\n      },\n      \"rate\": \"1\"\n    },\n    \"depositInformation\": []\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4919312a-7dc2-4793-bdbf-ea2f7a9edafa",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    ":transferId",
+                    "quote",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2924789b-b609-4ee4-8df5-f03d7c7a2cb1",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    ":transferId",
+                    "quote",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "198b8ced-4387-4530-a6e0-5eb05fb68b2e",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    ":transferId",
+                    "quote",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8308503b-4951-4d34-bbc1-096c9f607275",
+          "name": "Retrieve an offramp rate",
+          "request": {
+            "name": "Retrieve an offramp rate",
+            "description": {
+              "content": "Offramp rates are estimated rates for offramp conversions from different cryptocurrencies on different networks into all the different fiat currencies.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "offramps",
+                "rates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fromCurrency",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "toCurrency",
+                  "value": "<string>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "324a1e60-e00b-478a-b6fc-9b5ebeba9eb8",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    "rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromCurrency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toCurrency",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"fromCurrency\": \"usdc\",\n  \"toCurrency\": \"usd\",\n  \"conversionRate\": \"1\",\n  \"conversionRates\": [\n    {\n      \"transferType\": \"default\",\n      \"conversionRate\": \"1\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "74f25cdd-7923-4976-ad78-2badace340bc",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    "rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromCurrency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toCurrency",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8facebfd-9e77-4567-b7d9-fe2934327673",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    "rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromCurrency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toCurrency",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b8d0f7bc-d97f-4738-9519-806a024b1b43",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "offramps",
+                    "rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromCurrency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toCurrency",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://production.hifibridge.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "65de6235-aac7-45cb-987d-620d7c482253",
+    "name": "Hifi Account Offramp API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API documentation for Hifi",
+      "type": "text/plain"
+    }
+  }
+}

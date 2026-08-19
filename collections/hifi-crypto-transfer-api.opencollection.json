@@ -1,0 +1,166 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Hifi Account Crypto Transfer API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Crypto Transfer",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all crypto transfers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/wallets/transfers",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "query",
+                "description": "The user ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "default to 10, maximum to 100"
+              },
+              {
+                "name": "createdBefore",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              },
+              {
+                "name": "createdAfter",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              }
+            ]
+          },
+          "docs": "Returns a list of crypto transfers associated with a user under your organization. The crypto transfers are returned sorted by creation date, with the most recent crypto transfers appearing first.\n"
+        },
+        {
+          "info": {
+            "name": "Create a crypto transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/wallets/transfers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a crypto transfer between two wallet addresses among users.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a crypto transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/wallets/transfers/:transferId",
+            "params": [
+              {
+                "name": "transferId",
+                "value": "",
+                "type": "path",
+                "description": "Transfer record ID."
+              }
+            ]
+          },
+          "docs": "Retrieve a crypto transfer"
+        },
+        {
+          "info": {
+            "name": "List all batch crypto transfers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/wallets/transfers/batches",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "query",
+                "description": "The user ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "default to 10, maximum to 100"
+              },
+              {
+                "name": "createdBefore",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              },
+              {
+                "name": "createdAfter",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              }
+            ]
+          },
+          "docs": "Returns a list of batch crypto transfers associated with a user under your organization. The batch crypto transfers are returned sorted by creation date, with the most recent batch crypto transfers appearing first.\n"
+        },
+        {
+          "info": {
+            "name": "Create a batch crypto transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/wallets/transfers/batches",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a batch crypto transfer from a single wallet address to multiple wallet addresses among users.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a batch crypto transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/wallets/transfers/batches/:transferId",
+            "params": [
+              {
+                "name": "transferId",
+                "value": "",
+                "type": "path",
+                "description": "Transfer record ID."
+              }
+            ]
+          },
+          "docs": "Retrieve a batch crypto transfer"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

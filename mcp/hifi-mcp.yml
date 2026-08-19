@@ -270,3 +270,9 @@ tools:
 - name: get_wallets_transfers_by_transferId
   description: Retrieve a crypto transfer
   source_operation: openapi/hifi-openapi-original.json#GET /v2/wallets/transfers/{transferId}
+deployment:
+  mode: none
+  verified: derived
+  tools: 87
+  checked: '2026-08-12'
+  source: catalog MCP census

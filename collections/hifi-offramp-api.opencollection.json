@@ -1,0 +1,137 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Hifi Account Offramp API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Offramp",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all offramps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/offramps",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "query",
+                "description": "The user ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "default to 10, maximum to 100"
+              },
+              {
+                "name": "createdBefore",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              },
+              {
+                "name": "createdAfter",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              }
+            ]
+          },
+          "docs": "Returns a list of offramps associated with a user under your organization. The offramps are returned sorted by creation date, with the most recent offramps appearing first.\n"
+        },
+        {
+          "info": {
+            "name": "Create an offramp",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/offramps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "\nAn offramp facilitates the conversion of crypto to fiat. Once the crypto transfer is confirmed, HIFI will deposit the converted fiat into the receiving user’s bank account. \n\nThere are two types of offramp:\n\n* **Quote-based offramp**: This type of offramp first returns the conversion rate quote based on the best market rate, which you can accept through the [Accept an offramp quote](https://docs.hifibridge.com/api-reference/offramp/accept-an-offramp-quote) endpoint to initiate the offramp.  \n T"
+        },
+        {
+          "info": {
+            "name": "Retrieve an offramp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/offramps/:transferId",
+            "params": [
+              {
+                "name": "transferId",
+                "value": "",
+                "type": "path",
+                "description": "Transfer record ID."
+              }
+            ]
+          },
+          "docs": "Retrieves an offramp."
+        },
+        {
+          "info": {
+            "name": "Accept an offramp quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/offramps/:transferId/quote/accept",
+            "params": [
+              {
+                "name": "transferId",
+                "value": "",
+                "type": "path",
+                "description": "Transfer record ID."
+              }
+            ]
+          },
+          "docs": "Accept and initiate a quote-based offramp.\n\nFor example, an offramp from crypto currency `usdc` to fiat currency `brl` is quote-based so its initial status will be `OPEN_QUOTE`. After reviewing the offramp conversion rate quote information, you can accept it to initialize the offramp.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve an offramp rate",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/offramps/rates",
+            "params": [
+              {
+                "name": "fromCurrency",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "toCurrency",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Offramp rates are estimated rates for offramp conversions from different cryptocurrencies on different networks into all the different fiat currencies.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

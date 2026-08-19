@@ -1,0 +1,1110 @@
+{
+  "item": [
+    {
+      "id": "c407c58b-5f16-46ec-befa-e94d341da27f",
+      "name": "Token Swap",
+      "description": {
+        "content": "Token Swap endpoints",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "90055778-89ad-4c8d-8309-27e0bd4257f4",
+          "name": "Create a swap",
+          "request": {
+            "name": "Create a swap",
+            "description": {
+              "content": "Create a swap request to exchange one cryptocurrency for another within the same chain.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "swaps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestId\": \"<uuid>\",\n  \"source\": {\n    \"userId\": \"<uuid>\",\n    \"chain\": \"<string>\",\n    \"currency\": \"<string>\",\n    \"amount\": \"<string>\"\n  },\n  \"destination\": {\n    \"chain\": \"<string>\",\n    \"currency\": \"<string>\",\n    \"userId\": \"<uuid>\",\n    \"externalWalletId\": \"<uuid>\",\n    \"walletAddress\": \"<string>\",\n    \"amount\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8c1b5cd9-c5bd-4509-9e14-97fc6593eade",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"WALLET.SWAP\",\n  \"transferDetails\": {\n    \"id\": \"dc923cc1-d74b-58f6-9fe4-9e9c6eb8dc37\",\n    \"requestId\": \"1ab3e6e0-4839-4dbe-89c3-b06d9645ae86\",\n    \"status\": \"COMPLETED\",\n    \"createdAt\": \"2025-08-20T03:55:29.437108+00:00\",\n    \"updatedAt\": \"2025-08-20T04:08:10.837+00:00\",\n    \"source\": {\n      \"currency\": \"usdc\",\n      \"amount\": 10,\n      \"chain\": \"POLYGON\",\n      \"userId\": \"05179f69-1988-4b46-a847-dd4eea0984d6\"\n    },\n    \"destination\": {\n      \"currency\": \"usdt\",\n      \"userId\": \"05179f69-1988-4b46-a847-dd4eea0984d6\",\n      \"externalWalletId\": null,\n      \"amount\": null,\n      \"chain\": \"POLYGON\",\n      \"walletAddress\": \"0xe5727a4B1d93A26D6A7Adfaae145EFa41ED7f204\"\n    },\n    \"error\": null,\n    \"errorDetails\": null,\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"sendNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"rate\": \"1\",\n      \"expiresAt\": \"2025-08-20T03:55:59.539+00:00\"\n    },\n    \"billingInformation\": {\n      \"fees\": [\n        {\n          \"id\": \"2ca381ec-9498-52f5-9a27-d0e392b2626b\",\n          \"amount\": 0.01,\n          \"currency\": \"USD\",\n          \"type\": \"EXCHANGE_FEE\",\n          \"timing\": \"ON_INVOICE\"\n        },\n        {\n          \"id\": \"2ca381ec-9498-52f5-9a27-d0e392b2626b\",\n          \"amount\": 0.01,\n          \"currency\": \"USD\",\n          \"type\": \"EXCHANGE_FEE\",\n          \"timing\": \"ON_INVOICE\"\n        }\n      ]\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f314fa4d-c275-4b8b-9f36-909c8c080215",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7e393d48-2a06-407e-9d12-de62efa6239f",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "21f0dabf-b7a1-458e-8505-19cfea348789",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "78d1cda1-163f-4f48-95e2-174c60712091",
+          "name": "List all swaps",
+          "request": {
+            "name": "List all swaps",
+            "description": {
+              "content": "Returns a list of swaps associated with a user under your organization. The swaps are returned sorted by creation date, with the most recent swaps appearing first.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "swaps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "userId",
+                  "value": "<string>",
+                  "description": "The user ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<string>",
+                  "description": "default to 10, maximum to 100"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdBefore",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdAfter",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6c283543-b318-4ca6-920e-2a009376a34c",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 1,\n  \"data\": [\n    {\n      \"transferType\": \"WALLET.SWAP\",\n      \"transferDetails\": {\n        \"id\": \"dc923cc1-d74b-58f6-9fe4-9e9c6eb8dc37\",\n        \"requestId\": \"1ab3e6e0-4839-4dbe-89c3-b06d9645ae86\",\n        \"status\": \"COMPLETED\",\n        \"createdAt\": \"2025-08-20T03:55:29.437108+00:00\",\n        \"updatedAt\": \"2025-08-20T04:08:10.837+00:00\",\n        \"source\": {\n          \"currency\": \"usdc\",\n          \"amount\": 10,\n          \"chain\": \"POLYGON\",\n          \"userId\": \"05179f69-1988-4b46-a847-dd4eea0984d6\"\n        },\n        \"destination\": {\n          \"currency\": \"usdt\",\n          \"userId\": \"05179f69-1988-4b46-a847-dd4eea0984d6\",\n          \"externalWalletId\": null,\n          \"amount\": null,\n          \"chain\": \"POLYGON\",\n          \"walletAddress\": \"0xe5727a4B1d93A26D6A7Adfaae145EFa41ED7f204\"\n        },\n        \"error\": null,\n        \"errorDetails\": null,\n        \"quoteInformation\": {\n          \"sendGross\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"currency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"sendNet\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"currency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"receiveGross\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"currency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"receiveNet\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"currency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"rate\": \"1\",\n          \"expiresAt\": \"2025-08-20T03:55:59.539+00:00\"\n        },\n        \"billingInformation\": {\n          \"fees\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        }\n      }\n    },\n    {\n      \"transferType\": \"WALLET.SWAP\",\n      \"transferDetails\": {\n        \"id\": \"dc923cc1-d74b-58f6-9fe4-9e9c6eb8dc37\",\n        \"requestId\": \"1ab3e6e0-4839-4dbe-89c3-b06d9645ae86\",\n        \"status\": \"COMPLETED\",\n        \"createdAt\": \"2025-08-20T03:55:29.437108+00:00\",\n        \"updatedAt\": \"2025-08-20T04:08:10.837+00:00\",\n        \"source\": {\n          \"currency\": \"usdc\",\n          \"amount\": 10,\n          \"chain\": \"POLYGON\",\n          \"userId\": \"05179f69-1988-4b46-a847-dd4eea0984d6\"\n        },\n        \"destination\": {\n          \"currency\": \"usdt\",\n          \"userId\": \"05179f69-1988-4b46-a847-dd4eea0984d6\",\n          \"externalWalletId\": null,\n          \"amount\": null,\n          \"chain\": \"POLYGON\",\n          \"walletAddress\": \"0xe5727a4B1d93A26D6A7Adfaae145EFa41ED7f204\"\n        },\n        \"error\": null,\n        \"errorDetails\": null,\n        \"quoteInformation\": {\n          \"sendGross\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"currency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"sendNet\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"currency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"receiveGross\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"currency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"receiveNet\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"currency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"rate\": \"1\",\n          \"expiresAt\": \"2025-08-20T03:55:59.539+00:00\"\n        },\n        \"billingInformation\": {\n          \"fees\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        }\n      }\n    }\n  ],\n  \"nextCursor\": \"2025-08-20T04:08:10.837+00:00\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "201b42c9-accd-4ea0-802c-54ea3834c580",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cccee440-0e34-481d-aad3-b133ccbba3c6",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "715c4d08-0bc6-4309-b43a-74ec8258206d",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9bea7b7d-d370-44e5-b880-cbc65a866d62",
+          "name": "Retrieve a swap",
+          "request": {
+            "name": "Retrieve a swap",
+            "description": {
+              "content": "Retrieve details of a specific swap by its ID.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "swaps",
+                ":swapId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "swapId",
+                  "description": "(Required) Swap transfer record ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cb7a4899-23f1-43e3-aa07-bb74f7ce901e",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps",
+                    ":swapId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "swapId",
+                      "description": "(Required) Swap transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"WALLET.SWAP\",\n  \"transferDetails\": {\n    \"id\": \"dc923cc1-d74b-58f6-9fe4-9e9c6eb8dc37\",\n    \"requestId\": \"1ab3e6e0-4839-4dbe-89c3-b06d9645ae86\",\n    \"status\": \"COMPLETED\",\n    \"createdAt\": \"2025-08-20T03:55:29.437108+00:00\",\n    \"updatedAt\": \"2025-08-20T04:08:10.837+00:00\",\n    \"source\": {\n      \"currency\": \"usdc\",\n      \"amount\": 10,\n      \"chain\": \"POLYGON\",\n      \"userId\": \"05179f69-1988-4b46-a847-dd4eea0984d6\"\n    },\n    \"destination\": {\n      \"currency\": \"usdt\",\n      \"userId\": \"05179f69-1988-4b46-a847-dd4eea0984d6\",\n      \"externalWalletId\": null,\n      \"amount\": null,\n      \"chain\": \"POLYGON\",\n      \"walletAddress\": \"0xe5727a4B1d93A26D6A7Adfaae145EFa41ED7f204\"\n    },\n    \"error\": null,\n    \"errorDetails\": null,\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"sendNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"rate\": \"1\",\n      \"expiresAt\": \"2025-08-20T03:55:59.539+00:00\"\n    },\n    \"billingInformation\": {\n      \"fees\": [\n        {\n          \"id\": \"2ca381ec-9498-52f5-9a27-d0e392b2626b\",\n          \"amount\": 0.01,\n          \"currency\": \"USD\",\n          \"type\": \"EXCHANGE_FEE\",\n          \"timing\": \"ON_INVOICE\"\n        },\n        {\n          \"id\": \"2ca381ec-9498-52f5-9a27-d0e392b2626b\",\n          \"amount\": 0.01,\n          \"currency\": \"USD\",\n          \"type\": \"EXCHANGE_FEE\",\n          \"timing\": \"ON_INVOICE\"\n        }\n      ]\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6f4c7c45-6f63-46d6-b6c6-caaa432e6ea7",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps",
+                    ":swapId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "swapId",
+                      "description": "(Required) Swap transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8975c619-458c-4ace-b437-580a893b0350",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps",
+                    ":swapId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "swapId",
+                      "description": "(Required) Swap transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8db223b2-98fa-49d8-a844-c46339fc550b",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps",
+                    ":swapId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "swapId",
+                      "description": "(Required) Swap transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5fddb900-38ef-4aec-83f8-29e6d9396e83",
+          "name": "Accept a swap",
+          "request": {
+            "name": "Accept a swap",
+            "description": {
+              "content": "Accept a swap request to execute the cryptocurrency exchange.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "swaps",
+                ":swapId",
+                "accept"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "swapId",
+                  "description": "(Required) Swap transfer record ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "20dae302-871f-4199-9fc4-ebab9540e21e",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps",
+                    ":swapId",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "swapId",
+                      "description": "(Required) Swap transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"WALLET.SWAP\",\n  \"transferDetails\": {\n    \"id\": \"dc923cc1-d74b-58f6-9fe4-9e9c6eb8dc37\",\n    \"requestId\": \"1ab3e6e0-4839-4dbe-89c3-b06d9645ae86\",\n    \"status\": \"COMPLETED\",\n    \"createdAt\": \"2025-08-20T03:55:29.437108+00:00\",\n    \"updatedAt\": \"2025-08-20T04:08:10.837+00:00\",\n    \"source\": {\n      \"currency\": \"usdc\",\n      \"amount\": 10,\n      \"chain\": \"POLYGON\",\n      \"userId\": \"05179f69-1988-4b46-a847-dd4eea0984d6\"\n    },\n    \"destination\": {\n      \"currency\": \"usdt\",\n      \"userId\": \"05179f69-1988-4b46-a847-dd4eea0984d6\",\n      \"externalWalletId\": null,\n      \"amount\": null,\n      \"chain\": \"POLYGON\",\n      \"walletAddress\": \"0xe5727a4B1d93A26D6A7Adfaae145EFa41ED7f204\"\n    },\n    \"error\": null,\n    \"errorDetails\": null,\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"sendNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"10\",\n        \"currency\": \"usdc\"\n      },\n      \"rate\": \"1\",\n      \"expiresAt\": \"2025-08-20T03:55:59.539+00:00\"\n    },\n    \"billingInformation\": {\n      \"fees\": [\n        {\n          \"id\": \"2ca381ec-9498-52f5-9a27-d0e392b2626b\",\n          \"amount\": 0.01,\n          \"currency\": \"USD\",\n          \"type\": \"EXCHANGE_FEE\",\n          \"timing\": \"ON_INVOICE\"\n        },\n        {\n          \"id\": \"2ca381ec-9498-52f5-9a27-d0e392b2626b\",\n          \"amount\": 0.01,\n          \"currency\": \"USD\",\n          \"type\": \"EXCHANGE_FEE\",\n          \"timing\": \"ON_INVOICE\"\n        }\n      ]\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b002542a-d475-4f84-be93-3b575e6092c3",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps",
+                    ":swapId",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "swapId",
+                      "description": "(Required) Swap transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5dbe1a51-b134-4af5-a674-bd1efe5c2fd7",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps",
+                    ":swapId",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "swapId",
+                      "description": "(Required) Swap transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ac31e598-1a56-48f7-95e8-2b1ac93f71f4",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "swaps",
+                    ":swapId",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "swapId",
+                      "description": "(Required) Swap transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://production.hifibridge.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "2a39c7b6-52d2-4b3d-b442-eb8650d2c02e",
+    "name": "Hifi Account Token Swap API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API documentation for Hifi",
+      "type": "text/plain"
+    }
+  }
+}

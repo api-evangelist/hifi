@@ -1,0 +1,1107 @@
+{
+  "item": [
+    {
+      "id": "1ea2536a-0ef7-4866-a473-55040db7aa1e",
+      "name": "Cross-Chain Bridge",
+      "description": {
+        "content": "Cross-Chain Bridge endpoints",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0f812fde-a0d8-4e37-a46a-64089746d3a4",
+          "name": "Create a bridging request",
+          "request": {
+            "name": "Create a bridging request",
+            "description": {
+              "content": "Create a bridging request to bridge crypto assets across chains.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "bridges"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestId\": \"<string>\",\n  \"amount\": \"<float>\",\n  \"source\": {\n    \"userId\": \"<uuid>\",\n    \"chain\": \"<string>\",\n    \"currency\": \"<string>\"\n  },\n  \"destination\": {\n    \"chain\": \"<string>\",\n    \"currency\": \"<string>\",\n    \"userId\": \"<uuid>\",\n    \"walletAddress\": \"<string>\"\n  },\n  \"requireApproval\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f40cabab-89a8-478a-9d2d-1c50524ac10c",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"WALLET.BRIDGE\",\n  \"transferDetails\": {\n    \"requestId\": \"1d860428-1d0b-47c5-9e65-98961ff59215\",\n    \"createdAt\": \"2025-02-24T17:44:54.781519+00:00\",\n    \"updatedAt\": \"2025-02-24T17:57:01.185+00:00\",\n    \"amount\": 0.01,\n    \"status\": \"COMPLETED\",\n    \"source\": {\n      \"userId\": \"a804f891-b63c-4b36-99ee-0aa83e6facde\",\n      \"walletAddress\": \"0xE9cfBf1D690565579D823264170eE357f80e9A34\",\n      \"chain\": \"POLYGON\",\n      \"currency\": \"usdc\"\n    },\n    \"destination\": {\n      \"userId\": \"a804f891-b63c-4b36-99ee-0aa83e6facde\",\n      \"walletAddress\": \"0x17f043FB0a39334641beD627551AC095941157B0\",\n      \"chain\": \"ETHEREUM\",\n      \"currency\": \"usdc\"\n    },\n    \"receipt\": {\n      \"transactionHash\": \"0x17f043FB0a39334641beD627551AC095941157B0\",\n      \"operations\": {\n        \"mint\": {\n          \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n          \"chain\": \"ETHEREUM\"\n        },\n        \"burn\": {\n          \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n          \"chain\": \"POLYGON\"\n        },\n        \"approve\": {\n          \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n          \"chain\": \"POLYGON\"\n        }\n      }\n    },\n    \"failedReason\": null,\n    \"fee\": null,\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"sendNet\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"railFee\": {\n        \"amount\": \"0\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"rate\": \"1\",\n      \"expiresAt\": \"2025-02-25T17:44:54.781Z\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c67b6bab-d7e9-4640-81af-cc3ec8d512d0",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e82be2a5-ccfa-4a0e-9a8e-751d99427bcf",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2b33577f-d7f0-4e8c-afb8-082a81963ca4",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6f79b0df-776b-4dd5-8994-8a9a309db942",
+          "name": "List all bridging requests",
+          "request": {
+            "name": "List all bridging requests",
+            "description": {
+              "content": "Returns a list of bridging requests associated with a user under your organization.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "bridges"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "userId",
+                  "value": "<string>",
+                  "description": "The user ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<string>",
+                  "description": "default to 10, maximum to 100"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdBefore",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdAfter",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b07faffa-bb5a-4ea1-8205-697d4b4c9fce",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 1,\n  \"data\": [\n    {\n      \"transferType\": \"WALLET.BRIDGE\",\n      \"transferDetails\": {\n        \"requestId\": \"1d860428-1d0b-47c5-9e65-98961ff59215\",\n        \"createdAt\": \"2025-02-24T17:44:54.781+00:00\",\n        \"updatedAt\": \"2025-02-24T17:57:01.185+00:00\",\n        \"amount\": 0.01,\n        \"status\": \"COMPLETED\",\n        \"source\": {\n          \"userId\": \"a804f891-b63c-4b36-99ee-0aa83e6facde\",\n          \"walletAddress\": \"0xE9cfBf1D690565579D823264170eE357f80e9A34\",\n          \"chain\": \"POLYGON\",\n          \"currency\": \"usdc\"\n        },\n        \"destination\": {\n          \"userId\": \"a804f891-b63c-4b36-99ee-0aa83e6facde\",\n          \"walletAddress\": \"0x17f043FB0a39334641beD627551AC095941157B0\",\n          \"chain\": \"ETHEREUM\",\n          \"currency\": \"usdc\"\n        },\n        \"failedReason\": null,\n        \"receipt\": {\n          \"transactionHash\": \"0x17f043FB0a39334641beD627551AC095941157B0\",\n          \"operations\": {\n            \"mint\": {\n              \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n              \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n              \"chain\": \"ETHEREUM\"\n            },\n            \"approve\": {\n              \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n              \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n              \"chain\": \"POLYGON\"\n            },\n            \"burn\": {\n              \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n              \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n              \"chain\": \"POLYGON\"\n            }\n          }\n        },\n        \"fee\": null,\n        \"quoteInformation\": {\n          \"sendGross\": {\n            \"amount\": \"0.01\",\n            \"currency\": \"usdc\"\n          },\n          \"sendNet\": {\n            \"amount\": \"0.01\",\n            \"currency\": \"usdc\"\n          },\n          \"railFee\": {\n            \"amount\": \"0\",\n            \"currency\": \"usdc\"\n          },\n          \"receiveGross\": {\n            \"amount\": \"0.01\",\n            \"currency\": \"usdc\"\n          },\n          \"receiveNet\": {\n            \"amount\": \"0.01\",\n            \"currency\": \"usdc\"\n          },\n          \"rate\": \"1\",\n          \"expiresAt\": \"2025-02-25T17:44:54.781Z\"\n        }\n      }\n    }\n  ],\n  \"nextCursor\": \"2025-02-24T17:44:54.781+00:00\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7b09677c-e5a8-4d60-b4c5-ec94f2f15756",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e7fb940b-aa3f-4721-92ec-e233c57948a1",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "14c6b701-a25a-4835-8507-d542509f2f68",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "18cc59a1-e786-4a70-a8d1-b4e00299459b",
+          "name": "Accept a bridging request",
+          "request": {
+            "name": "Accept a bridging request",
+            "description": {
+              "content": "Accept a bridging request to initialize the bridging of crypto assets across chains.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "bridges",
+                ":transferId",
+                "accept"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transferId",
+                  "description": "(Required) Transfer record ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cf8d5f12-2c8b-48d7-9895-ea7700d160b7",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges",
+                    ":transferId",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"WALLET.BRIDGE\",\n  \"transferDetails\": {\n    \"requestId\": \"1d860428-1d0b-47c5-9e65-98961ff59215\",\n    \"createdAt\": \"2025-02-24T17:44:54.781519+00:00\",\n    \"updatedAt\": \"2025-02-24T17:57:01.185+00:00\",\n    \"amount\": 0.01,\n    \"status\": \"COMPLETED\",\n    \"source\": {\n      \"userId\": \"a804f891-b63c-4b36-99ee-0aa83e6facde\",\n      \"walletAddress\": \"0xE9cfBf1D690565579D823264170eE357f80e9A34\",\n      \"chain\": \"POLYGON\",\n      \"currency\": \"usdc\"\n    },\n    \"destination\": {\n      \"userId\": \"a804f891-b63c-4b36-99ee-0aa83e6facde\",\n      \"walletAddress\": \"0x17f043FB0a39334641beD627551AC095941157B0\",\n      \"chain\": \"ETHEREUM\",\n      \"currency\": \"usdc\"\n    },\n    \"receipt\": {\n      \"transactionHash\": \"0x17f043FB0a39334641beD627551AC095941157B0\",\n      \"operations\": {\n        \"mint\": {\n          \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n          \"chain\": \"ETHEREUM\"\n        },\n        \"burn\": {\n          \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n          \"chain\": \"POLYGON\"\n        },\n        \"approve\": {\n          \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n          \"chain\": \"POLYGON\"\n        }\n      }\n    },\n    \"failedReason\": null,\n    \"fee\": null,\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"sendNet\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"railFee\": {\n        \"amount\": \"0\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"rate\": \"1\",\n      \"expiresAt\": \"2025-02-25T17:44:54.781Z\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e698ed43-3fcd-42c5-b662-1d32c3029fc8",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges",
+                    ":transferId",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "564b6f0a-e36d-4be0-8559-c207330dfb7c",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges",
+                    ":transferId",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7a4c5c5a-7c24-48b1-9df4-822119f14ab1",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges",
+                    ":transferId",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8cdf7265-fafa-4da7-b37b-3281f4b3ceeb",
+          "name": "Retrieve a bridging request",
+          "request": {
+            "name": "Retrieve a bridging request",
+            "description": {},
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "bridges",
+                ":transferId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transferId",
+                  "description": "(Required) Transfer record ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7d1687ee-fbdb-4ac9-b620-44698d8ff927",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"WALLET.BRIDGE\",\n  \"transferDetails\": {\n    \"requestId\": \"1d860428-1d0b-47c5-9e65-98961ff59215\",\n    \"createdAt\": \"2025-02-24T17:44:54.781519+00:00\",\n    \"updatedAt\": \"2025-02-24T17:57:01.185+00:00\",\n    \"amount\": 0.01,\n    \"status\": \"COMPLETED\",\n    \"source\": {\n      \"userId\": \"a804f891-b63c-4b36-99ee-0aa83e6facde\",\n      \"walletAddress\": \"0xE9cfBf1D690565579D823264170eE357f80e9A34\",\n      \"chain\": \"POLYGON\",\n      \"currency\": \"usdc\"\n    },\n    \"destination\": {\n      \"userId\": \"a804f891-b63c-4b36-99ee-0aa83e6facde\",\n      \"walletAddress\": \"0x17f043FB0a39334641beD627551AC095941157B0\",\n      \"chain\": \"ETHEREUM\",\n      \"currency\": \"usdc\"\n    },\n    \"receipt\": {\n      \"transactionHash\": \"0x17f043FB0a39334641beD627551AC095941157B0\",\n      \"operations\": {\n        \"mint\": {\n          \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n          \"chain\": \"ETHEREUM\"\n        },\n        \"burn\": {\n          \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n          \"chain\": \"POLYGON\"\n        },\n        \"approve\": {\n          \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n          \"chain\": \"POLYGON\"\n        }\n      }\n    },\n    \"failedReason\": null,\n    \"fee\": null,\n    \"quoteInformation\": {\n      \"sendGross\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"sendNet\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"railFee\": {\n        \"amount\": \"0\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveGross\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"receiveNet\": {\n        \"amount\": \"0.01\",\n        \"currency\": \"usdc\"\n      },\n      \"rate\": \"1\",\n      \"expiresAt\": \"2025-02-25T17:44:54.781Z\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4c85203b-5c34-45be-8fce-15d086d9ed06",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a3827318-1583-4317-8bc2-7f3c2caee78a",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c811573f-7bd1-45fe-bc99-b39c4130d7aa",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "bridges",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://production.hifibridge.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ad1c0aaa-2382-48b2-a73d-d84d055d312e",
+    "name": "Hifi Account Cross-Chain Bridge API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API documentation for Hifi",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,1654 @@
+{
+  "item": [
+    {
+      "id": "f0fc7399-b06c-4925-80d3-0bac13b67ad3",
+      "name": "Crypto Transfer",
+      "description": {
+        "content": "Crypto Transfer endpoints",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c74bda7a-8333-4c47-a7d4-4145f553e4d4",
+          "name": "Create a crypto transfer",
+          "request": {
+            "name": "Create a crypto transfer",
+            "description": {
+              "content": "Create a crypto transfer between two wallet addresses among users.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "transfers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestId\": \"<string>\",\n  \"source\": {\n    \"userId\": \"<uuid>\"\n  },\n  \"destination\": {\n    \"userId\": \"<uuid>\",\n    \"walletAddress\": \"<string>\"\n  },\n  \"currency\": \"<string>\",\n  \"amount\": \"<float>\",\n  \"chain\": \"<string>\",\n  \"fee\": {\n    \"type\": \"<string>\",\n    \"value\": \"<float>\"\n  },\n  \"requireApproval\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0c1b633c-2db4-411f-ae6b-7c503c21a0cb",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"WALLET.TRANSFER\",\n  \"transferDetails\": {\n    \"id\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n    \"requestId\": \"d0d62bec-2623-4f61-afda-148d6a8e1009\",\n    \"createdAt\": \"2025-02-03T16:11:36.654998+00:00\",\n    \"updatedAt\": \"2025-02-03T16:12:41.503+00:00\",\n    \"chain\": \"POLYGON_MAINNET\",\n    \"currency\": \"usdc\",\n    \"contractAddress\": \"0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359\",\n    \"status\": \"CREATED\",\n    \"failedReason\": \"\",\n    \"source\": {\n      \"userId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n      \"walletAddress\": \"0xA25641cB6056C371CB65F28aC02450c9206e0fAA\",\n      \"walletType\": \"INDIVIDUAL\",\n      \"user\": {\n        \"email\": \"samuelyoon0@gmail.com\",\n        \"lastName\": \"Yoon\",\n        \"firstName\": \"Samuel\",\n        \"businessName\": \"string\"\n      }\n    },\n    \"destination\": {\n      \"userId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n      \"walletType\": \"INDIVIDUAL\",\n      \"walletAddress\": \"0xA25641cB6056C371CB65F28aC02450c9206e0fAA\",\n      \"user\": {\n        \"email\": \"samuelyoon0@gmail.com\",\n        \"lastName\": \"Yoon\",\n        \"firstName\": \"Samuel\",\n        \"businessName\": \"string\"\n      }\n    },\n    \"amount\": 0.01,\n    \"amountIncludeDeveloperFee\": 0.01,\n    \"receipt\": {\n      \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n      \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\"\n    },\n    \"developerFee\": {\n      \"feeId\": \"9b354c37-d20d-4d94-bcd8-c852353ca406\",\n      \"feeType\": \"FIX\",\n      \"feeAmount\": 0.5,\n      \"feePercent\": 0,\n      \"status\": \"CREATED\",\n      \"transactionHash\": \"string\",\n      \"failedReason\": \"string\"\n    },\n    \"approval\": {\n      \"id\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n      \"status\": \"PENDING\",\n      \"createdAt\": \"2025-02-03T16:11:36.654998+00:00\",\n      \"updatedAt\": \"2025-02-03T16:12:41.503+00:00\",\n      \"transferId\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n      \"transferType\": \"WALLET.TRANSFER\",\n      \"fromDashboard\": true,\n      \"initiatorProfileId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n      \"votes\": [\n        {\n          \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n          \"vote\": \"REJECT\",\n          \"comment\": \"Transfer amount exceeds daily limit\",\n          \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n        },\n        {\n          \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n          \"vote\": \"REJECT\",\n          \"comment\": \"Transfer amount exceeds daily limit\",\n          \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n        }\n      ]\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cc3f8ae0-9b78-4ccc-b314-e057c446522e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a9f63a21-3395-4165-ab4d-4432f39cfef7",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cedc5d40-223a-4946-9364-27d8e87eb6e9",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2840806a-77ea-4bc0-96eb-9ea5dd9e5f25",
+          "name": "List all crypto transfers",
+          "request": {
+            "name": "List all crypto transfers",
+            "description": {
+              "content": "Returns a list of crypto transfers associated with a user under your organization. The crypto transfers are returned sorted by creation date, with the most recent crypto transfers appearing first.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "transfers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "userId",
+                  "value": "<string>",
+                  "description": "The user ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<string>",
+                  "description": "default to 10, maximum to 100"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdBefore",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdAfter",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2142c4b0-f4d5-4ffa-aa65-9e9ea960133e",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 9388,\n  \"records\": [\n    {\n      \"transferType\": \"WALLET.TRANSFER\",\n      \"transferDetails\": {\n        \"id\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n        \"requestId\": \"d0d62bec-2623-4f61-afda-148d6a8e1009\",\n        \"createdAt\": \"2025-02-03T16:11:36.654998+00:00\",\n        \"updatedAt\": \"2025-02-03T16:12:41.503+00:00\",\n        \"chain\": \"POLYGON_MAINNET\",\n        \"currency\": \"usdc\",\n        \"contractAddress\": \"0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359\",\n        \"status\": \"CREATED\",\n        \"failedReason\": \"\",\n        \"approval\": {\n          \"id\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n          \"status\": \"PENDING\",\n          \"createdAt\": \"2025-02-03T16:11:36.654998+00:00\",\n          \"updatedAt\": \"2025-02-03T16:12:41.503+00:00\",\n          \"transferId\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n          \"transferType\": \"WALLET.TRANSFER\",\n          \"fromDashboard\": true,\n          \"initiatorProfileId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n          \"votes\": [\n            {\n              \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n              \"vote\": \"REJECT\",\n              \"comment\": \"Transfer amount exceeds daily limit\",\n              \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n            },\n            {\n              \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n              \"vote\": \"REJECT\",\n              \"comment\": \"Transfer amount exceeds daily limit\",\n              \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n            }\n          ]\n        },\n        \"source\": {\n          \"userId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n          \"walletAddress\": \"0xA25641cB6056C371CB65F28aC02450c9206e0fAA\",\n          \"walletType\": \"INDIVIDUAL\",\n          \"user\": {\n            \"email\": \"samuelyoon0@gmail.com\",\n            \"lastName\": \"Yoon\",\n            \"firstName\": \"Samuel\",\n            \"businessName\": \"string\"\n          }\n        },\n        \"destination\": {\n          \"userId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n          \"walletType\": \"INDIVIDUAL\",\n          \"walletAddress\": \"0xA25641cB6056C371CB65F28aC02450c9206e0fAA\",\n          \"user\": {\n            \"email\": \"samuelyoon0@gmail.com\",\n            \"lastName\": \"Yoon\",\n            \"firstName\": \"Samuel\",\n            \"businessName\": \"string\"\n          }\n        },\n        \"amount\": 0.01,\n        \"amountIncludeDeveloperFee\": 0.01,\n        \"receipt\": {\n          \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\"\n        },\n        \"developerFee\": {\n          \"feeId\": \"9b354c37-d20d-4d94-bcd8-c852353ca406\",\n          \"feeType\": \"FIX\",\n          \"feeAmount\": 0.5,\n          \"feePercent\": 0,\n          \"status\": \"CREATED\",\n          \"transactionHash\": \"string\",\n          \"failedReason\": \"string\"\n        }\n      }\n    },\n    {\n      \"transferType\": \"WALLET.TRANSFER\",\n      \"transferDetails\": {\n        \"id\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n        \"requestId\": \"d0d62bec-2623-4f61-afda-148d6a8e1009\",\n        \"createdAt\": \"2025-02-03T16:11:36.654998+00:00\",\n        \"updatedAt\": \"2025-02-03T16:12:41.503+00:00\",\n        \"chain\": \"POLYGON_MAINNET\",\n        \"currency\": \"usdc\",\n        \"contractAddress\": \"0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359\",\n        \"status\": \"CREATED\",\n        \"failedReason\": \"\",\n        \"approval\": {\n          \"id\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n          \"status\": \"PENDING\",\n          \"createdAt\": \"2025-02-03T16:11:36.654998+00:00\",\n          \"updatedAt\": \"2025-02-03T16:12:41.503+00:00\",\n          \"transferId\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n          \"transferType\": \"WALLET.TRANSFER\",\n          \"fromDashboard\": true,\n          \"initiatorProfileId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n          \"votes\": [\n            {\n              \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n              \"vote\": \"REJECT\",\n              \"comment\": \"Transfer amount exceeds daily limit\",\n              \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n            },\n            {\n              \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n              \"vote\": \"REJECT\",\n              \"comment\": \"Transfer amount exceeds daily limit\",\n              \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n            }\n          ]\n        },\n        \"source\": {\n          \"userId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n          \"walletAddress\": \"0xA25641cB6056C371CB65F28aC02450c9206e0fAA\",\n          \"walletType\": \"INDIVIDUAL\",\n          \"user\": {\n            \"email\": \"samuelyoon0@gmail.com\",\n            \"lastName\": \"Yoon\",\n            \"firstName\": \"Samuel\",\n            \"businessName\": \"string\"\n          }\n        },\n        \"destination\": {\n          \"userId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n          \"walletType\": \"INDIVIDUAL\",\n          \"walletAddress\": \"0xA25641cB6056C371CB65F28aC02450c9206e0fAA\",\n          \"user\": {\n            \"email\": \"samuelyoon0@gmail.com\",\n            \"lastName\": \"Yoon\",\n            \"firstName\": \"Samuel\",\n            \"businessName\": \"string\"\n          }\n        },\n        \"amount\": 0.01,\n        \"amountIncludeDeveloperFee\": 0.01,\n        \"receipt\": {\n          \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\"\n        },\n        \"developerFee\": {\n          \"feeId\": \"9b354c37-d20d-4d94-bcd8-c852353ca406\",\n          \"feeType\": \"FIX\",\n          \"feeAmount\": 0.5,\n          \"feePercent\": 0,\n          \"status\": \"CREATED\",\n          \"transactionHash\": \"string\",\n          \"failedReason\": \"string\"\n        }\n      }\n    }\n  ],\n  \"nextCursor\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e4a5abc4-8d5a-4dfb-8f4b-31983758cd52",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3ee61110-8ced-4648-bea3-26d20e013923",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0d04a372-6106-4034-b740-c16b1703bea3",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "72510b3b-5a39-4339-bf4b-92a4f1016548",
+          "name": "Retrieve a crypto transfer",
+          "request": {
+            "name": "Retrieve a crypto transfer",
+            "description": {},
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "transfers",
+                ":transferId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transferId",
+                  "description": "(Required) Transfer record ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "00a91347-9a2a-4f7c-937e-364def6a8fd7",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"WALLET.TRANSFER\",\n  \"transferDetails\": {\n    \"id\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n    \"requestId\": \"d0d62bec-2623-4f61-afda-148d6a8e1009\",\n    \"createdAt\": \"2025-02-03T16:11:36.654998+00:00\",\n    \"updatedAt\": \"2025-02-03T16:12:41.503+00:00\",\n    \"chain\": \"POLYGON_MAINNET\",\n    \"currency\": \"usdc\",\n    \"contractAddress\": \"0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359\",\n    \"status\": \"CREATED\",\n    \"failedReason\": \"\",\n    \"source\": {\n      \"userId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n      \"walletAddress\": \"0xA25641cB6056C371CB65F28aC02450c9206e0fAA\",\n      \"walletType\": \"INDIVIDUAL\",\n      \"user\": {\n        \"email\": \"samuelyoon0@gmail.com\",\n        \"lastName\": \"Yoon\",\n        \"firstName\": \"Samuel\",\n        \"businessName\": \"string\"\n      }\n    },\n    \"destination\": {\n      \"userId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n      \"walletType\": \"INDIVIDUAL\",\n      \"walletAddress\": \"0xA25641cB6056C371CB65F28aC02450c9206e0fAA\",\n      \"user\": {\n        \"email\": \"samuelyoon0@gmail.com\",\n        \"lastName\": \"Yoon\",\n        \"firstName\": \"Samuel\",\n        \"businessName\": \"string\"\n      }\n    },\n    \"amount\": 0.01,\n    \"amountIncludeDeveloperFee\": 0.01,\n    \"receipt\": {\n      \"transactionHash\": \"0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53\",\n      \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\"\n    },\n    \"developerFee\": {\n      \"feeId\": \"9b354c37-d20d-4d94-bcd8-c852353ca406\",\n      \"feeType\": \"FIX\",\n      \"feeAmount\": 0.5,\n      \"feePercent\": 0,\n      \"status\": \"CREATED\",\n      \"transactionHash\": \"string\",\n      \"failedReason\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1cd2b2b4-743f-45d3-a468-2497b75884b1",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "82449548-92b9-463f-96d3-02ca1c949541",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a5ef6de1-9b3b-4198-8058-8fec767efb11",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f54f1040-ef54-4588-8a72-5584b68c52a7",
+          "name": "Create a batch crypto transfer",
+          "request": {
+            "name": "Create a batch crypto transfer",
+            "description": {
+              "content": "Create a batch crypto transfer from a single wallet address to multiple wallet addresses among users.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "transfers",
+                "batches"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestId\": \"<uuid>\",\n  \"currency\": \"<string>\",\n  \"chain\": \"<string>\",\n  \"source\": {\n    \"userId\": \"<uuid>\"\n  },\n  \"destination\": {\n    \"batch\": [\n      {\n        \"amount\": \"<string>\",\n        \"userId\": \"<uuid>\",\n        \"walletAddress\": \"<string>\"\n      },\n      {\n        \"amount\": \"<string>\",\n        \"userId\": \"<uuid>\",\n        \"walletAddress\": \"<string>\"\n      }\n    ]\n  },\n  \"requireApproval\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c3315f0d-145a-4dc2-921a-4e6bad345cb9",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"WALLET.TRANSFER.BATCH\",\n  \"transferDetails\": {\n    \"id\": \"879af7af-67bf-469f-b718-d262a39d4857\",\n    \"requestId\": \"14a84906-b72e-4847-b34d-51b9048fa6a5\",\n    \"createdAt\": \"2025-04-05T00:55:50.609Z\",\n    \"updatedAt\": \"2025-04-05T00:56:33.236Z\",\n    \"chain\": \"POLYGON\",\n    \"currency\": \"usdc\",\n    \"contractAddress\": \"0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582\",\n    \"status\": \"COMPLETED\",\n    \"source\": {\n      \"userId\": \"6a13bd30-b3a3-4d44-af33-0b32e58261be\",\n      \"walletAddress\": \"0x99a8c5ED386d217BC6ff0AA1b3585606D475432B\",\n      \"walletType\": \"INDIVIDUAL\"\n    },\n    \"destination\": {\n      \"batch\": [\n        {\n          \"amount\": \"0.04\",\n          \"userId\": \"6a13bd30-b3a3-4d44-af33-0b32e58261be\"\n        },\n        {\n          \"amount\": \"0.04\",\n          \"userId\": \"6a13bd30-b3a3-4d44-af33-0b32e58261be\"\n        }\n      ]\n    },\n    \"receipt\": {\n      \"transactionHash\": \"0x57f0cd3429ea425d982882243428ef4a1eda5f1be2157c1b34ea48b49b24fe7f\",\n      \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n      \"approval\": {\n        \"id\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n        \"status\": \"PENDING\",\n        \"createdAt\": \"2025-02-03T16:11:36.654998+00:00\",\n        \"updatedAt\": \"2025-02-03T16:12:41.503+00:00\",\n        \"transferId\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n        \"transferType\": \"WALLET.TRANSFER.BATCH\",\n        \"fromDashboard\": true,\n        \"initiatorProfileId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n        \"votes\": [\n          {\n            \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n            \"vote\": \"REJECT\",\n            \"comment\": \"Transfer amount exceeds daily limit\",\n            \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n          },\n          {\n            \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n            \"vote\": \"REJECT\",\n            \"comment\": \"Transfer amount exceeds daily limit\",\n            \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n          }\n        ]\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "13cedff6-fa8d-42b9-85d9-23ae6c0c9372",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8e7e5388-a227-4ad0-b2ef-b10747924c8c",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5aed3592-b808-45a2-8048-274267c2567c",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "20f8684e-4a05-4609-9402-c17131dc4e1a",
+          "name": "List all batch crypto transfers",
+          "request": {
+            "name": "List all batch crypto transfers",
+            "description": {
+              "content": "Returns a list of batch crypto transfers associated with a user under your organization. The batch crypto transfers are returned sorted by creation date, with the most recent batch crypto transfers appearing first.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "transfers",
+                "batches"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "userId",
+                  "value": "<string>",
+                  "description": "The user ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<string>",
+                  "description": "default to 10, maximum to 100"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdBefore",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                },
+                {
+                  "disabled": false,
+                  "key": "createdAfter",
+                  "value": "<date>",
+                  "description": "ISO format: YYYY-MM-DD"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d125f829-40fa-433d-abc2-dca61bfd5022",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 1,\n  \"records\": [\n    {\n      \"transferType\": \"WALLET.TRANSFER.BATCH\",\n      \"transferDetails\": {\n        \"id\": \"a671d42d-9417-4bb3-868e-06c868d0d4b8\",\n        \"requestId\": \"d2189ddd-2d32-4a46-9421-d25ebf602e6c\",\n        \"createdAt\": \"2025-04-05T14:01:09.785Z\",\n        \"updatedAt\": \"2025-04-05T14:01:37.708Z\",\n        \"chain\": \"POLYGON\",\n        \"currency\": \"usdc\",\n        \"contractAddress\": \"0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582\",\n        \"status\": \"COMPLETED\",\n        \"source\": {\n          \"userId\": \"a1f70737-3844-4782-a321-ad481108a8ec\",\n          \"walletAddress\": \"0xAFD59de44048D33d964f720ec2Dec3465D8D887D\",\n          \"walletType\": \"INDIVIDUAL\"\n        },\n        \"destination\": {\n          \"batch\": [\n            {\n              \"amount\": \"0.01\",\n              \"userId\": \"a1f70737-3844-4782-a321-ad481108a8ec\",\n              \"walletAddress\": \"0x3dCe41a6251CFB0fA1E20EDbf1ce3aeAb9AB7d4f\"\n            },\n            {\n              \"amount\": \"0.01\",\n              \"userId\": \"a1f70737-3844-4782-a321-ad481108a8ec\",\n              \"walletAddress\": \"0x574EC257fDD66bFB7c4dE50bfab36c4c9834BBCa\"\n            }\n          ]\n        },\n        \"receipt\": {\n          \"transactionHash\": \"0xeef52c844f72f41717f025b160a8e6b34ebcd22ea77b5e70fd6ab4c5a42e98af\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n          \"approval\": {\n            \"id\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n            \"status\": \"PENDING\",\n            \"createdAt\": \"2025-02-03T16:11:36.654998+00:00\",\n            \"updatedAt\": \"2025-02-03T16:12:41.503+00:00\",\n            \"transferId\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n            \"transferType\": \"WALLET.TRANSFER.BATCH\",\n            \"fromDashboard\": true,\n            \"initiatorProfileId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n            \"votes\": [\n              {\n                \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n                \"vote\": \"REJECT\",\n                \"comment\": \"Transfer amount exceeds daily limit\",\n                \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n              },\n              {\n                \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n                \"vote\": \"REJECT\",\n                \"comment\": \"Transfer amount exceeds daily limit\",\n                \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n              }\n            ]\n          }\n        },\n        \"failedReason\": null\n      }\n    },\n    {\n      \"transferType\": \"WALLET.TRANSFER.BATCH\",\n      \"transferDetails\": {\n        \"id\": \"a671d42d-9417-4bb3-868e-06c868d0d4b8\",\n        \"requestId\": \"d2189ddd-2d32-4a46-9421-d25ebf602e6c\",\n        \"createdAt\": \"2025-04-05T14:01:09.785Z\",\n        \"updatedAt\": \"2025-04-05T14:01:37.708Z\",\n        \"chain\": \"POLYGON\",\n        \"currency\": \"usdc\",\n        \"contractAddress\": \"0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582\",\n        \"status\": \"COMPLETED\",\n        \"source\": {\n          \"userId\": \"a1f70737-3844-4782-a321-ad481108a8ec\",\n          \"walletAddress\": \"0xAFD59de44048D33d964f720ec2Dec3465D8D887D\",\n          \"walletType\": \"INDIVIDUAL\"\n        },\n        \"destination\": {\n          \"batch\": [\n            {\n              \"amount\": \"0.01\",\n              \"userId\": \"a1f70737-3844-4782-a321-ad481108a8ec\",\n              \"walletAddress\": \"0x7C41C5e0C74288E62feb0b9af030e3C75Ad44BDd\"\n            },\n            {\n              \"amount\": \"0.01\",\n              \"userId\": \"a1f70737-3844-4782-a321-ad481108a8ec\",\n              \"walletAddress\": \"0xF3A14fe79F7af3309f8A052366b1Be41536EdB1a\"\n            }\n          ]\n        },\n        \"receipt\": {\n          \"transactionHash\": \"0xeef52c844f72f41717f025b160a8e6b34ebcd22ea77b5e70fd6ab4c5a42e98af\",\n          \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n          \"approval\": {\n            \"id\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n            \"status\": \"PENDING\",\n            \"createdAt\": \"2025-02-03T16:11:36.654998+00:00\",\n            \"updatedAt\": \"2025-02-03T16:12:41.503+00:00\",\n            \"transferId\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n            \"transferType\": \"WALLET.TRANSFER.BATCH\",\n            \"fromDashboard\": true,\n            \"initiatorProfileId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n            \"votes\": [\n              {\n                \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n                \"vote\": \"REJECT\",\n                \"comment\": \"Transfer amount exceeds daily limit\",\n                \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n              },\n              {\n                \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n                \"vote\": \"REJECT\",\n                \"comment\": \"Transfer amount exceeds daily limit\",\n                \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n              }\n            ]\n          }\n        },\n        \"failedReason\": null\n      }\n    }\n  ],\n  \"nextCursor\": \"2025-04-05T14:01:09.785Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "539e960f-7b22-4ac5-b156-b4db6e5188b5",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "78aee293-d8ce-4456-a4f2-234a6303da9c",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2c360c65-6fad-448f-b98d-98859d553508",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBefore",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "createdAfter",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2e4f0041-9a97-4ca4-bae3-09633989e11d",
+          "name": "Retrieve a batch crypto transfer",
+          "request": {
+            "name": "Retrieve a batch crypto transfer",
+            "description": {},
+            "url": {
+              "path": [
+                "v2",
+                "wallets",
+                "transfers",
+                "batches",
+                ":transferId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transferId",
+                  "description": "(Required) Transfer record ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6653f45c-0716-4a89-93ab-88ea596cdc8c",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferType\": \"WALLET.TRANSFER.BATCH\",\n  \"transferDetails\": {\n    \"id\": \"879af7af-67bf-469f-b718-d262a39d4857\",\n    \"requestId\": \"14a84906-b72e-4847-b34d-51b9048fa6a5\",\n    \"createdAt\": \"2025-04-05T00:55:50.609Z\",\n    \"updatedAt\": \"2025-04-05T00:56:33.236Z\",\n    \"chain\": \"POLYGON\",\n    \"currency\": \"usdc\",\n    \"contractAddress\": \"0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582\",\n    \"status\": \"COMPLETED\",\n    \"source\": {\n      \"userId\": \"6a13bd30-b3a3-4d44-af33-0b32e58261be\",\n      \"walletAddress\": \"0x99a8c5ED386d217BC6ff0AA1b3585606D475432B\",\n      \"walletType\": \"INDIVIDUAL\"\n    },\n    \"destination\": {\n      \"batch\": [\n        {\n          \"amount\": \"0.04\",\n          \"userId\": \"6a13bd30-b3a3-4d44-af33-0b32e58261be\"\n        },\n        {\n          \"amount\": \"0.04\",\n          \"userId\": \"6a13bd30-b3a3-4d44-af33-0b32e58261be\"\n        }\n      ]\n    },\n    \"receipt\": {\n      \"transactionHash\": \"0x57f0cd3429ea425d982882243428ef4a1eda5f1be2157c1b34ea48b49b24fe7f\",\n      \"userOpHash\": \"0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac\",\n      \"approval\": {\n        \"id\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n        \"status\": \"PENDING\",\n        \"createdAt\": \"2025-02-03T16:11:36.654998+00:00\",\n        \"updatedAt\": \"2025-02-03T16:12:41.503+00:00\",\n        \"transferId\": \"006737ca-42d5-4780-b3c2-aeb63279c591\",\n        \"transferType\": \"WALLET.TRANSFER.BATCH\",\n        \"fromDashboard\": true,\n        \"initiatorProfileId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n        \"votes\": [\n          {\n            \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n            \"vote\": \"REJECT\",\n            \"comment\": \"Transfer amount exceeds daily limit\",\n            \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n          },\n          {\n            \"approverId\": \"aec66b02-4f3f-471c-839a-94820b36abb2\",\n            \"vote\": \"REJECT\",\n            \"comment\": \"Transfer amount exceeds daily limit\",\n            \"createdAt\": \"2025-02-03T16:12:41.503+00:00\"\n          }\n        ]\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fc849b72-6440-4eba-bc9d-fc6f8eacb3fc",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e5920f9b-4ebc-49e0-82b7-bfcd1b5ec80e",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a17a2ad2-b3ee-41db-9020-297a479834d5",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "wallets",
+                    "transfers",
+                    "batches",
+                    ":transferId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transferId",
+                      "description": "(Required) Transfer record ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Unexpected error happened\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://production.hifibridge.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "014d5acb-426d-4eb1-966e-da1cee0b30f2",
+    "name": "Hifi Account Crypto Transfer API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API documentation for Hifi",
+      "type": "text/plain"
+    }
+  }
+}

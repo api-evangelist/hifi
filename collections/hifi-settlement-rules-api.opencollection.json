@@ -1,0 +1,193 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Hifi Account Settlement Rules API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Settlement Rules",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a settlement rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/virtual-accounts/settlement-rules/:ruleId",
+            "params": [
+              {
+                "name": "ruleId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the settlement rule"
+              }
+            ]
+          },
+          "docs": "Get an existing settlement rule detail."
+        },
+        {
+          "info": {
+            "name": "Delete a settlement rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://production.hifibridge.com/v2/virtual-accounts/settlement-rules/:ruleId",
+            "params": [
+              {
+                "name": "ruleId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the settlement rule"
+              }
+            ]
+          },
+          "docs": "Delete an existing settlement rule."
+        },
+        {
+          "info": {
+            "name": "List all settlement rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/virtual-accounts/settlement-rules",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of settlement rules to return, default to 10 maximum to 100"
+              },
+              {
+                "name": "createdBefore",
+                "value": "",
+                "type": "query",
+                "description": "Return the settlement rules that created before this date"
+              },
+              {
+                "name": "createdAfter",
+                "value": "",
+                "type": "query",
+                "description": "Return the settlement rules that created after this date"
+              },
+              {
+                "name": "chain",
+                "value": "",
+                "type": "query",
+                "description": "Return the settlement rules that are created on this chain"
+              }
+            ]
+          },
+          "docs": "List all settlement rules available for virtual accounts."
+        },
+        {
+          "info": {
+            "name": "Create a settlement rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/virtual-accounts/settlement-rules",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new settlement rule for virtual accounts. Settlement rules define how fees are calculated and distributed when processing an onramp transaction.\n"
+        },
+        {
+          "info": {
+            "name": "Update a settlement rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/virtual-accounts/settlement-rules/:ruleId/update",
+            "params": [
+              {
+                "name": "ruleId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the settlement rule"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update an existing settlement rule. This will replace all existing rules with the new configuration.\n"
+        },
+        {
+          "info": {
+            "name": "Apply settlement rule to virtual account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/virtual-accounts/:accountId/settlement-rules/:ruleId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the virtual account"
+              },
+              {
+                "name": "ruleId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the settlement rule"
+              }
+            ]
+          },
+          "docs": "Apply a settlement rule to a specific virtual account. This will enable the fee structure defined in the rule for transactions on that account.\n"
+        },
+        {
+          "info": {
+            "name": "Remove settlement rule from virtual account",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://production.hifibridge.com/v2/users/:userId/virtual-accounts/:accountId/settlement-rules",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the virtual account"
+              }
+            ]
+          },
+          "docs": "Remove a settlement rule from a specific virtual account. This will disable the fee structure for that account.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

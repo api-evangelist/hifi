@@ -1,0 +1,404 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Hifi Account Kyc API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Kyc",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve KYC information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              }
+            ]
+          },
+          "docs": "Get the KYC information the user currently holds.\n"
+        },
+        {
+          "info": {
+            "name": "Update KYC information",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the user's KYC information.\n\nThe Update KYC endpoint allows you to add or modify the user's existing KYC data. This is the only endpoint available for making changes to the user's KYC information.\n\nHIFI does not provide services to users or businesses from sanctioned and high-risk regions or unsupported US states. See [here](https://docs.hifibridge.com/docs/compliance/regions) for supported regions.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve KYC requirements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc/requirements",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "rails",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get the required and optional KYC fields for a specific rail, along with any invalid KYC fields currently held by the user for unlocking the rail.\n\nThe Get KYC Requirements endpoint provides a comprehensive list of required and optional KYC fields needed to initiate a KYC submission (the same set of info available in our [Compliance Guide](https://docs.hifibridge.com/docs/rails/overview)). \nAdditionally, it identifies any invalid fields in the user's current KYC data that need to be updated befo"
+        },
+        {
+          "info": {
+            "name": "Submit KYC",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc/submissions",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submit the user's current KYC data to unlock a specific rail. Any updates to the user's KYC data prior to submission should be made using the [Update KYC](https://docs.hifibridge.com/api-reference/kyc/update-kyc-information) endpoint.)      \n\nThe KYC data will only be submitted if all the required KYC fields for the rail are provided. If any required fields are missing, no submission will occur, and the user must supply the missing information using the [Update KYC](https://docs.hifibridge.com/a"
+        },
+        {
+          "info": {
+            "name": "Retrieve KYC status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc/status",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "rails",
+                "value": "",
+                "type": "query",
+                "description": "The type of rail."
+              }
+            ]
+          },
+          "docs": "Get the user's latest KYC status for a specific rail after a KYC submission. If no KYC submission has been made for the rail, it will have an `INACTIVE` status.\n\nThe Get KYC Status endpoint provides the current KYC status of a rail, including details on any invalid or incomplete fields that may require updates. \nTo address any invalid or incomplete fields, use the [Update KYC endpoint](https://docs.hifibridge.com/api-reference/kyc/update-kyc-information), and then resubmit the data using the [Su"
+        },
+        {
+          "info": {
+            "name": "List all KYC statuses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/kyc/status",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "query",
+                "description": "The user ID."
+              },
+              {
+                "name": "userName",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "userEmail",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "rails",
+                "value": "",
+                "type": "query",
+                "description": "The type of rail."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "The statuses of the KYC."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "default to 10, maximum to 100"
+              },
+              {
+                "name": "createdBefore",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              },
+              {
+                "name": "createdAfter",
+                "value": "",
+                "type": "query",
+                "description": "ISO format: YYYY-MM-DD"
+              }
+            ]
+          },
+          "docs": "List all KYC statuses based on the provided filters.\n"
+        },
+        {
+          "info": {
+            "name": "Generate a KYC link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/kyc-link",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generate a KYC link to create a user, unlock rails for a user, or submit KYC for a user.\n\nThis endpoint allows you to generate a HIFI-hosted KYC link that can be shared with users to collect their KYC information. The collected data can be used for User Creation, KYC Submission, or unlocking KYC rails for the user.\n"
+        },
+        {
+          "info": {
+            "name": "List all UBOs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc/ubos",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              }
+            ]
+          },
+          "docs": "Get all UBOs associated with the user.\n"
+        },
+        {
+          "info": {
+            "name": "Add a UBO",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc/ubos",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a UBO to the user.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a UBO",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc/ubos/:uboId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "uboId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the Ultimate Beneficial Owner (UBO)."
+              }
+            ]
+          },
+          "docs": "Get a specific UBO associated with the user.\n"
+        },
+        {
+          "info": {
+            "name": "Update a UBO",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc/ubos/:uboId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "uboId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the Ultimate Beneficial Owner (UBO)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a UBO for the user.\n"
+        },
+        {
+          "info": {
+            "name": "List all documents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc/documents",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              }
+            ]
+          },
+          "docs": "Get all documents associated with the user.\n"
+        },
+        {
+          "info": {
+            "name": "Add documents",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc/documents",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add documents to the user's KYC.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc/documents/:documentId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "documentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the document."
+              }
+            ]
+          },
+          "docs": "Get a specific document associated with the user or ubo.\n"
+        },
+        {
+          "info": {
+            "name": "Update a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://production.hifibridge.com/v2/users/:userId/kyc/documents/:documentId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the user"
+              },
+              {
+                "name": "documentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the document."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a document for the user.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
