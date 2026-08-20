@@ -124,6 +124,8 @@ apis:
   humanURL: https://docs.hifi.com
   baseURL: https://production.hifibridge.com
   tags:
+  - KYC
+  tags_raw:
   - Kyc
   properties:
   - type: OpenAPI
@@ -138,6 +140,8 @@ apis:
   humanURL: https://docs.hifi.com
   baseURL: https://production.hifibridge.com
   tags:
+  - Off-Ramp
+  tags_raw:
   - Offramp
   properties:
   - type: OpenAPI
@@ -152,6 +156,8 @@ apis:
   humanURL: https://docs.hifi.com
   baseURL: https://production.hifibridge.com
   tags:
+  - On-Ramp
+  tags_raw:
   - Onramp
   properties:
   - type: OpenAPI
@@ -250,6 +256,8 @@ apis:
   humanURL: https://docs.hifi.com
   baseURL: https://production.hifibridge.com
   tags:
+  - Wallets
+  tags_raw:
   - Wallet
   properties:
   - type: OpenAPI
