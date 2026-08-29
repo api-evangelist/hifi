@@ -11,6 +11,18 @@ description: >-
   regulated banking, letting developers build global payouts, treasury
   automation, escrow flows, and multi-chain settlement programmatically over a
   single REST API secured with bearer API keys.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: self-serve
