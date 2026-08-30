@@ -152,7 +152,7 @@ apis:
   humanURL: https://docs.hifi.com
   baseURL: https://production.hifibridge.com
   tags:
-  - Off-Ramp
+  - Offramp
   tags_raw:
   - Offramp
   properties:
@@ -168,7 +168,7 @@ apis:
   humanURL: https://docs.hifi.com
   baseURL: https://production.hifibridge.com
   tags:
-  - On-Ramp
+  - Onramp
   tags_raw:
   - Onramp
   properties:
