@@ -256,6 +256,8 @@ apis:
   humanURL: https://docs.hifi.com
   baseURL: https://production.hifibridge.com
   tags:
+  - Virtual Accounts
+  tags_raw:
   - Virtual Account
   properties:
   - type: OpenAPI
