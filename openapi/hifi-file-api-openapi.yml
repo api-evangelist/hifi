@@ -1,6 +1,6 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: Hifi Account File API
+  title: Hifi File API
   version: 2.0.0
   description: API documentation for Hifi
 servers:
@@ -17,9 +17,7 @@ paths:
   /v2/files:
     post:
       summary: Upload a file
-      description: 'Upload a file.
-
-        '
+      description: Upload a file.
       tags:
       - File
       requestBody:
@@ -33,8 +31,16 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: postV2Files
+      x-operation-id-source: derived
 components:
   responses:
+    FileUploadResponse:
+      description: File uploaded successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FileUploadResult'
     InternalServerErrorResponse:
       description: Internal Server Error
       content:
@@ -65,33 +71,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Unauthorized'
-    FileUploadResponse:
-      description: File uploaded successfully
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FileUploadResult'
   schemas:
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
-    FileUpload:
-      type: object
-      properties:
-        file:
-          type: string
-          format: binary
-      required:
-      - file
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Not authorized
     FileUploadResult:
       type: object
       properties:
@@ -117,6 +97,26 @@ components:
         fileName: document.pdf
         size: 204800
         mimeType: application/pdf
+    FileUpload:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+      required:
+      - file
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
   requestBodies:
     FileUploadBody:
       required: true

@@ -1,6 +1,6 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: Hifi Account Common API
+  title: Hifi Common API
   version: 2.0.0
   description: API documentation for Hifi
 servers:
@@ -28,7 +28,28 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2Ping
+      x-operation-id-source: derived
 components:
+  schemas:
+    Pong:
+      type: object
+      properties:
+        message:
+          type: string
+          example: pong
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
   responses:
     InternalServerErrorResponse:
       description: Internal Server Error
@@ -66,25 +87,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Unauthorized'
-  schemas:
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
-    Pong:
-      type: object
-      properties:
-        message:
-          type: string
-          example: pong
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Not authorized
   securitySchemes:
     bearerAuth:
       type: http

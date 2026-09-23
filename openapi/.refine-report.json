@@ -1,21 +1,7 @@
 {
   "provider": "hifi",
   "sources": [
-    "hifi-account-api-openapi.yml",
-    "hifi-common-api-openapi.yml",
-    "hifi-cross-chain-bridge-api-openapi.yml",
-    "hifi-crypto-transfer-api-openapi.yml",
-    "hifi-file-api-openapi.yml",
-    "hifi-kyc-api-openapi.yml",
-    "hifi-offramp-api-openapi.yml",
-    "hifi-onramp-api-openapi.yml",
-    "hifi-reporting-api-openapi.yml",
-    "hifi-settlement-rules-api-openapi.yml",
-    "hifi-token-swap-api-openapi.yml",
-    "hifi-transfer-approvals-api-openapi.yml",
-    "hifi-user-api-openapi.yml",
-    "hifi-virtual-account-api-openapi.yml",
-    "hifi-wallet-api-openapi.yml"
+    "_original/hifi-openapi-original.json"
   ],
   "outputs": [
     "hifi-account-api-openapi.yml",
@@ -36,9 +22,30 @@
   ],
   "archived": [],
   "errors": [
-    "hifi-offramp-api-openapi.yml: dangling $ref: #/components/schemas/OfframpFee"
+    "hifi-openapi-original.json: dangling $ref: #/components/schemas/OfframpFee"
   ],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "hifi-openapi-original.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "hifi-openapi-original.json: declared missing tag: Settlement Rules",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "hifi-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-common-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-cross-chain-bridge-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-crypto-transfer-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-file-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-kyc-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-offramp-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-onramp-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-reporting-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-settlement-rules-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-token-swap-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-transfer-approvals-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-user-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-virtual-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hifi-wallet-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

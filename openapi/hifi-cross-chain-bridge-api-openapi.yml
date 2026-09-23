@@ -1,6 +1,6 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: Hifi Account Cross-Chain Bridge API
+  title: Hifi Cross-Chain Bridge API
   version: 2.0.0
   description: API documentation for Hifi
 servers:
@@ -31,11 +31,11 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: postV2WalletsBridges
+      x-operation-id-source: derived
     get:
       summary: List all bridging requests
-      description: 'Returns a list of bridging requests associated with a user under your organization.
-
-        '
+      description: Returns a list of bridging requests associated with a user under your organization.
       tags:
       - Cross-Chain Bridge
       parameters:
@@ -52,12 +52,12 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2WalletsBridges
+      x-operation-id-source: derived
   /v2/wallets/bridges/{transferId}/accept:
     post:
       summary: Accept a bridging request
-      description: 'Accept a bridging request to initialize the bridging of crypto assets across chains.
-
-        '
+      description: Accept a bridging request to initialize the bridging of crypto assets across chains.
       tags:
       - Cross-Chain Bridge
       parameters:
@@ -71,6 +71,8 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: postV2WalletsBridgesByTransferIdAccept
+      x-operation-id-source: derived
   /v2/wallets/bridges/{transferId}:
     get:
       summary: Retrieve a bridging request
@@ -87,8 +89,135 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2WalletsBridgesByTransferId
+      x-operation-id-source: derived
 components:
+  responses:
+    BridgeAssetAllRecordsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BridgeAssetTransferListObject'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    BridgeAssetTransferResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BridgeAssetTransferObject'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    BridgeAssetRecordResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BridgeAssetTransferObject'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+  parameters:
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    BridgingRequestIDPathParameter:
+      name: transferId
+      in: path
+      schema:
+        type: string
+      description: Transfer record ID.
+      required: true
+    CreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    UserIdOptionalParameter:
+      name: userId
+      in: query
+      schema:
+        type: string
+      description: The user ID.
+      required: false
   schemas:
+    CreateBridgingRequest:
+      type: object
+      title: Bridging Request
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        amount:
+          type: number
+          format: float
+          minimum: 0
+          description: amount of crypto currency to bridge
+        source:
+          type: object
+          description: bridging source
+          $ref: '#/components/schemas/BridgingRequestSource'
+        destination:
+          type: object
+          description: bridging destination
+          $ref: '#/components/schemas/BridgingRequestDestination'
+        requireApproval:
+          type: boolean
+          description: 'Whether this bridging request requires approval before processing.
+
+            - `true`: Request will enter approval workflow
+
+            - `false` or omitted: Request proceeds immediately
+
+            '
+          default: false
+          example: false
+      required:
+      - requestId
+      - amount
+      - source
+      - destination
     BridgingRequestDestination:
       type: object
       properties:
@@ -121,12 +250,6 @@ components:
       required:
       - chain
       - currency
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
     BridgeAssetTransferObject:
       type: object
       properties:
@@ -201,44 +324,55 @@ components:
                       type: object
                       properties:
                         transactionHash:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
                         userOpHash:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
                         chain:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
                     burn:
                       type: object
                       properties:
                         transactionHash:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
                         userOpHash:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
                         chain:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
                     approve:
                       type: object
                       properties:
                         transactionHash:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
                         userOpHash:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
                         chain:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
             failedReason:
-              type: string
-              nullable: true
+              type:
+              - string
+              - 'null'
             fee:
-              type: number
-              nullable: true
+              type:
+              - number
+              - 'null'
             quoteInformation:
               type: object
               properties:
@@ -336,71 +470,12 @@ components:
               currency: usdc
             rate: '1'
             expiresAt: '2025-02-25T17:44:54.781Z'
-    CreateBridgingRequest:
-      type: object
-      title: Bridging Request
-      properties:
-        requestId:
-          type: string
-          description: unique identifier for the request (recommend using uuid v4)
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of crypto currency to bridge
-        source:
-          type: object
-          description: bridging source
-          $ref: '#/components/schemas/BridgingRequestSource'
-        destination:
-          type: object
-          description: bridging destination
-          $ref: '#/components/schemas/BridgingRequestDestination'
-        requireApproval:
-          type: boolean
-          description: 'Whether this bridging request requires approval before processing.
-
-            - `true`: Request will enter approval workflow
-
-            - `false` or omitted: Request proceeds immediately
-
-            '
-          default: false
-          example: false
-      required:
-      - requestId
-      - amount
-      - source
-      - destination
-    BridgingRequestSource:
-      type: object
-      properties:
-        userId:
-          type: string
-          format: uuid
-          description: user who is sending the crypto
-        chain:
-          type: string
-          enum:
-          - POLYGON
-          - ETHEREUM
-          - SOLANA
-        currency:
-          type: string
-          enum:
-          - usdc
-          - usdt
-          description: crypto currency
-      required:
-      - userId
-      - chain
-      - currency
-    Unauthorized:
+    InternalServerError:
       type: object
       properties:
         error:
           type: string
-          example: Not authorized
+          example: Unexpected error happened
     BridgeAssetTransferListObject:
       type: object
       properties:
@@ -470,95 +545,35 @@ components:
               rate: '1'
               expiresAt: '2025-02-25T17:44:54.781Z'
         nextCursor: '2025-02-24T17:44:54.781+00:00'
-  responses:
-    BridgeAssetTransferResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BridgeAssetTransferObject'
-    BridgeAssetRecordResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BridgeAssetTransferObject'
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    NotFoundResponse:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                enum:
-                - error
-              error:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  message:
-                    type: string
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
-    BridgeAssetAllRecordsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BridgeAssetTransferListObject'
-  parameters:
-    LimitParameter:
-      name: limit
-      in: query
-      schema:
-        type: string
-        minimum: 1
-        maximum: 100
-      description: default to 10, maximum to 100
-      required: false
-    UserIdOptionalParameter:
-      name: userId
-      in: query
-      schema:
-        type: string
-      description: The user ID.
-      required: false
-    BridgingRequestIDPathParameter:
-      name: transferId
-      in: path
-      schema:
-        type: string
-      description: Transfer record ID.
-      required: true
-    CreatedBeforeParameter:
-      name: createdBefore
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
-    CreatedAfterParameter:
-      name: createdAfter
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+    BridgingRequestSource:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: user who is sending the crypto
+        chain:
+          type: string
+          enum:
+          - POLYGON
+          - ETHEREUM
+          - SOLANA
+        currency:
+          type: string
+          enum:
+          - usdc
+          - usdt
+          description: crypto currency
+      required:
+      - userId
+      - chain
+      - currency
   requestBodies:
     CreateBridgingRequestBody:
       required: true

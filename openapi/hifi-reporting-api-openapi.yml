@@ -1,6 +1,6 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: Hifi Account Reporting API
+  title: Hifi Reporting API
   version: 2.0.0
   description: API documentation for Hifi
 servers:
@@ -31,6 +31,8 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2ReportingTemplates
+      x-operation-id-source: derived
   /v2/reporting/templates/{name}:
     get:
       summary: Get Template Details
@@ -55,6 +57,8 @@ paths:
         schema:
           type: string
         description: The name of the metric template (e.g., GROSS_VOLUME, TRANSACTION_COUNT, NEW_USERS)
+      operationId: getV2ReportingTemplatesByName
+      x-operation-id-source: derived
   /v2/reporting/params/{name}/options:
     get:
       summary: Get Parameter Options
@@ -94,6 +98,8 @@ paths:
           minimum: 1
           maximum: 1000
         description: Number of items per page (defaults to 100, max 1000)
+      operationId: getV2ReportingParamsByNameOptions
+      x-operation-id-source: derived
   /v2/reporting/metrics:
     post:
       summary: Create Saved Metric
@@ -113,6 +119,8 @@ paths:
           $ref: '#/components/responses/InternalServerErrorResponse'
       requestBody:
         $ref: '#/components/requestBodies/CreateMetricBody'
+      operationId: postV2ReportingMetrics
+      x-operation-id-source: derived
     get:
       summary: List Saved Metrics
       description: Retrieves all saved metric configurations associated with the authenticated profile.
@@ -129,6 +137,8 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2ReportingMetrics
+      x-operation-id-source: derived
   /v2/reporting/metrics/{id}:
     get:
       summary: Get Metric Details
@@ -154,6 +164,8 @@ paths:
           type: string
           format: uuid
         description: The UUID of the saved metric
+      operationId: getV2ReportingMetricsById
+      x-operation-id-source: derived
     post:
       summary: Update Saved Metric
       description: Updates the name, description, or parameters of an existing metric configuration. Supports partial updates.
@@ -180,6 +192,8 @@ paths:
         description: The UUID of the saved metric to update
       requestBody:
         $ref: '#/components/requestBodies/UpdateMetricBody'
+      operationId: postV2ReportingMetricsById
+      x-operation-id-source: derived
     delete:
       summary: Delete Saved Metric
       description: Permanently removes a saved metric configuration from the profile.
@@ -204,6 +218,8 @@ paths:
           type: string
           format: uuid
         description: The UUID of the saved metric to delete
+      operationId: deleteV2ReportingMetricsById
+      x-operation-id-source: derived
   /v2/reporting/metrics/preview:
     post:
       summary: Preview Metric Results
@@ -223,6 +239,8 @@ paths:
           $ref: '#/components/responses/InternalServerErrorResponse'
       requestBody:
         $ref: '#/components/requestBodies/PreviewMetricBody'
+      operationId: postV2ReportingMetricsPreview
+      x-operation-id-source: derived
   /v2/reporting/metrics/{id}/results:
     get:
       summary: Execute Saved Metric
@@ -248,20 +266,10 @@ paths:
           type: string
           format: uuid
         description: The UUID of the saved metric to execute
+      operationId: getV2ReportingMetricsByIdResults
+      x-operation-id-source: derived
 components:
   schemas:
-    UpdateMetricRequest:
-      type: object
-      description: Request to update an existing metric
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 100
-          description: Updated metric name
-        params:
-          $ref: '#/components/schemas/MetricParams'
-          description: Updated metric parameters
     PreviewMetricRequest:
       type: object
       description: Request to preview a metric calculation without saving
@@ -278,9 +286,79 @@ components:
       required:
       - template
       - params
-    TemplateListResponse:
+    TemplateResponse:
       type: object
-      description: List of templates response
+      description: Single template response
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+        data:
+          $ref: '#/components/schemas/MetricTemplate'
+        metadata:
+          type: object
+    UpdateMetricRequest:
+      type: object
+      description: Request to update an existing metric
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Updated metric name
+        params:
+          $ref: '#/components/schemas/MetricParams'
+          description: Updated metric parameters
+    MetricResponse:
+      type: object
+      description: Single metric response
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+        data:
+          $ref: '#/components/schemas/Metric'
+        metadata:
+          type: object
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    MetricParamDefinition:
+      type: object
+      description: Definition of a metric parameter
+      properties:
+        name:
+          type: string
+          description: Parameter name
+        type:
+          type: string
+          enum:
+          - date
+          - string
+          - array
+          - enum
+          - integer
+          description: Parameter data type
+        required:
+          type: boolean
+          description: Whether this parameter is required
+        description:
+          type: string
+          description: Parameter description
+        options:
+          type: array
+          description: Available options (for enum/array types)
+        constraints:
+          type: object
+          description: Validation constraints (e.g., min, max, maxItems)
+    ParamOptionsResponse:
+      type: object
+      description: Paginated list of parameter options
       properties:
         status:
           type: string
@@ -289,18 +367,29 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/MetricTemplate'
+            type: object
+            description: Option value and label
+            properties:
+              value:
+                description: Option value (type varies by parameter)
+              label:
+                type: string
+                description: Human-readable option label
         metadata:
           type: object
           properties:
             count:
               type: integer
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
+              description: Total number of options
+            page:
+              type: integer
+              description: Current page number
+            limit:
+              type: integer
+              description: Items per page
+            totalPages:
+              type: integer
+              description: Total number of pages
     Metric:
       type: object
       description: A saved metric definition
@@ -341,9 +430,9 @@ components:
       - params
       - createdAt
       - updatedAt
-    CreateMetricRequest:
+    MetricCalculationMetadata:
       type: object
-      description: Request to create a new saved metric
+      description: Metadata about the metric calculation
       properties:
         template:
           type: string
@@ -351,90 +440,71 @@ components:
           - GROSS_VOLUME
           - TRANSACTION_COUNT
           - NEW_USERS
-          description: Metric template name
-        name:
-          type: string
-          minLength: 1
-          maxLength: 100
-          description: User-defined metric name
-        params:
-          $ref: '#/components/schemas/MetricParams'
-      required:
-      - template
-      - name
-      - params
-    MetricResponse:
-      type: object
-      description: Single metric response
-      properties:
-        status:
+          description: The metric template used
+        recordCount:
+          type: integer
+          description: Actual number of records returned
+        projectedRowCount:
+          type:
+          - integer
+          - 'null'
+          description: Projected total row count (null if no breakdowns)
+        filledCount:
+          type: integer
+          description: Number of time periods filled with zero values
+        calculationInterval:
           type: string
           enum:
-          - success
-        data:
-          $ref: '#/components/schemas/Metric'
-        metadata:
-          type: object
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Not authorized
-    ParamOptionsResponse:
-      type: object
-      description: Paginated list of parameter options
-      properties:
-        status:
-          type: string
-          enum:
-          - success
-        data:
-          type: array
-          items:
-            type: object
-            description: Option value and label
-            properties:
-              value:
-                description: Option value (type varies by parameter)
-              label:
-                type: string
-                description: Human-readable option label
-        metadata:
+          - day
+          - week
+          - month
+          - quarter
+          - year
+          description: The calculation interval used
+        dateRange:
           type: object
           properties:
-            count:
-              type: integer
-              description: Total number of options
-            page:
-              type: integer
-              description: Current page number
-            limit:
-              type: integer
-              description: Items per page
-            totalPages:
-              type: integer
-              description: Total number of pages
-    MetricListResponse:
-      type: object
-      description: List of metrics response
-      properties:
-        status:
-          type: string
-          enum:
-          - success
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Metric'
-        metadata:
-          type: object
-          properties:
-            count:
-              type: integer
-            profileId:
+            start:
               type: string
-              format: uuid
+              format: date
+              description: Start date (ISO 8601)
+            end:
+              type: string
+              format: date
+              description: End date (ISO 8601)
+        filters:
+          type: object
+          description: Information about filters that were applied
+          additionalProperties: true
+        breakdowns:
+          type:
+          - object
+          - 'null'
+          description: Breakdown metadata (null if no breakdowns specified)
+          properties:
+            dimensions:
+              type: array
+              items:
+                type: string
+                enum:
+                - transactionType
+                - transactionStatus
+                - userId
+              description: List of breakdown dimensions used
+            dimensionCounts:
+              type: object
+              additionalProperties:
+                type: integer
+              description: 'Count of unique values per breakdown dimension.
+
+                Keys match breakdown dimension names.
+
+                '
+        metric:
+          type:
+          - string
+          - 'null'
+          description: Metric name (only present for saved metrics, not previews)
     MetricCalculationResponse:
       type: object
       description: "Response from metric calculation endpoints. The structure of `data` array items\nvaries based on the `breakdowns` parameter in the request.\n\n**Base structure (no breakdowns):**\n- Each item has: `periodStart`, plus metric-specific fields (e.g., `grossVolume`, `transactionCount`)\n\n**With breakdowns:**\n- Each item includes breakdown dimension fields (e.g., `transactionType`, `transactionStatus`, `userId`)\n- Field names match the breakdown dimension names from the request\n\n**Example without breakdowns:**\n```json\n{\n  \"status\": \"success\",\n  \"data\": [\n    { \"periodStart\": \"2025-01-01T00:00:00Z\", \"grossVolume\": 1000.50 },\n    { \"periodStart\": \"2025-01-02T00:00:00Z\", \"grossVolume\": 2000.75 }\n  ],\n  \"metadata\": { ... }\n}\n```\n\n**Example with breakdowns: [\"transactionType\"]:**\n```json\n{\n  \"status\": \"success\",\n  \"data\": [\n    { \"periodStart\": \"2025-01-01T00:00:00Z\", \"transactionType\": \"onramp\", \"grossVolume\": 500.25 },\n    { \"periodStart\": \"2025-01-01T00:00:00Z\", \"transactionType\": \"offramp\", \"grossVolume\": 500.25 }\n  ],\n  \"metadata\": { ... }\n}\n```\n"
@@ -522,46 +592,6 @@ components:
             additionalProperties: true
         metadata:
           $ref: '#/components/schemas/MetricCalculationMetadata'
-    TemplateResponse:
-      type: object
-      description: Single template response
-      properties:
-        status:
-          type: string
-          enum:
-          - success
-        data:
-          $ref: '#/components/schemas/MetricTemplate'
-        metadata:
-          type: object
-    MetricParamDefinition:
-      type: object
-      description: Definition of a metric parameter
-      properties:
-        name:
-          type: string
-          description: Parameter name
-        type:
-          type: string
-          enum:
-          - date
-          - string
-          - array
-          - enum
-          - integer
-          description: Parameter data type
-        required:
-          type: boolean
-          description: Whether this parameter is required
-        description:
-          type: string
-          description: Parameter description
-        options:
-          type: array
-          description: Available options (for enum/array types)
-        constraints:
-          type: object
-          description: Validation constraints (e.g., min, max, maxItems)
     MetricParams:
       type: object
       description: 'Metric parameters. Structure varies by template, but common fields include:
@@ -656,6 +686,54 @@ components:
           default: 500
           description: Maximum number of records to return
       additionalProperties: true
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+    CreateMetricRequest:
+      type: object
+      description: Request to create a new saved metric
+      properties:
+        template:
+          type: string
+          enum:
+          - GROSS_VOLUME
+          - TRANSACTION_COUNT
+          - NEW_USERS
+          description: Metric template name
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: User-defined metric name
+        params:
+          $ref: '#/components/schemas/MetricParams'
+      required:
+      - template
+      - name
+      - params
+    MetricListResponse:
+      type: object
+      description: List of metrics response
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Metric'
+        metadata:
+          type: object
+          properties:
+            count:
+              type: integer
+            profileId:
+              type: string
+              format: uuid
     MetricTemplate:
       type: object
       description: A metric template definition
@@ -682,143 +760,24 @@ components:
           items:
             type: string
           description: Available breakdown dimensions for this template
-    MetricCalculationMetadata:
+    TemplateListResponse:
       type: object
-      description: Metadata about the metric calculation
+      description: List of templates response
       properties:
-        template:
+        status:
           type: string
           enum:
-          - GROSS_VOLUME
-          - TRANSACTION_COUNT
-          - NEW_USERS
-          description: The metric template used
-        recordCount:
-          type: integer
-          description: Actual number of records returned
-        projectedRowCount:
-          type: integer
-          nullable: true
-          description: Projected total row count (null if no breakdowns)
-        filledCount:
-          type: integer
-          description: Number of time periods filled with zero values
-        calculationInterval:
-          type: string
-          enum:
-          - day
-          - week
-          - month
-          - quarter
-          - year
-          description: The calculation interval used
-        dateRange:
-          type: object
-          properties:
-            start:
-              type: string
-              format: date
-              description: Start date (ISO 8601)
-            end:
-              type: string
-              format: date
-              description: End date (ISO 8601)
-        filters:
-          type: object
-          description: Information about filters that were applied
-          additionalProperties: true
-        breakdowns:
-          type: object
-          nullable: true
-          description: Breakdown metadata (null if no breakdowns specified)
-          properties:
-            dimensions:
-              type: array
-              items:
-                type: string
-                enum:
-                - transactionType
-                - transactionStatus
-                - userId
-              description: List of breakdown dimensions used
-            dimensionCounts:
-              type: object
-              additionalProperties:
-                type: integer
-              description: 'Count of unique values per breakdown dimension.
-
-                Keys match breakdown dimension names.
-
-                '
-        metric:
-          type: string
-          nullable: true
-          description: Metric name (only present for saved metrics, not previews)
-  examples:
-    MetricResultsGrossVolumeExample:
-      summary: GROSS_VOLUME metric results (no breakdowns, with metric name)
-      value:
-        status: success
+          - success
         data:
-        - periodStart: '2025-11-06'
-          grossVolume: 0
-        - periodStart: '2025-11-05'
-          grossVolume: 0
-        - periodStart: '2025-11-04'
-          grossVolume: 0
-        - periodStart: '2025-11-03'
-          grossVolume: 0
-        - periodStart: '2025-11-02'
-          grossVolume: 0
-        - periodStart: '2025-11-01'
-          grossVolume: 0
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricTemplate'
         metadata:
-          template: GROSS_VOLUME
-          recordCount: 6
-          projectedRowCount: null
-          filledCount: 6
-          calculationInterval: day
-          dateRange:
-            start: '2025-11-01'
-            end: '2025-11-07'
-          filters:
-            createdAfter:
-              applied: subset
-              specified: true
-              values: '2025-11-01'
-            createdBefore:
-              applied: subset
-              specified: true
-              values: '2025-11-07'
-            calculationInterval:
-              applied: subset
-              specified: true
-              values: day
-            transactionTypes:
-              applied: subset
-              specified: true
-              count: 2
-              values:
-              - onramp
-              - offramp
-            userIds:
-              applied: all
-              specified: false
-              count: 1000
-              note: 1000 total (list omitted for brevity)
-          breakdowns: null
-          metric: Daily Revenue Report
-    PreviewMetricRequestGrossVolumeMonthlyExample:
-      summary: Preview GROSS_VOLUME metric (monthly interval)
-      value:
-        template: GROSS_VOLUME
-        params:
-          createdAfter: '2025-01-01'
-          createdBefore: '2025-12-01'
-          calculationInterval: month
-          transactionTypes:
-          - onramp
-          - offramp
+          type: object
+          properties:
+            count:
+              type: integer
+  examples:
     PreviewMetricRequestTransfersWithBreakdownsExample:
       summary: Preview TRANSACTION_COUNT metric (with multiple breakdowns)
       value:
@@ -836,6 +795,23 @@ components:
           breakdowns:
           - transactionType
           - transactionStatus
+    ParamOptionsUserIdsExample:
+      summary: User IDs parameter options (paginated)
+      value:
+        status: success
+        data:
+        - f6a78498-0994-5bea-b5ab-7d40a231217a
+        - c92f87e6-eaac-59a3-898f-d8c847553f5f
+        - fb0b02ed-6bcc-5724-8269-dcaeb6474be2
+        - b56ac719-efc3-5e40-b99f-2daf85d519dc
+        - 2bbbda5d-0464-5748-801a-dae6ae3dbad9
+        metadata:
+          count: 5
+          page: 1
+          limit: 5
+          total: 1000
+          totalPages: 200
+          hasMore: true
     TemplateListExample:
       summary: List of all metric templates
       value:
@@ -1017,6 +993,180 @@ components:
           breakdownOptions: null
         metadata:
           count: 3
+    PreviewMetricRequestGrossVolumeMonthlyExample:
+      summary: Preview GROSS_VOLUME metric (monthly interval)
+      value:
+        template: GROSS_VOLUME
+        params:
+          createdAfter: '2025-01-01'
+          createdBefore: '2025-12-01'
+          calculationInterval: month
+          transactionTypes:
+          - onramp
+          - offramp
+    ParamOptionsTransactionTypesExample:
+      summary: Transaction types parameter options
+      value:
+        status: success
+        data:
+        - onramp
+        - offramp
+        - transfer
+        metadata:
+          count: 3
+          page: 1
+          limit: 10
+          total: 3
+          totalPages: 1
+          hasMore: false
+    DeleteMetricResponseExample:
+      summary: Deleted metric response
+      value:
+        status: success
+        data:
+          id: 1154d700-bd7d-41d5-8676-87b541baa86e
+          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
+          template: TRANSACTION_COUNT
+          name: An Updated Report Title
+          params:
+            createdAfter: '2025-01-01'
+            createdBefore: '2025-12-01'
+            calculationInterval: week
+          createdAt: '2025-12-08T22:28:03.922Z'
+          updatedAt: '2025-12-08T22:33:04.112Z'
+        metadata: {}
+    CreateMetricRequestWithBreakdownsExample:
+      summary: Create metric request (TRANSACTION_COUNT with breakdowns)
+      value:
+        template: TRANSACTION_COUNT
+        name: Monthly Transfer Analysis
+        params:
+          createdAfter: '2025-01-01'
+          createdBefore: '2025-12-01'
+          calculationInterval: month
+          transactionTypes:
+          - onramp
+          - offramp
+          transactionStatuses:
+          - COMPLETED
+          breakdowns:
+          - transactionType
+    UpdateMetricRequestParamsExample:
+      summary: Update metric parameters
+      value:
+        params:
+          calculationInterval: week
+    PreviewMetricResponseGrossVolumeMonthlyExample:
+      summary: GROSS_VOLUME calculation result (monthly, with data)
+      value:
+        status: success
+        data:
+        - periodStart: '2025-11-01'
+          grossVolume: 191
+        - periodStart: '2025-10-01'
+          grossVolume: 124.05
+        - periodStart: '2025-09-01'
+          grossVolume: 6707.86
+        - periodStart: '2025-08-01'
+          grossVolume: 3066672.14
+        - periodStart: '2025-07-01'
+          grossVolume: 199916.7
+        - periodStart: '2025-06-01'
+          grossVolume: 24791
+        - periodStart: '2025-05-01'
+          grossVolume: 57653
+        - periodStart: '2025-04-01'
+          grossVolume: 54354.2
+        - periodStart: '2025-03-01'
+          grossVolume: 0
+        - periodStart: '2025-02-01'
+          grossVolume: 0
+        - periodStart: '2025-01-01'
+          grossVolume: 0
+        - periodStart: '2024-12-01'
+          grossVolume: 0
+        metadata:
+          template: GROSS_VOLUME
+          recordCount: 12
+          projectedRowCount: null
+          filledCount: 4
+          calculationInterval: month
+          dateRange:
+            start: '2025-01-01'
+            end: '2025-12-01'
+          filters:
+            createdAfter:
+              applied: subset
+              specified: true
+              values: '2025-01-01'
+            createdBefore:
+              applied: subset
+              specified: true
+              values: '2025-12-01'
+            calculationInterval:
+              applied: subset
+              specified: true
+              values: month
+            transactionTypes:
+              applied: subset
+              specified: true
+              count: 2
+              values:
+              - onramp
+              - offramp
+            userIds:
+              applied: all
+              specified: false
+              count: 1000
+              note: 1000 total (list omitted for brevity)
+          breakdowns: null
+    CreateMetricResponseExample:
+      summary: Created metric response
+      value:
+        status: success
+        data:
+          id: 9106f8e2-188f-4854-99fc-cb21ef6b998d
+          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
+          template: GROSS_VOLUME
+          name: Daily Revenue Report
+          params:
+            createdAfter: '2025-11-01'
+            createdBefore: '2025-11-07'
+            calculationInterval: day
+            transactionTypes:
+            - onramp
+            - offramp
+          createdAt: '2025-12-08T22:26:13.659Z'
+          updatedAt: '2025-12-08T22:26:13.659Z'
+        metadata: {}
+    UpdateMetricResponseExample:
+      summary: Updated metric response
+      value:
+        status: success
+        data:
+          id: 1154d700-bd7d-41d5-8676-87b541baa86e
+          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
+          template: TRANSACTION_COUNT
+          name: An Updated Report Title
+          params:
+            createdAfter: '2025-01-01'
+            createdBefore: '2025-12-01'
+            calculationInterval: week
+          createdAt: '2025-12-08T22:28:03.922Z'
+          updatedAt: '2025-12-08T22:33:04.112Z'
+        metadata: {}
+    CreateMetricRequestExample:
+      summary: Create metric request (GROSS_VOLUME)
+      value:
+        template: GROSS_VOLUME
+        name: Daily Revenue Report
+        params:
+          createdAfter: '2025-11-01'
+          createdBefore: '2025-11-07'
+          calculationInterval: day
+          transactionTypes:
+          - onramp
+          - offramp
     PreviewMetricResponseTransfersWithBreakdownsExample:
       summary: TRANSACTION_COUNT calculation result (with breakdowns)
       value:
@@ -1173,6 +1323,75 @@ components:
             dimensionCounts:
               transactionType: 3
               transactionStatus: 10
+    MetricResultsGrossVolumeExample:
+      summary: GROSS_VOLUME metric results (no breakdowns, with metric name)
+      value:
+        status: success
+        data:
+        - periodStart: '2025-11-06'
+          grossVolume: 0
+        - periodStart: '2025-11-05'
+          grossVolume: 0
+        - periodStart: '2025-11-04'
+          grossVolume: 0
+        - periodStart: '2025-11-03'
+          grossVolume: 0
+        - periodStart: '2025-11-02'
+          grossVolume: 0
+        - periodStart: '2025-11-01'
+          grossVolume: 0
+        metadata:
+          template: GROSS_VOLUME
+          recordCount: 6
+          projectedRowCount: null
+          filledCount: 6
+          calculationInterval: day
+          dateRange:
+            start: '2025-11-01'
+            end: '2025-11-07'
+          filters:
+            createdAfter:
+              applied: subset
+              specified: true
+              values: '2025-11-01'
+            createdBefore:
+              applied: subset
+              specified: true
+              values: '2025-11-07'
+            calculationInterval:
+              applied: subset
+              specified: true
+              values: day
+            transactionTypes:
+              applied: subset
+              specified: true
+              count: 2
+              values:
+              - onramp
+              - offramp
+            userIds:
+              applied: all
+              specified: false
+              count: 1000
+              note: 1000 total (list omitted for brevity)
+          breakdowns: null
+          metric: Daily Revenue Report
+    MetricResponseExample:
+      summary: Single saved metric
+      value:
+        status: success
+        data:
+          id: 1154d700-bd7d-41d5-8676-87b541baa86e
+          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
+          template: TRANSACTION_COUNT
+          name: Monthly Transfer Analysis
+          params:
+            createdAfter: '2025-01-01'
+            createdBefore: '2025-12-01'
+            calculationInterval: month
+          createdAt: '2025-12-08T22:28:03.922Z'
+          updatedAt: '2025-12-08T22:28:03.922Z'
+        metadata: {}
     PreviewMetricResponseGrossVolumeNoBreakdownsExample:
       summary: GROSS_VOLUME calculation result (no breakdowns)
       value:
@@ -1225,180 +1444,6 @@ components:
               count: 1000
               note: 1000 total (list omitted for brevity)
           breakdowns: null
-    UpdateMetricRequestParamsExample:
-      summary: Update metric parameters
-      value:
-        params:
-          calculationInterval: week
-    CreateMetricRequestExample:
-      summary: Create metric request (GROSS_VOLUME)
-      value:
-        template: GROSS_VOLUME
-        name: Daily Revenue Report
-        params:
-          createdAfter: '2025-11-01'
-          createdBefore: '2025-11-07'
-          calculationInterval: day
-          transactionTypes:
-          - onramp
-          - offramp
-    UpdateMetricResponseExample:
-      summary: Updated metric response
-      value:
-        status: success
-        data:
-          id: 1154d700-bd7d-41d5-8676-87b541baa86e
-          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
-          template: TRANSACTION_COUNT
-          name: An Updated Report Title
-          params:
-            createdAfter: '2025-01-01'
-            createdBefore: '2025-12-01'
-            calculationInterval: week
-          createdAt: '2025-12-08T22:28:03.922Z'
-          updatedAt: '2025-12-08T22:33:04.112Z'
-        metadata: {}
-    PreviewMetricResponseGrossVolumeMonthlyExample:
-      summary: GROSS_VOLUME calculation result (monthly, with data)
-      value:
-        status: success
-        data:
-        - periodStart: '2025-11-01'
-          grossVolume: 191
-        - periodStart: '2025-10-01'
-          grossVolume: 124.05
-        - periodStart: '2025-09-01'
-          grossVolume: 6707.86
-        - periodStart: '2025-08-01'
-          grossVolume: 3066672.14
-        - periodStart: '2025-07-01'
-          grossVolume: 199916.7
-        - periodStart: '2025-06-01'
-          grossVolume: 24791
-        - periodStart: '2025-05-01'
-          grossVolume: 57653
-        - periodStart: '2025-04-01'
-          grossVolume: 54354.2
-        - periodStart: '2025-03-01'
-          grossVolume: 0
-        - periodStart: '2025-02-01'
-          grossVolume: 0
-        - periodStart: '2025-01-01'
-          grossVolume: 0
-        - periodStart: '2024-12-01'
-          grossVolume: 0
-        metadata:
-          template: GROSS_VOLUME
-          recordCount: 12
-          projectedRowCount: null
-          filledCount: 4
-          calculationInterval: month
-          dateRange:
-            start: '2025-01-01'
-            end: '2025-12-01'
-          filters:
-            createdAfter:
-              applied: subset
-              specified: true
-              values: '2025-01-01'
-            createdBefore:
-              applied: subset
-              specified: true
-              values: '2025-12-01'
-            calculationInterval:
-              applied: subset
-              specified: true
-              values: month
-            transactionTypes:
-              applied: subset
-              specified: true
-              count: 2
-              values:
-              - onramp
-              - offramp
-            userIds:
-              applied: all
-              specified: false
-              count: 1000
-              note: 1000 total (list omitted for brevity)
-          breakdowns: null
-    CreateMetricRequestWithBreakdownsExample:
-      summary: Create metric request (TRANSACTION_COUNT with breakdowns)
-      value:
-        template: TRANSACTION_COUNT
-        name: Monthly Transfer Analysis
-        params:
-          createdAfter: '2025-01-01'
-          createdBefore: '2025-12-01'
-          calculationInterval: month
-          transactionTypes:
-          - onramp
-          - offramp
-          transactionStatuses:
-          - COMPLETED
-          breakdowns:
-          - transactionType
-    MetricResponseExample:
-      summary: Single saved metric
-      value:
-        status: success
-        data:
-          id: 1154d700-bd7d-41d5-8676-87b541baa86e
-          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
-          template: TRANSACTION_COUNT
-          name: Monthly Transfer Analysis
-          params:
-            createdAfter: '2025-01-01'
-            createdBefore: '2025-12-01'
-            calculationInterval: month
-          createdAt: '2025-12-08T22:28:03.922Z'
-          updatedAt: '2025-12-08T22:28:03.922Z'
-        metadata: {}
-    CreateMetricResponseExample:
-      summary: Created metric response
-      value:
-        status: success
-        data:
-          id: 9106f8e2-188f-4854-99fc-cb21ef6b998d
-          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
-          template: GROSS_VOLUME
-          name: Daily Revenue Report
-          params:
-            createdAfter: '2025-11-01'
-            createdBefore: '2025-11-07'
-            calculationInterval: day
-            transactionTypes:
-            - onramp
-            - offramp
-          createdAt: '2025-12-08T22:26:13.659Z'
-          updatedAt: '2025-12-08T22:26:13.659Z'
-        metadata: {}
-    PreviewMetricRequestGrossVolumeExample:
-      summary: Preview GROSS_VOLUME metric (no breakdowns)
-      value:
-        template: GROSS_VOLUME
-        params:
-          createdAfter: '2025-11-01'
-          createdBefore: '2025-11-07'
-          calculationInterval: day
-          transactionTypes:
-          - onramp
-          - offramp
-    ParamOptionsTransactionTypesExample:
-      summary: Transaction types parameter options
-      value:
-        status: success
-        data:
-        - onramp
-        - offramp
-        - transfer
-        metadata:
-          count: 3
-          page: 1
-          limit: 10
-          total: 3
-          totalPages: 1
-          hasMore: false
     MetricResultsNewUsersExample:
       summary: NEW_USERS metric results (no breakdowns)
       value:
@@ -1488,87 +1533,10 @@ components:
               values: day
           breakdowns: null
           metric: testname123
-    ParamOptionsUserIdsExample:
-      summary: User IDs parameter options (paginated)
+    UpdateMetricRequestNameExample:
+      summary: Update metric name
       value:
-        status: success
-        data:
-        - f6a78498-0994-5bea-b5ab-7d40a231217a
-        - c92f87e6-eaac-59a3-898f-d8c847553f5f
-        - fb0b02ed-6bcc-5724-8269-dcaeb6474be2
-        - b56ac719-efc3-5e40-b99f-2daf85d519dc
-        - 2bbbda5d-0464-5748-801a-dae6ae3dbad9
-        metadata:
-          count: 5
-          page: 1
-          limit: 5
-          total: 1000
-          totalPages: 200
-          hasMore: true
-    MetricListExample:
-      summary: List of saved metrics
-      value:
-        status: success
-        data:
-        - id: 1154d700-bd7d-41d5-8676-87b541baa86e
-          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
-          template: TRANSACTION_COUNT
-          name: Monthly Transfer Analysis
-          params:
-            createdAfter: '2025-01-01'
-            createdBefore: '2025-12-01'
-            calculationInterval: month
-          createdAt: '2025-12-08T22:28:03.922Z'
-          updatedAt: '2025-12-08T22:28:03.922Z'
-        - id: d2872dce-d2d1-41ae-87a9-f773adbf97ca
-          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
-          template: TRANSACTION_COUNT
-          name: Monthly Transfer Analysis
-          params:
-            breakdowns:
-            - transactionType
-            createdAfter: '2025-01-01'
-            createdBefore: '2025-12-01'
-            transactionStatuses:
-            - COMPLETED
-            calculationInterval: month
-            transactionTypes:
-            - onramp
-            - offramp
-          createdAt: '2025-12-08T22:26:45.765Z'
-          updatedAt: '2025-12-08T22:26:45.765Z'
-        - id: 9106f8e2-188f-4854-99fc-cb21ef6b998d
-          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
-          template: GROSS_VOLUME
-          name: Daily Revenue Report
-          params:
-            createdAfter: '2025-11-01'
-            createdBefore: '2025-11-07'
-            calculationInterval: day
-            transactionTypes:
-            - onramp
-            - offramp
-          createdAt: '2025-12-08T22:26:13.659Z'
-          updatedAt: '2025-12-08T22:26:13.659Z'
-        metadata:
-          count: 12
-          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
-    DeleteMetricResponseExample:
-      summary: Deleted metric response
-      value:
-        status: success
-        data:
-          id: 1154d700-bd7d-41d5-8676-87b541baa86e
-          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
-          template: TRANSACTION_COUNT
-          name: An Updated Report Title
-          params:
-            createdAfter: '2025-01-01'
-            createdBefore: '2025-12-01'
-            calculationInterval: week
-          createdAt: '2025-12-08T22:28:03.922Z'
-          updatedAt: '2025-12-08T22:33:04.112Z'
-        metadata: {}
+        name: An Updated Report Title
     TemplateExample:
       summary: Single metric template (GROSS_VOLUME)
       value:
@@ -1633,82 +1601,84 @@ components:
           - transactionType
           - userId
         metadata: {}
-    UpdateMetricRequestNameExample:
-      summary: Update metric name
+    PreviewMetricRequestGrossVolumeExample:
+      summary: Preview GROSS_VOLUME metric (no breakdowns)
       value:
-        name: An Updated Report Title
-  requestBodies:
-    UpdateMetricBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UpdateMetricRequest'
-          examples:
-            UpdateMetricRequestNameExample:
-              $ref: '#/components/examples/UpdateMetricRequestNameExample'
-            UpdateMetricRequestParamsExample:
-              $ref: '#/components/examples/UpdateMetricRequestParamsExample'
-    PreviewMetricBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PreviewMetricRequest'
-          examples:
-            PreviewMetricRequestGrossVolumeExample:
-              $ref: '#/components/examples/PreviewMetricRequestGrossVolumeExample'
-            PreviewMetricRequestGrossVolumeMonthlyExample:
-              $ref: '#/components/examples/PreviewMetricRequestGrossVolumeMonthlyExample'
-            PreviewMetricRequestTransfersWithBreakdownsExample:
-              $ref: '#/components/examples/PreviewMetricRequestTransfersWithBreakdownsExample'
-    CreateMetricBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateMetricRequest'
-          examples:
-            CreateMetricRequestExample:
-              $ref: '#/components/examples/CreateMetricRequestExample'
-            CreateMetricRequestWithBreakdownsExample:
-              $ref: '#/components/examples/CreateMetricRequestWithBreakdownsExample'
+        template: GROSS_VOLUME
+        params:
+          createdAfter: '2025-11-01'
+          createdBefore: '2025-11-07'
+          calculationInterval: day
+          transactionTypes:
+          - onramp
+          - offramp
+    MetricListExample:
+      summary: List of saved metrics
+      value:
+        status: success
+        data:
+        - id: 1154d700-bd7d-41d5-8676-87b541baa86e
+          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
+          template: TRANSACTION_COUNT
+          name: Monthly Transfer Analysis
+          params:
+            createdAfter: '2025-01-01'
+            createdBefore: '2025-12-01'
+            calculationInterval: month
+          createdAt: '2025-12-08T22:28:03.922Z'
+          updatedAt: '2025-12-08T22:28:03.922Z'
+        - id: d2872dce-d2d1-41ae-87a9-f773adbf97ca
+          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
+          template: TRANSACTION_COUNT
+          name: Monthly Transfer Analysis
+          params:
+            breakdowns:
+            - transactionType
+            createdAfter: '2025-01-01'
+            createdBefore: '2025-12-01'
+            transactionStatuses:
+            - COMPLETED
+            calculationInterval: month
+            transactionTypes:
+            - onramp
+            - offramp
+          createdAt: '2025-12-08T22:26:45.765Z'
+          updatedAt: '2025-12-08T22:26:45.765Z'
+        - id: 9106f8e2-188f-4854-99fc-cb21ef6b998d
+          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
+          template: GROSS_VOLUME
+          name: Daily Revenue Report
+          params:
+            createdAfter: '2025-11-01'
+            createdBefore: '2025-11-07'
+            calculationInterval: day
+            transactionTypes:
+            - onramp
+            - offramp
+          createdAt: '2025-12-08T22:26:13.659Z'
+          updatedAt: '2025-12-08T22:26:13.659Z'
+        metadata:
+          count: 12
+          profileId: e4c758d7-5475-4505-ba15-e129db0a441f
   responses:
-    UpdateMetricResponse:
-      description: Metric updated successfully
+    MetricResponse:
+      description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/MetricResponse'
           examples:
-            UpdateMetricResponseExample:
-              $ref: '#/components/examples/UpdateMetricResponseExample'
-    MetricCalculationResponse:
-      description: Metric calculation results
+            MetricResponseExample:
+              $ref: '#/components/examples/MetricResponseExample'
+    TemplateListResponse:
+      description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/MetricCalculationResponse'
+            $ref: '#/components/schemas/TemplateListResponse'
           examples:
-            PreviewMetricResponseGrossVolumeNoBreakdownsExample:
-              $ref: '#/components/examples/PreviewMetricResponseGrossVolumeNoBreakdownsExample'
-            PreviewMetricResponseGrossVolumeMonthlyExample:
-              $ref: '#/components/examples/PreviewMetricResponseGrossVolumeMonthlyExample'
-            PreviewMetricResponseTransfersWithBreakdownsExample:
-              $ref: '#/components/examples/PreviewMetricResponseTransfersWithBreakdownsExample'
-            MetricResultsNewUsersExample:
-              $ref: '#/components/examples/MetricResultsNewUsersExample'
-            MetricResultsGrossVolumeExample:
-              $ref: '#/components/examples/MetricResultsGrossVolumeExample'
-    DeleteMetricResponse:
-      description: Metric deleted successfully
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MetricResponse'
-          examples:
-            DeleteMetricResponseExample:
-              $ref: '#/components/examples/DeleteMetricResponseExample'
+            TemplateListExample:
+              $ref: '#/components/examples/TemplateListExample'
     NotFoundResponse:
       description: Resource not found
       content:
@@ -1727,45 +1697,6 @@ components:
                     type: string
                   message:
                     type: string
-    TemplateListResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/TemplateListResponse'
-          examples:
-            TemplateListExample:
-              $ref: '#/components/examples/TemplateListExample'
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    MetricListResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MetricListResponse'
-          examples:
-            MetricListExample:
-              $ref: '#/components/examples/MetricListExample'
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
-    TemplateResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/TemplateResponse'
-          examples:
-            TemplateExample:
-              $ref: '#/components/examples/TemplateExample'
     BadRequestResponse:
       description: Bad request - validation error
       content:
@@ -1787,15 +1718,6 @@ components:
                   details:
                     type: object
                     description: Field-specific validation errors
-    MetricResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MetricResponse'
-          examples:
-            MetricResponseExample:
-              $ref: '#/components/examples/MetricResponseExample'
     ParamOptionsResponse:
       description: Success
       content:
@@ -1807,6 +1729,36 @@ components:
               $ref: '#/components/examples/ParamOptionsUserIdsExample'
             ParamOptionsTransactionTypesExample:
               $ref: '#/components/examples/ParamOptionsTransactionTypesExample'
+    DeleteMetricResponse:
+      description: Metric deleted successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MetricResponse'
+          examples:
+            DeleteMetricResponseExample:
+              $ref: '#/components/examples/DeleteMetricResponseExample'
+    MetricListResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MetricListResponse'
+          examples:
+            MetricListExample:
+              $ref: '#/components/examples/MetricListExample'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
     CreateMetricResponse:
       description: Metric created successfully
       content:
@@ -1816,6 +1768,77 @@ components:
           examples:
             CreateMetricResponseExample:
               $ref: '#/components/examples/CreateMetricResponseExample'
+    MetricCalculationResponse:
+      description: Metric calculation results
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MetricCalculationResponse'
+          examples:
+            PreviewMetricResponseGrossVolumeNoBreakdownsExample:
+              $ref: '#/components/examples/PreviewMetricResponseGrossVolumeNoBreakdownsExample'
+            PreviewMetricResponseGrossVolumeMonthlyExample:
+              $ref: '#/components/examples/PreviewMetricResponseGrossVolumeMonthlyExample'
+            PreviewMetricResponseTransfersWithBreakdownsExample:
+              $ref: '#/components/examples/PreviewMetricResponseTransfersWithBreakdownsExample'
+            MetricResultsNewUsersExample:
+              $ref: '#/components/examples/MetricResultsNewUsersExample'
+            MetricResultsGrossVolumeExample:
+              $ref: '#/components/examples/MetricResultsGrossVolumeExample'
+    UpdateMetricResponse:
+      description: Metric updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MetricResponse'
+          examples:
+            UpdateMetricResponseExample:
+              $ref: '#/components/examples/UpdateMetricResponseExample'
+    TemplateResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TemplateResponse'
+          examples:
+            TemplateExample:
+              $ref: '#/components/examples/TemplateExample'
+  requestBodies:
+    UpdateMetricBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateMetricRequest'
+          examples:
+            UpdateMetricRequestNameExample:
+              $ref: '#/components/examples/UpdateMetricRequestNameExample'
+            UpdateMetricRequestParamsExample:
+              $ref: '#/components/examples/UpdateMetricRequestParamsExample'
+    CreateMetricBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateMetricRequest'
+          examples:
+            CreateMetricRequestExample:
+              $ref: '#/components/examples/CreateMetricRequestExample'
+            CreateMetricRequestWithBreakdownsExample:
+              $ref: '#/components/examples/CreateMetricRequestWithBreakdownsExample'
+    PreviewMetricBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PreviewMetricRequest'
+          examples:
+            PreviewMetricRequestGrossVolumeExample:
+              $ref: '#/components/examples/PreviewMetricRequestGrossVolumeExample'
+            PreviewMetricRequestGrossVolumeMonthlyExample:
+              $ref: '#/components/examples/PreviewMetricRequestGrossVolumeMonthlyExample'
+            PreviewMetricRequestTransfersWithBreakdownsExample:
+              $ref: '#/components/examples/PreviewMetricRequestTransfersWithBreakdownsExample'
   securitySchemes:
     bearerAuth:
       type: http
