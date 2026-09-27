@@ -31,26 +31,19 @@ paths:
       operationId: getV2Ping
       x-operation-id-source: derived
 components:
-  schemas:
-    Pong:
-      type: object
-      properties:
-        message:
-          type: string
-          example: pong
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Not authorized
   responses:
+    PingResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Pong'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
     InternalServerErrorResponse:
       description: Internal Server Error
       content:
@@ -75,18 +68,25 @@ components:
                     type: string
                   message:
                     type: string
-    PingResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Pong'
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
+  schemas:
+    Pong:
+      type: object
+      properties:
+        message:
+          type: string
+          example: pong
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
   securitySchemes:
     bearerAuth:
       type: http

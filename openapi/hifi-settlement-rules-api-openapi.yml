@@ -149,118 +149,7 @@ paths:
       operationId: deleteV2UsersByUserIdVirtualAccountsByAccountIdSettlementRules
       x-operation-id-source: derived
 components:
-  responses:
-    RemoveSettlementRuleResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RemoveSettlementRuleResponse'
-    UpdateSettlementRuleResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SettlementRuleResponse'
-          examples:
-            SettlementRuleObjectExample:
-              $ref: '#/components/examples/SettlementRuleObjectExample'
-    NotFoundResponse:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                enum:
-                - error
-              error:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  message:
-                    type: string
-    ApplySettlementRuleResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApplySettlementRuleResponse'
-    DeleteSettlementRuleResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DeleteSettlementRuleResponse'
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    CreateSettlementRuleResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SettlementRuleResponse'
-          examples:
-            SettlementRuleObjectExample:
-              $ref: '#/components/examples/SettlementRuleObjectExample'
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
-    GetSettlementRuleResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SettlementRuleResponse'
-          examples:
-            SettlementRuleObjectExample:
-              $ref: '#/components/examples/SettlementRuleObjectExample'
-    GetAllSettlementRulesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SettlementRuleListResponse'
   schemas:
-    SettlementRuleTier:
-      type: object
-      title: Settlement Rule Tier
-      properties:
-        min:
-          type: string
-          description: Minimum value for this tier (empty string is required for first tier)
-          example: '1000'
-        max:
-          type: string
-          description: Maximum value for this tier (empty string is required for last tier)
-          example: '2000'
-        value:
-          type: number
-          description: Fee value for this tier
-          example: 0.0005
-      required:
-      - min
-      - max
-      - value
-    DeleteSettlementRuleResponse:
-      type: object
-      title: Delete Settlement Rule Response
-      properties:
-        message:
-          type: string
-          description: Success message
-      required:
-      - message
     RemoveSettlementRuleResponse:
       type: object
       title: Remove Settlement Rule Response
@@ -309,15 +198,6 @@ components:
       - type
       - calculationModel
       - walletAddress
-    ApplySettlementRuleResponse:
-      type: object
-      title: Apply Settlement Rule Response
-      properties:
-        message:
-          type: string
-          description: Success message
-      required:
-      - message
     CreateSettlementRule:
       type: object
       title: Create Settlement Rule
@@ -350,18 +230,61 @@ components:
       - chain
       - includeHIFIFee
       - rules
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
     Unauthorized:
       type: object
       properties:
         error:
           type: string
           example: Not authorized
+    ApplySettlementRuleResponse:
+      type: object
+      title: Apply Settlement Rule Response
+      properties:
+        message:
+          type: string
+          description: Success message
+      required:
+      - message
+    DeleteSettlementRuleResponse:
+      type: object
+      title: Delete Settlement Rule Response
+      properties:
+        message:
+          type: string
+          description: Success message
+      required:
+      - message
+    SettlementRuleResponse:
+      type: object
+      title: Settlement Rule Response
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the settlement rule
+          example: 15c786fb-de7a-520c-a4b3-f312d4a122d2
+        chain:
+          type: string
+          enum:
+          - BASE
+          - POLYGON
+          - ETHEREUM
+          - SOLANA
+          description: Blockchain network for the settlement rule
+          example: BASE
+        includeHIFIFee:
+          type: boolean
+          description: Whether to include HiFi's fee in addition to custom rules, please contact HiFi support if you want to include HiFi's fee
+          example: false
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/SettlementRule'
+          description: Array of settlement rules
+      required:
+      - id
+      - chain
+      - includeHIFIFee
+      - rules
     UpdateSettlementRule:
       type: object
       title: Update Settlement Rule
@@ -394,6 +317,32 @@ components:
       - chain
       - includeHIFIFee
       - rules
+    SettlementRuleTier:
+      type: object
+      title: Settlement Rule Tier
+      properties:
+        min:
+          type: string
+          description: Minimum value for this tier (empty string is required for first tier)
+          example: '1000'
+        max:
+          type: string
+          description: Maximum value for this tier (empty string is required for last tier)
+          example: '2000'
+        value:
+          type: number
+          description: Fee value for this tier
+          example: 0.0005
+      required:
+      - min
+      - max
+      - value
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
     SettlementRuleListResponse:
       type: object
       title: Settlement Rule List Response
@@ -414,45 +363,21 @@ components:
       required:
       - count
       - rules
-    SettlementRuleResponse:
-      type: object
-      title: Settlement Rule Response
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the settlement rule
-          example: 15c786fb-de7a-520c-a4b3-f312d4a122d2
-        chain:
-          type: string
-          enum:
-          - BASE
-          - POLYGON
-          - ETHEREUM
-          - SOLANA
-          description: Blockchain network for the settlement rule
-          example: BASE
-        includeHIFIFee:
-          type: boolean
-          description: Whether to include HiFi's fee in addition to custom rules, please contact HiFi support if you want to include HiFi's fee
-          example: false
-        rules:
-          type: array
-          items:
-            $ref: '#/components/schemas/SettlementRule'
-          description: Array of settlement rules
-      required:
-      - id
-      - chain
-      - includeHIFIFee
-      - rules
   parameters:
-    UserIdPathParameter:
-      name: userId
+    RuleIdPathParameter:
+      name: ruleId
       in: path
       schema:
         type: string
-      description: ID of the user
+      description: ID of the settlement rule
       required: true
+    SettlementRuleCreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+      description: Return the settlement rules that created after this date
+      required: false
     VirtualAccountIdPathParameter:
       name: accountId
       in: path
@@ -472,13 +397,20 @@ components:
         - SOLANA
       description: Return the settlement rules that are created on this chain
       required: false
-    RuleIdPathParameter:
-      name: ruleId
+    UserIdPathParameter:
+      name: userId
       in: path
       schema:
         type: string
-      description: ID of the settlement rule
+      description: ID of the user
       required: true
+    SettlementRuleCreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+      description: Return the settlement rules that created before this date
+      required: false
     SettlementRuleLimitParameter:
       name: limit
       in: query
@@ -488,20 +420,88 @@ components:
         maximum: 100
       description: Number of settlement rules to return, default to 10 maximum to 100
       required: false
-    SettlementRuleCreatedBeforeParameter:
-      name: createdBefore
-      in: query
-      schema:
-        type: string
-      description: Return the settlement rules that created before this date
-      required: false
-    SettlementRuleCreatedAfterParameter:
-      name: createdAfter
-      in: query
-      schema:
-        type: string
-      description: Return the settlement rules that created after this date
-      required: false
+  responses:
+    UpdateSettlementRuleResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SettlementRuleResponse'
+          examples:
+            SettlementRuleObjectExample:
+              $ref: '#/components/examples/SettlementRuleObjectExample'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    CreateSettlementRuleResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SettlementRuleResponse'
+          examples:
+            SettlementRuleObjectExample:
+              $ref: '#/components/examples/SettlementRuleObjectExample'
+    GetSettlementRuleResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SettlementRuleResponse'
+          examples:
+            SettlementRuleObjectExample:
+              $ref: '#/components/examples/SettlementRuleObjectExample'
+    ApplySettlementRuleResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplySettlementRuleResponse'
+    DeleteSettlementRuleResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeleteSettlementRuleResponse'
+    RemoveSettlementRuleResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoveSettlementRuleResponse'
+    GetAllSettlementRulesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SettlementRuleListResponse'
   examples:
     SettlementRuleObjectExample:
       summary: Settlement Rule Object

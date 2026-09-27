@@ -34,43 +34,6 @@ paths:
       operationId: postV2Files
       x-operation-id-source: derived
 components:
-  responses:
-    FileUploadResponse:
-      description: File uploaded successfully
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FileUploadResult'
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    NotFoundResponse:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                enum:
-                - error
-              error:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  message:
-                    type: string
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
   schemas:
     FileUploadResult:
       type: object
@@ -97,6 +60,18 @@ components:
         fileName: document.pdf
         size: 204800
         mimeType: application/pdf
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
     FileUpload:
       type: object
       properties:
@@ -105,18 +80,43 @@ components:
           format: binary
       required:
       - file
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Not authorized
+  responses:
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    FileUploadResponse:
+      description: File uploaded successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FileUploadResult'
   requestBodies:
     FileUploadBody:
       required: true

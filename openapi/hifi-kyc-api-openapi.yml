@@ -354,111 +354,29 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    KycLinkForUnlockingRails:
+    KycLinkObject:
       type: object
-      title: KYC Link for Unlocking Rails
+      properties:
+        kycLinkUrl:
+          type: string
+          description: KYC link to be shared with the user
+    UsdRailBusinessKycStatusObject:
+      type: object
+      title: Kyc Status Object (USD - Business)
+      properties:
+        status:
+          $ref: '#/components/schemas/KycStatusEnum'
+        message:
+          type: string
+        reviewResult:
+          $ref: '#/components/schemas/ReviewResultObject'
+        details:
+          $ref: '#/components/schemas/ReviewDetailsBusinessObject'
       required:
-      - userId
-      - rails
-      properties:
-        userId:
-          type: string
-        rails:
-          type: array
-          items:
-            type: string
-            enum:
-            - USD
-            - SOUTH_AMERICA_STANDARD
-            - AFRICA_GENERAL
-            - AFRICA_NIGERIA
-          description: KYC rails to unlock for the user
-        redirectUrl:
-          type: string
-          description: URL to redirect to after KYC information is submitted, userId will be appended to the URL as a query parameter
-        recipientEmail:
-          type: string
-          description: Email address to send the KYC link to if provided (only in production)
-        templateId:
-          type: string
-          description: Template ID to use for the KYC link, please contact HIFI for more information
-    USDRailIndividualKYCReqOptObject:
-      type: object
-      title: KYC Requirement Object (USD - Individual)
-      properties:
-        userId:
-          type: string
-          format: uuid
-        rails:
-          $ref: '#/components/schemas/RailsEnum'
-        type:
-          type: string
-          enum:
-          - individual
-        required:
-          type: object
-          description: KYC fields required for this rail. The required fields varies based on the Rail.
-          properties:
-            firstName:
-              type: string
-            lastName:
-              type: string
-            email:
-              type: string
-            phone:
-              type: string
-            nationality:
-              type: string
-            dateOfBirth:
-              type: string
-            address:
-              $ref: '#/components/schemas/AddressReqOptObject'
-            taxIdentificationNumber:
-              type: string
-            documents:
-              $ref: '#/components/schemas/USDRailIndividualDocReqOptObject'
-        optional:
-          type: object
-          description: KYC fields that are optional for this rail. The optional fields varies based on the Rail.
-          properties:
-            sofEuQuestionnaire:
-              $ref: '#/components/schemas/SofEuQaKycReqOptObject'
-        invalid:
-          type: object
-          description: 'KYC fields the user currently holds that are either missing or invalid for this rail. The specific invalid fields vary depending on the user’s current KYC data.
-
-            '
-          properties:
-            message:
-              type: string
-            fields:
-              type: object
-              description: Any missing or invalid fields, which varies depending on the user’s current KYC data.
-              properties:
-                phone:
-                  type: string
-                nationality:
-                  type: string
-                taxIdentificationNumber:
-                  type: string
-            documents:
-              type: object
-              description: Any missing documents groups, which varies depending on the user’s current KYC documents data.
-              properties:
-                message:
-                  type: string
-                groups:
-                  type: object
-                  properties:
-                    identity:
-                      type: object
-                      properties:
-                        minCount:
-                          type: integer
-                        acceptedDocTypes:
-                          type: array
-                          items:
-                            type: string
+      - status
+      - message
+      - reviewResult
+      - details
     USDRailBusinessDocReqOptObject:
       type: object
       title: Document Group Requirements (Business)
@@ -471,76 +389,9 @@ components:
           $ref: '#/components/schemas/DocGroupRequirementObject'
         controlStructure:
           $ref: '#/components/schemas/DocGroupRequirementObject'
-    BusinessDocumentUpdate:
+    AfricaGeneralRailKycStatusObject:
       type: object
-      title: Update Business Document
-      properties:
-        issuedCountry:
-          type: string
-          description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
-        issuedDate:
-          type: string
-          description: Date of issue of the document.
-          format: date
-        expiryDate:
-          type: string
-          description: Expiry date of the document.
-          format: date
-        number:
-          type: string
-          description: If applicable, unique identification number of the document.
-        description:
-          type: string
-          description: Description of the document. Required if type is `OTHER`.
-        url:
-          type: string
-          deprecated: true
-          description: 'URL of the document. Either `url` or `fileId` is required, but not both.
-
-
-            *Maximum file size 10MB and minimum file size 10KB
-
-
-            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
-
-            '
-        fileId:
-          type: string
-          description: The file ID returned from the file upload endpoint. Either `url` or `fileId` is required, but not both.
-    AllKycStatusesObject:
-      type: array
-      items:
-        type: object
-        properties:
-          user:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-              type:
-                type: string
-                enum:
-                - individual
-                - business
-              name:
-                type: string
-              email:
-                type: string
-                format: email
-          rails:
-            $ref: '#/components/schemas/RailsEnum'
-          createdAt:
-            type: string
-            format: date-time
-          updatedAt:
-            type: string
-            format: date-time
-          status:
-            $ref: '#/components/schemas/KycStatusEnum'
-    GlobalNetworkRailKycStatusObject:
-      type: object
-      title: Kyc Status Object (GLOBAL_NETWORK)
+      title: Kyc Status Object (AFRICA_GENERAL)
       properties:
         status:
           $ref: '#/components/schemas/KycStatusEnum'
@@ -550,26 +401,162 @@ components:
           type: string
         onRamp:
           type: object
-          additionalProperties: false
+          properties:
+            kes:
+              type: object
+              properties:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            ghs:
+              type: object
+              properties:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            tzs:
+              type: object
+              properties:
+                bank:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            ugx:
+              type: object
+              properties:
+                bank:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            bwp:
+              type: object
+              properties:
+                bank:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            xaf:
+              type: object
+              properties:
+                bank:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            mwk:
+              type: object
+              properties:
+                bank:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            rwf:
+              type: object
+              properties:
+                bank:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            zmw:
+              type: object
+              properties:
+                bank:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            xof:
+              type: object
+              properties:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
         offRamp:
           type: object
-          additionalProperties: false
           properties:
-            brl:
+            kes:
               type: object
               properties:
-                pix:
+                bank:
                   $ref: '#/components/schemas/KycRailStatusObject'
-            hkd:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            zar:
               type: object
               properties:
-                wire:
+                bank:
                   $ref: '#/components/schemas/KycRailStatusObject'
-            mxn:
+            ghs:
               type: object
               properties:
-                spei:
+                momo:
                   $ref: '#/components/schemas/KycRailStatusObject'
+            tzs:
+              type: object
+              properties:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            ugx:
+              type: object
+              properties:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            bwp:
+              type: object
+              properties:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            xaf:
+              type: object
+              properties:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            mwk:
+              type: object
+              properties:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            rwf:
+              type: object
+              properties:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            zmw:
+              type: object
+              properties:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            xof:
+              type: object
+              properties:
+                momo:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+      required:
+      - status
+      - warnings
+      - message
+      - onRamp
+      - offRamp
+    ReviewDetailsIndividualObject:
+      type: object
+      title: Review Details Individual
+      properties:
+        personalInfo:
+          $ref: '#/components/schemas/VerificationStatusObject'
+        identity:
+          $ref: '#/components/schemas/DocumentVerificationStatusObject'
+        proofOfAddress:
+          $ref: '#/components/schemas/DocumentVerificationStatusObject'
+        questionnaire:
+          $ref: '#/components/schemas/VerificationStatusObject'
+    AfricaNigeriaRailKycStatusObject:
+      type: object
+      title: Kyc Status Object (AFRICA_NIGERIA)
+      properties:
+        status:
+          $ref: '#/components/schemas/KycStatusEnum'
+        warnings:
+          type: array
+        message:
+          type: string
+        onRamp:
+          type: object
+          properties:
+            ngn:
+              type: object
+              properties:
+                bank:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+        offRamp:
+          type: object
+          properties:
             ngn:
               type: object
               properties:
@@ -581,9 +568,37 @@ components:
       - message
       - onRamp
       - offRamp
-    IndividualDocumentAdd:
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    DocumentVerificationStatusObject:
+      type: object
+      title: Document Verification Status
+      properties:
+        reviewResult:
+          $ref: '#/components/schemas/ReviewResultObject'
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              type:
+                type: string
+                description: Document type.
+              subType:
+                type: string
+                description: Document subType.
+              reviewResult:
+                $ref: '#/components/schemas/ReviewResultObject'
+    BusinessDocumentAdd:
       type: array
-      title: Add Individual Document
+      title: Add Business Document
       description: An array of documents to be added.
       items:
         type: object
@@ -594,16 +609,31 @@ components:
 
               '
             enum:
-            - DRIVERS
-            - ID_CARD
-            - PASSPORT
-            - INCOME_SOURCE
-            - INVESTOR_DOC
-            - PAYMENT_SOURCE
-            - RESIDENCE_PERMIT
-            - SELFIE
+            - DIRECTORS_REGISTRY
+            - GOOD_STANDING_CERT
+            - INCORPORATION_ARTICLES
+            - INCORPORATION_CERT
+            - INCUMBENCY_CERT
+            - INFORMATION_STATEMENT
+            - POWER_OF_ATTORNEY
             - PROOF_OF_ADDRESS
-            - AUTH_LETTER
+            - SHAREHOLDER_REGISTRY
+            - STATE_REGISTRY
+            - TRUST_AGREEMENT
+            - SOURCE_OF_FUNDS
+            - FORMATION_CERT
+            - REGISTRATION_CERT
+            - PROOF_OF_OWNERSHIP
+            - CONSTITUTION_OR_ANNUAL_REPORT
+            - ARTICLES_OF_ASSOCIATION
+            - UBO_DECLARATION
+            - PARTNERSHIP_MINS_OF_MEETING
+            - PARTNERSHIP_DEED
+            - FLOW_OF_FUNDS
+            - SOURCE_OF_FUNDS
+            - ORGANIZATION_STRUCTURE
+            - SHARE_STRUCTURE
+            - BUSINESS_REGISTRATION
             - OTHER
           subType:
             type: string
@@ -611,8 +641,6 @@ components:
 
               '
             enum:
-            - FRONT_SIDE
-            - BACK_SIDE
             - SINGLE_SIDE
           issuedCountry:
             type: string
@@ -653,34 +681,218 @@ components:
         - type
         - subType
         - issuedCountry
-    UboObjectList:
+    KycBusinessObject:
       type: object
-      title: UBO Object List
+      title: KYC Object (Business)
       properties:
-        count:
-          type: integer
-          description: The total number of documents.
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/UboObject'
-    UsdRailBusinessKycStatusObject:
+        userId:
+          type: string
+          format: uuid
+        kycInfo:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - business
+            businessName:
+              type: string
+            businessNameLocal:
+              type: string
+            alternativeNames:
+              type: array
+              items:
+                type: string
+            businessDescription:
+              type: string
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+            sourceOfFunds:
+              type: string
+            businessType:
+              type: string
+            businessIndustry:
+              type: string
+            website:
+              type: string
+            address:
+              type: object
+              $ref: '#/components/schemas/Address'
+            registeredAddress:
+              type: object
+              $ref: '#/components/schemas/Address'
+            postalAddress:
+              type: object
+              $ref: '#/components/schemas/Address'
+            taxIdentificationNumberType:
+              type: string
+            taxIdentificationNumber:
+              type: string
+            leiNumber:
+              type: string
+            daoStatus:
+              type: boolean
+            transmitsCustomerFunds:
+              type: boolean
+            formationDate:
+              type: string
+            ipAddress:
+              type: string
+              format: ipv4
+            formationDocUrl:
+              type: string
+            proofOfOwnershipUrl:
+              type: string
+            complianceScreeningExplanation:
+              type: string
+            ultimateBeneficialOwners:
+              type: array
+              items:
+                $ref: '#/components/schemas/UboObject'
+            proofOfAddressType:
+              type: string
+            proofOfAddressUrl:
+              type: string
+            certificateOfRegistrationDocType:
+              type: string
+            certificateOfRegistrationDocUrl:
+              type: string
+            certificateNumber:
+              type: string
+            businessRegistrationDocUrl:
+              type: string
+            registrationNumber:
+              type: string
+            licenseExpirationDate:
+              type: string
+            certificateOfIncorporationDocUrl:
+              type: string
+            incorporationNumber:
+              type: string
+            incorporationDate:
+              type: string
+            incorporationCountry:
+              type: string
+            incorporationState:
+              type: string
+            controlScheme:
+              type: string
+            shareStructureUrl:
+              type: string
+            constitutionOrAnnualReportUrl:
+              type: string
+            articlesOfAssociationUrl:
+              type: string
+            uboDeclarationUrl:
+              type: string
+            partnershipMinsOfMeetingUrl:
+              type: string
+            partnershipDeedUrl:
+              type: string
+            certificateOfIncumbencyUrl:
+              type: string
+            sourceOfFundsUrl:
+              type: string
+            organizationStructureUrl:
+              type: string
+            flowOfFundsUrl:
+              type: string
+            purpose:
+              type: string
+            productServiceCategory:
+              type: string
+            tradeName:
+              type: string
+            exportCountry:
+              type: string
+            tradeType:
+              type: string
+            sofEuQuestionnaire:
+              type: object
+              $ref: '#/components/schemas/SofEuKybQuestionnaire'
+            supplementaryInfo:
+              type: string
+            supplementaryUrl:
+              type: string
+            documents:
+              type: array
+              items:
+                $ref: '#/components/schemas/DocumentObject'
+    AddressReqOptObject:
       type: object
-      title: Kyc Status Object (USD - Business)
+      title: Address Requirement
+      properties:
+        required:
+          type: object
+          properties:
+            addressLine1:
+              type: string
+            city:
+              type: string
+            stateProvinceRegion:
+              type: string
+            postalCode:
+              type: string
+            country:
+              type: string
+        optional:
+          type: object
+          properties:
+            addressLine2:
+              type: string
+    SouthAmericaRailKycStatusObject:
+      type: object
+      title: KYC Status Object (SOUTH_AMERICA_STANDARD)
       properties:
         status:
           $ref: '#/components/schemas/KycStatusEnum'
+        warnings:
+          type: array
         message:
           type: string
-        reviewResult:
-          $ref: '#/components/schemas/ReviewResultObject'
-        details:
-          $ref: '#/components/schemas/ReviewDetailsBusinessObject'
-      required:
-      - status
-      - message
-      - reviewResult
-      - details
+        limit:
+          type: object
+          properties:
+            daily:
+              type: number
+            monthly:
+              type: number
+            perTransaction:
+              type: number
+        onRamp:
+          type: object
+          properties:
+            brl:
+              type: object
+              properties:
+                pix:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+        offRamp:
+          type: object
+          properties:
+            brl:
+              type: object
+              properties:
+                pix:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            mxn:
+              type: object
+              properties:
+                spei:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            cop:
+              type: object
+              properties:
+                achCop:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            ars:
+              type: object
+              properties:
+                transfers:
+                  $ref: '#/components/schemas/KycRailStatusObject'
     SofEuKycQuestionnaire:
       type: object
       properties:
@@ -742,202 +954,353 @@ components:
           - sale_of_assets_real_estate
           - savings
           - someone_elses_funds
-    DocumentObjectList:
-      type: object
-      title: Document Object List
-      properties:
-        count:
-          type: integer
-          description: Number of documents.
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DocumentObject'
-    Rails:
+    UltimateBeneficialOwner:
       type: object
       properties:
-        rails:
-          $ref: '#/components/schemas/RailsEnum'
-      required:
-      - rails
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
-    AfricaGeneralRailKycSubmissionObject:
-      type: object
-      title: Kyc Submission Object (AFRICA_GENERAL)
-      properties:
-        AFRICA_GENERAL:
-          type: object
-          properties:
-            status:
-              $ref: '#/components/schemas/KycStatusEnum'
-            warnings:
-              type: array
-            message:
-              type: string
-            onRamp:
-              type: object
-              properties:
-                kes:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                ghs:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                tzs:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                ugx:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                bwp:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                xaf:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                mwk:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                rwf:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                zmw:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                xof:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-            offRamp:
-              type: object
-              properties:
-                kes:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                zar:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                ghs:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                tzs:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                ugx:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                bwp:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                xaf:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                mwk:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                rwf:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                zmw:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                xof:
-                  type: object
-                  properties:
-                    momo:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-          required:
-          - status
-          - warnings
-          - message
-          - onRamp
-          - offRamp
-      required:
-      - AFRICA_GENERAL
-    DocumentObject:
-      type: object
-      title: Document Object
-      properties:
-        type:
-          type: string
-        subType:
-          type: string
-        issuedCountry:
-          type: string
-        issuedDate:
-          type: string
-          format: date
-        expiryDate:
-          type: string
-          format: date
-        number:
-          type: string
-        description:
-          type: string
-        url:
+        role:
           type: string
           deprecated: true
-        fileId:
+          description: The role of the ubo in the business.
+          enum:
+          - OWNER_OR_OPERATOR
+          - PARTNER
+          - UBO
+          - DIRECTOR_CONTROL_PERSON_OR_LEGAL_REP
+          - AGENT_OR_AUTHORISED_PERSON
+        roles:
+          type: array
+          description: The roles of the ubo in the business.
+          items:
+            type: string
+            enum:
+            - UBO
+            - DIRECTOR
+            - REPRESENTATIVE
+            - SHAREHOLDER
+        businessTitle:
           type: string
-        uboId:
+          description: Agent or authorised person‘s job title.
+        firstName:
           type: string
-    UboUpdate:
+          description: first name in local language.
+        firstNameLocal:
+          type: string
+        middleName:
+          type: string
+        middleNameLocal:
+          type: string
+          description: middle name in local language.
+        lastName:
+          type: string
+        lastNameLocal:
+          type: string
+          description: last name in local language.
+        nationality:
+          type: string
+          description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        address:
+          type: object
+          description: Address of the user.
+          $ref: '#/components/schemas/Address'
+        dateOfBirth:
+          type: string
+          description: Date of birth in format yyyy-mm-dd.
+          format: date
+        countryOfBirth:
+          type: string
+          description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
+        stateOfBirth:
+          type: string
+        placeOfBirth:
+          type: string
+        gender:
+          type: string
+          enum:
+          - M
+          - F
+        taxIdentificationNumber:
+          type: string
+          description: For US owners, SSN should be used. For non-US individual owners, a national ID is preferred where applicable; however, a tax ID can also be used as an alternative.
+        taxResidenceCountry:
+          type: string
+          description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
+        govIdType:
+          type: string
+          enum:
+          - PASSPORT
+          - ID_CARD
+          - DRIVERS
+        govIdCountry:
+          type: string
+          description: Three-letter alpha-3 country code of the submitted government id as defined in the ISO 3166-1 spec.
+        govIdNumber:
+          type: string
+        govIdFrontUrl:
+          type: string
+          description: 'URL or Base64 encoded string of the front of the user''s government issued ID.
+
+
+            *If the file is base64 encoded, it must start with "data:"
+
+
+            *Maximum file size 3MB and minimum file size 10KB
+
+
+            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
+
+            '
+        govIdBackUrl:
+          type: string
+          description: 'URL or Base64 encoded string of the back of the user''s government issued ID.
+
+
+            *If the file is base64 encoded, it must start with "data:"
+
+
+            *Maximum file size 3MB and minimum file size 10KB
+
+
+            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
+
+            '
+        govIdIssuanceDate:
+          type: string
+          format: date
+          description: The issue date of the Gov ID document in format yyyy-mm-dd.
+        govIdExpirationDate:
+          type: string
+          format: date
+          description: The expiry date of the Gov ID document in format yyyy-mm-dd.
+        govIdIssuanceAuthority:
+          type: string
+          description: Issuing authority of the Gov ID document.
+        proofOfAddressType:
+          type: string
+          enum:
+          - UTILITY_BILL
+          - BANK_STATEMENT
+          - RENTAL_AGREEMENT
+          - TAX_DOCUMENT
+        proofOfAddressUrl:
+          type: string
+          description: 'URL or Base64 encoded string of the file of the proof of address.
+
+
+            *If the file is base64 encoded, it must start with "data:"
+
+
+            *Maximum file size 3MB and minimum file size 10KB
+
+
+            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
+
+            '
+        authLetterUrl:
+          type: string
+          description: 'URL or Base64 encoded string of the authorization letter that the authorised person can act on behalf of the business.
+
+
+            *If the file is base64 encoded, it must start with "data:"
+
+
+            *Maximum file size 3MB and minimum file size 10KB
+
+
+            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
+
+            '
+        shareProportion:
+          type: number
+          description: 'Percentage of shares owned (greater than or equal to 25%), only for UBOs.
+
+            '
+        hasOwnership:
+          type: boolean
+          description: True if the person has at least 25% ownership of the business.
+        hasControl:
+          type: boolean
+          description: True if the person has a significant responsibility to control, manage, or direct the activities of the business. At least one of the ultimateBeneficialOwners needs to have this set to true.
+        isSigner:
+          type: boolean
+          description: True if the person can authorize transactions on behalf of the business. At least one of the ultimateBeneficialOwners needs to have this set to true.
+        relationshipEstablishedAt:
+          type: string
+          format: date
+          description: The date that the ultimateBeneficialOwners first became an owner, control person, or signer for the business in format yyyy-mm-dd.
+        supplementaryInfo:
+          type: string
+          description: 'This field allows the inclusion of additional textual information or context that may be relevant to the KYC process.
+
+            '
+        supplementaryUrl:
+          type: string
+          description: 'This field is designed to contain supplementary documents or files that can be uploaded as part of the KYC process.
+
+
+            URL or Base64 encoded string of the file of the supplementary information.
+
+
+            *If the file is base64 encoded, it must start with "data:"
+
+
+            *Maximum file size 3MB and minimum file size 10KB
+
+
+            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
+
+            '
+    KycIndividualObject:
+      type: object
+      title: KYC Object (Individual)
+      properties:
+        userId:
+          type: string
+          format: uuid
+        kycInfo:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - individual
+            firstName:
+              type: string
+            firstNameLocal:
+              type: string
+            middleName:
+              type: string
+            middleNameLocal:
+              type: string
+            lastName:
+              type: string
+            lastNameLocal:
+              type: string
+            nationality:
+              type: string
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+            address:
+              type: object
+              $ref: '#/components/schemas/Address'
+            dateOfBirth:
+              type: string
+            countryOfBirth:
+              type: string
+            stateOfBirth:
+              type: string
+            placeOfBirth:
+              type: string
+            gender:
+              type: string
+            country:
+              type: string
+            taxIdentificationNumber:
+              type: string
+            taxResidenceCountry:
+              type: string
+            govIdType:
+              type: string
+            govIdFrontUrl:
+              type: string
+            govIdBackUrl:
+              type: string
+            govIdCountry:
+              type: string
+            govIdNumber:
+              type: string
+            govIdIssuanceDate:
+              type: string
+            govIdExpirationDate:
+              type: string
+            govIdIssuanceAuthority:
+              type: string
+            govIdHandHoldUrl:
+              type: string
+            proofOfAddressType:
+              type: string
+            proofOfAddressUrl:
+              type: string
+            sofEuQuestionnaire:
+              type: object
+              $ref: '#/components/schemas/SofEuKycQuestionnaire'
+            ipAddress:
+              type: string
+            idType:
+              type: string
+            idNumber:
+              type: string
+            additionalIdType:
+              type: string
+            additionalIdNumber:
+              type: string
+            purpose:
+              type: string
+            productServiceCategory:
+              type: string
+            supplementaryInfo:
+              type: string
+            supplementaryUrl:
+              type: string
+            documents:
+              type: array
+              items:
+                $ref: '#/components/schemas/DocumentObject'
+    KycRailStatusObject:
+      type: object
+      properties:
+        status:
+          type: string
+        warnings:
+          type: array
+        message:
+          type: string
+    KycStatusEnum:
+      type: string
+      enum:
+      - INACTIVE
+      - CREATED
+      - PENDING
+      - INCOMPLETE
+      - RFI_PENDING
+      - ACTIVE
+      - REJECTED
+      - CONTACT_SUPPORT
+      description: 'Kyc Status
+
+        - `INACTIVE`: No KYC submission has been made.
+
+        - `CREATED`: KYC application has been submitted.
+
+        - `PENDING`: Review in progress.
+
+        - `RFI_PENDING`: An RFI (Request for Information) email has been sent and is pending user response.
+
+        - `INCOMPLETE`: RFI or resubmission required.
+
+        - `ACTIVE`: User approved and onboarded.
+
+        - `REJECTED`: KYC application rejected.
+
+        - `CONTACT_SUPPORT`: Unexpected issue encountered during KYC review.
+
+        '
+    UboAdd:
       type: object
       title: Add UBO
       allOf:
       - $ref: '#/components/schemas/UltimateBeneficialOwner'
+      required:
+      - roles
+      - firstName
+      - lastName
     IndividualKycUpdate:
       type: object
       title: Update Individual User KYC
@@ -1151,351 +1514,6 @@ components:
             *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
 
             '
-    KycLinkObject:
-      type: object
-      properties:
-        kycLinkUrl:
-          type: string
-          description: KYC link to be shared with the user
-    BusinessDocumentAdd:
-      type: array
-      title: Add Business Document
-      description: An array of documents to be added.
-      items:
-        type: object
-        properties:
-          type:
-            type: string
-            description: 'Type of the document. This field is immutable once created.
-
-              '
-            enum:
-            - DIRECTORS_REGISTRY
-            - GOOD_STANDING_CERT
-            - INCORPORATION_ARTICLES
-            - INCORPORATION_CERT
-            - INCUMBENCY_CERT
-            - INFORMATION_STATEMENT
-            - POWER_OF_ATTORNEY
-            - PROOF_OF_ADDRESS
-            - SHAREHOLDER_REGISTRY
-            - STATE_REGISTRY
-            - TRUST_AGREEMENT
-            - SOURCE_OF_FUNDS
-            - FORMATION_CERT
-            - REGISTRATION_CERT
-            - PROOF_OF_OWNERSHIP
-            - CONSTITUTION_OR_ANNUAL_REPORT
-            - ARTICLES_OF_ASSOCIATION
-            - UBO_DECLARATION
-            - PARTNERSHIP_MINS_OF_MEETING
-            - PARTNERSHIP_DEED
-            - FLOW_OF_FUNDS
-            - SOURCE_OF_FUNDS
-            - ORGANIZATION_STRUCTURE
-            - SHARE_STRUCTURE
-            - BUSINESS_REGISTRATION
-            - OTHER
-          subType:
-            type: string
-            description: 'Subtype of the document. This field is immutable once created.
-
-              '
-            enum:
-            - SINGLE_SIDE
-          issuedCountry:
-            type: string
-            description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
-          issuedDate:
-            type: string
-            description: Date of issue of the document.
-            format: date
-          expiryDate:
-            type: string
-            description: Expiry date of the document.
-            format: date
-          number:
-            type: string
-            description: If applicable, unique identification number of the document.
-          description:
-            type: string
-            description: Description of the document. Required if type is `OTHER`.
-          url:
-            type: string
-            deprecated: true
-            description: 'URL of the document. Either `url` or `fileId` is required, but not both.
-
-
-              *Maximum file size 10MB and minimum file size 10KB
-
-
-              *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
-
-              '
-          fileId:
-            type: string
-            description: The file ID returned from the file upload endpoint. Either `url` or `fileId` is required, but not both.
-          uboId:
-            type: string
-            description: If provided, this document will be attached to the specified UBO. This field is immutable once created.
-        required:
-        - type
-        - subType
-        - issuedCountry
-    UboAdd:
-      type: object
-      title: Add UBO
-      allOf:
-      - $ref: '#/components/schemas/UltimateBeneficialOwner'
-      required:
-      - roles
-      - firstName
-      - lastName
-    DocumentVerificationStatusObject:
-      type: object
-      title: Document Verification Status
-      properties:
-        reviewResult:
-          $ref: '#/components/schemas/ReviewResultObject'
-        details:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-              type:
-                type: string
-                description: Document type.
-              subType:
-                type: string
-                description: Document subType.
-              reviewResult:
-                $ref: '#/components/schemas/ReviewResultObject'
-    Address:
-      type: object
-      properties:
-        addressLine1:
-          type: string
-        addressLine2:
-          type: string
-        city:
-          type: string
-        stateProvinceRegion:
-          type: string
-          description: "The second part of the [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2). This must be provided if the country has subdivisions.\n\nAn ISO 3166-2 code consists of two parts, separated by a hyphen (`-`):\n  1. The first part is the ISO 3166-1 alpha-2 code of the country (e.g., `US`, `CA`, `BR`);\n  2. The second part is a string of up to three alphanumeric characters representing a specific subdivision (e.g., state, province). This is typically based on national standards or developed by ISO.\n\n  Only provide the second part of the code (e.g., `CA` for California in `US-CA`, or `SP` for São Paulo in `BR-SP`).\n"
-        postalCode:
-          type: string
-          description: Must be supplied for countries that use postal codes.
-        country:
-          type: string
-          description: Three-letter alpha-3 country code as defined in the [ISO 3166-1 spec](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3).
-      required:
-      - addressLine1
-      - city
-      - stateProvinceRegion
-      - postalCode
-      - country
-    DocGroupRequirementObject:
-      type: object
-      title: Document Group Requirement
-      description: 'Represents minimum document requirements for a specific rail. Each group specifies the minimum number of documents required from a list of accepted document types.
-
-        **Note: Only documents provided through the Documents Endpoint will be considered for fulfilling these requirements.**
-
-        '
-      properties:
-        minCount:
-          type: integer
-          description: 'Minimum number of documents needed from the `acceptedDocTypes`.
-
-            '
-        acceptedDocTypes:
-          type: array
-          description: 'List of accepted document types. The user must provide at least `minCount` documents from this list.
-
-            '
-          items:
-            type: string
-    KycStatusEnum:
-      type: string
-      enum:
-      - INACTIVE
-      - CREATED
-      - PENDING
-      - INCOMPLETE
-      - RFI_PENDING
-      - ACTIVE
-      - REJECTED
-      - CONTACT_SUPPORT
-      description: 'Kyc Status
-
-        - `INACTIVE`: No KYC submission has been made.
-
-        - `CREATED`: KYC application has been submitted.
-
-        - `PENDING`: Review in progress.
-
-        - `RFI_PENDING`: An RFI (Request for Information) email has been sent and is pending user response.
-
-        - `INCOMPLETE`: RFI or resubmission required.
-
-        - `ACTIVE`: User approved and onboarded.
-
-        - `REJECTED`: KYC application rejected.
-
-        - `CONTACT_SUPPORT`: Unexpected issue encountered during KYC review.
-
-        '
-    SofEuKybQuestionnaire:
-      type: object
-      properties:
-        estimatedAnnualRevenueUsd:
-          type: string
-          description: Estimated annual revenue in USD.
-          enum:
-          - 0_99999
-          - '100000_999999'
-          - '1000000_9999999'
-          - '10000000_49999999'
-          - '50000000_249999999'
-          - 250000000_plus
-        expectedMonthlyPaymentsUsd:
-          type: string
-          description: Expected monthly payments in USD.
-        operatesInProhibitedCountries:
-          type: boolean
-          deprecated: true
-        primaryPurpose:
-          type: string
-          description: What is the primary purpose of the business account?
-          enum:
-          - charitable_donations
-          - ecommerce_retail_payments
-          - investment_purposes
-          - other
-          - payments_to_friends_or_family_abroad
-          - payroll
-          - personal_or_living_expenses
-          - protect_wealth
-          - purchase_goods_and_services
-          - receive_payments_for_goods_and_services
-          - tax_optimization
-          - third_party_money_transmission
-          - treasury_management
-        primaryPurposeOther:
-          type: string
-          description: Required if the primary purpose is 'other'.
-        highRiskActivities:
-          type: array
-          description: List of high-risk activities the business is involved in.
-          items:
-            type: string
-            enum:
-            - none_of_the_above
-            - adult_entertainment
-            - gambling
-            - hold_client_funds
-            - investment_services
-            - lending_banking
-            - marijuana_or_related_services
-            - money_services
-            - operate_foreign_exchange_virtual_currencies_brokerage_otc
-            - safe_deposit_box_rentals
-            - third_party_payment_processing
-            - weapons_firearms_and_explosives
-        sourceOfFunds:
-          type: string
-          description: What is the source of funds for the business account?
-          enum:
-          - business_loans
-          - grants
-          - inter_company_funds
-          - investment_proceeds
-          - legal_settlement
-          - owners_capital
-          - pension_retirement
-          - sale_of_assets
-          - sales_of_goods_and_services
-          - tax_refund
-          - third_party_funds
-          - treasury_reserves
-        sourceOfFundsDescription:
-          type: string
-          description: Description of the source of funds for the business' account.
-        transmitsCustomerFunds:
-          type: boolean
-          description: "Specifies whether the business directly receives, holds, or sends customer funds to another party on behalf of its users. \nA value of true means the business is acting as a money transmitter and is subject to money transmission regulations in addition to general money service obligations.\n"
-        transmitsCustomerFundsDescription:
-          type: string
-          description: "Describes whether and how the business actively transmits customer funds. i.e., moves money from one party to another on behalf of a customer (e.g., sending, remitting, or transferring funds). \nThis field should clarify the money-transmission activity performed.\n"
-        customerFundsDescription:
-          type: string
-          description: 'Describes the nature of the customer funds handled by the business. This field explains the characteristics of the funds rather than the act of transmitting them.
-
-            '
-        conductsMoneyServices:
-          type: boolean
-          description: "Indicates whether the business is engaged in providing money services as a line of business (e.g., money transmission, currency exchange, or other regulated financial activities). \nA value of true means the business is considered a Money Services Business (MSB) under applicable regulations and may be subject to AML, KYC, and licensing requirements.\n"
-    IndividualDocumentUpdate:
-      type: object
-      title: Update Individual Document
-      properties:
-        issuedCountry:
-          type: string
-          description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
-        issuedDate:
-          type: string
-          description: Date of issue of the document.
-          format: date
-        expiryDate:
-          type: string
-          description: Expiry date of the document.
-          format: date
-        number:
-          type: string
-          description: If applicable, unique identification number of the document.
-        description:
-          type: string
-          description: Description of the document. Required if type is `OTHER`.
-        url:
-          type: string
-          deprecated: true
-          description: 'URL of the document. Either `url` or `fileId` is required, but not both.
-
-
-            *Maximum file size 10MB and minimum file size 10KB
-
-
-            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
-
-            '
-        fileId:
-          type: string
-          description: The file ID returned from the file upload endpoint. Either `url` or `fileId` is required, but not both.
-    AddressReqOptObject:
-      type: object
-      title: Address Requirement
-      properties:
-        required:
-          type: object
-          properties:
-            addressLine1:
-              type: string
-            city:
-              type: string
-            stateProvinceRegion:
-              type: string
-            postalCode:
-              type: string
-            country:
-              type: string
-        optional:
-          type: object
-          properties:
-            addressLine2:
-              type: string
     ReviewDetailsBusinessObject:
       type: object
       title: Review Details Business Object
@@ -1522,77 +1540,13 @@ components:
                       format: uuid
                       description: UBO ID.
                 - $ref: '#/components/schemas/UsdRailIndividualKycStatusObject'
-    VerificationStatusObject:
-      type: object
-      title: Verification Status
-      properties:
-        reviewResult:
-          $ref: '#/components/schemas/ReviewResultObject'
-    SofEuQaKycReqOptObject:
-      type: object
-      title: SofEuQuestionnaire Requirement (Individual)
-      properties:
-        required:
-          type: object
-          properties:
-            actingAsIntermediary:
-              type: string
-            employmentStatus:
-              type: string
-            expectedMonthlyPayments:
-              type: string
-            mostRecentOccupation:
-              type: string
-            primaryPurpose:
-              type: string
-            sourceOfFunds:
-              type: string
-        optional:
-          type: object
-          properties:
-            primaryPurposeOther:
-              type: string
-    ReviewDetailsIndividualObject:
-      type: object
-      title: Review Details Individual
-      properties:
-        personalInfo:
-          $ref: '#/components/schemas/VerificationStatusObject'
-        identity:
-          $ref: '#/components/schemas/DocumentVerificationStatusObject'
-        proofOfAddress:
-          $ref: '#/components/schemas/DocumentVerificationStatusObject'
-        questionnaire:
-          $ref: '#/components/schemas/VerificationStatusObject'
-    ReviewResultObject:
-      type: object
-      title: Review Result
-      properties:
-        reviewAnswer:
-          type: string
-          enum:
-          - APPROVED
-          - DECLINED
-        reviewRejectType:
-          type: string
-          enum:
-          - FINAL
-          - RETRY
-        rejectReasons:
-          type: array
-          items:
-            type: string
-        comment:
-          type: string
-    KycRailStatusObject:
+    Rails:
       type: object
       properties:
-        status:
-          type: string
-        warnings:
-          type: array
-        message:
-          type: string
+        rails:
+          $ref: '#/components/schemas/RailsEnum'
+      required:
+      - rails
     UsdRailIndividualKycStatusObject:
       type: object
       title: Kyc Status Object (USD - Individual)
@@ -1610,650 +1564,6 @@ components:
       - message
       - reviewResult
       - details
-    AfricaGeneralRailKycStatusObject:
-      type: object
-      title: Kyc Status Object (AFRICA_GENERAL)
-      properties:
-        status:
-          $ref: '#/components/schemas/KycStatusEnum'
-        warnings:
-          type: array
-        message:
-          type: string
-        onRamp:
-          type: object
-          properties:
-            kes:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            ghs:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            tzs:
-              type: object
-              properties:
-                bank:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            ugx:
-              type: object
-              properties:
-                bank:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            bwp:
-              type: object
-              properties:
-                bank:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            xaf:
-              type: object
-              properties:
-                bank:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            mwk:
-              type: object
-              properties:
-                bank:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            rwf:
-              type: object
-              properties:
-                bank:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            zmw:
-              type: object
-              properties:
-                bank:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            xof:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-        offRamp:
-          type: object
-          properties:
-            kes:
-              type: object
-              properties:
-                bank:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            zar:
-              type: object
-              properties:
-                bank:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            ghs:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            tzs:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            ugx:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            bwp:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            xaf:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            mwk:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            rwf:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            zmw:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            xof:
-              type: object
-              properties:
-                momo:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-      required:
-      - status
-      - warnings
-      - message
-      - onRamp
-      - offRamp
-    KycBusinessObject:
-      type: object
-      title: KYC Object (Business)
-      properties:
-        userId:
-          type: string
-          format: uuid
-        kycInfo:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - business
-            businessName:
-              type: string
-            businessNameLocal:
-              type: string
-            alternativeNames:
-              type: array
-              items:
-                type: string
-            businessDescription:
-              type: string
-            email:
-              type: string
-              format: email
-            phone:
-              type: string
-            sourceOfFunds:
-              type: string
-            businessType:
-              type: string
-            businessIndustry:
-              type: string
-            website:
-              type: string
-            address:
-              type: object
-              $ref: '#/components/schemas/Address'
-            registeredAddress:
-              type: object
-              $ref: '#/components/schemas/Address'
-            postalAddress:
-              type: object
-              $ref: '#/components/schemas/Address'
-            taxIdentificationNumberType:
-              type: string
-            taxIdentificationNumber:
-              type: string
-            leiNumber:
-              type: string
-            daoStatus:
-              type: boolean
-            transmitsCustomerFunds:
-              type: boolean
-            formationDate:
-              type: string
-            ipAddress:
-              type: string
-              format: ipv4
-            formationDocUrl:
-              type: string
-            proofOfOwnershipUrl:
-              type: string
-            complianceScreeningExplanation:
-              type: string
-            ultimateBeneficialOwners:
-              type: array
-              items:
-                $ref: '#/components/schemas/UboObject'
-            proofOfAddressType:
-              type: string
-            proofOfAddressUrl:
-              type: string
-            certificateOfRegistrationDocType:
-              type: string
-            certificateOfRegistrationDocUrl:
-              type: string
-            certificateNumber:
-              type: string
-            businessRegistrationDocUrl:
-              type: string
-            registrationNumber:
-              type: string
-            licenseExpirationDate:
-              type: string
-            certificateOfIncorporationDocUrl:
-              type: string
-            incorporationNumber:
-              type: string
-            incorporationDate:
-              type: string
-            incorporationCountry:
-              type: string
-            incorporationState:
-              type: string
-            controlScheme:
-              type: string
-            shareStructureUrl:
-              type: string
-            constitutionOrAnnualReportUrl:
-              type: string
-            articlesOfAssociationUrl:
-              type: string
-            uboDeclarationUrl:
-              type: string
-            partnershipMinsOfMeetingUrl:
-              type: string
-            partnershipDeedUrl:
-              type: string
-            certificateOfIncumbencyUrl:
-              type: string
-            sourceOfFundsUrl:
-              type: string
-            organizationStructureUrl:
-              type: string
-            flowOfFundsUrl:
-              type: string
-            purpose:
-              type: string
-            productServiceCategory:
-              type: string
-            tradeName:
-              type: string
-            exportCountry:
-              type: string
-            tradeType:
-              type: string
-            sofEuQuestionnaire:
-              type: object
-              $ref: '#/components/schemas/SofEuKybQuestionnaire'
-            supplementaryInfo:
-              type: string
-            supplementaryUrl:
-              type: string
-            documents:
-              type: array
-              items:
-                $ref: '#/components/schemas/DocumentObject'
-    SouthAmericaRailKycStatusObject:
-      type: object
-      title: KYC Status Object (SOUTH_AMERICA_STANDARD)
-      properties:
-        status:
-          $ref: '#/components/schemas/KycStatusEnum'
-        warnings:
-          type: array
-        message:
-          type: string
-        limit:
-          type: object
-          properties:
-            daily:
-              type: number
-            monthly:
-              type: number
-            perTransaction:
-              type: number
-        onRamp:
-          type: object
-          properties:
-            brl:
-              type: object
-              properties:
-                pix:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-        offRamp:
-          type: object
-          properties:
-            brl:
-              type: object
-              properties:
-                pix:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            mxn:
-              type: object
-              properties:
-                spei:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            cop:
-              type: object
-              properties:
-                achCop:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-            ars:
-              type: object
-              properties:
-                transfers:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-    RailsEnum:
-      type: string
-      description: The type of rail.
-      enum:
-      - USD
-      - SOUTH_AMERICA_STANDARD
-      - AFRICA_GENERAL
-      - AFRICA_NIGERIA
-      - GLOBAL_NETWORK
-    GlobalNetworkRailKycSubmissionObject:
-      type: object
-      title: Kyc Submission Object (GLOBAL_NETWORK)
-      properties:
-        GLOBAL_NETWORK:
-          type: object
-          properties:
-            status:
-              $ref: '#/components/schemas/KycStatusEnum'
-            warnings:
-              type: array
-            message:
-              type: string
-            onRamp:
-              type: object
-              additionalProperties: false
-            offRamp:
-              type: object
-              additionalProperties: false
-              properties:
-                brl:
-                  type: object
-                  properties:
-                    pix:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                hkd:
-                  type: object
-                  properties:
-                    wire:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                mxn:
-                  type: object
-                  properties:
-                    spei:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-                ngn:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-          required:
-          - status
-          - warnings
-          - message
-          - onRamp
-          - offRamp
-      required:
-      - GLOBAL_NETWORK
-    UltimateBeneficialOwner:
-      type: object
-      properties:
-        role:
-          type: string
-          deprecated: true
-          description: The role of the ubo in the business.
-          enum:
-          - OWNER_OR_OPERATOR
-          - PARTNER
-          - UBO
-          - DIRECTOR_CONTROL_PERSON_OR_LEGAL_REP
-          - AGENT_OR_AUTHORISED_PERSON
-        roles:
-          type: array
-          description: The roles of the ubo in the business.
-          items:
-            type: string
-            enum:
-            - UBO
-            - DIRECTOR
-            - REPRESENTATIVE
-            - SHAREHOLDER
-        businessTitle:
-          type: string
-          description: Agent or authorised person‘s job title.
-        firstName:
-          type: string
-          description: first name in local language.
-        firstNameLocal:
-          type: string
-        middleName:
-          type: string
-        middleNameLocal:
-          type: string
-          description: middle name in local language.
-        lastName:
-          type: string
-        lastNameLocal:
-          type: string
-          description: last name in local language.
-        nationality:
-          type: string
-          description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        address:
-          type: object
-          description: Address of the user.
-          $ref: '#/components/schemas/Address'
-        dateOfBirth:
-          type: string
-          description: Date of birth in format yyyy-mm-dd.
-          format: date
-        countryOfBirth:
-          type: string
-          description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
-        stateOfBirth:
-          type: string
-        placeOfBirth:
-          type: string
-        gender:
-          type: string
-          enum:
-          - M
-          - F
-        taxIdentificationNumber:
-          type: string
-          description: For US owners, SSN should be used. For non-US individual owners, a national ID is preferred where applicable; however, a tax ID can also be used as an alternative.
-        taxResidenceCountry:
-          type: string
-          description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
-        govIdType:
-          type: string
-          enum:
-          - PASSPORT
-          - ID_CARD
-          - DRIVERS
-        govIdCountry:
-          type: string
-          description: Three-letter alpha-3 country code of the submitted government id as defined in the ISO 3166-1 spec.
-        govIdNumber:
-          type: string
-        govIdFrontUrl:
-          type: string
-          description: 'URL or Base64 encoded string of the front of the user''s government issued ID.
-
-
-            *If the file is base64 encoded, it must start with "data:"
-
-
-            *Maximum file size 3MB and minimum file size 10KB
-
-
-            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
-
-            '
-        govIdBackUrl:
-          type: string
-          description: 'URL or Base64 encoded string of the back of the user''s government issued ID.
-
-
-            *If the file is base64 encoded, it must start with "data:"
-
-
-            *Maximum file size 3MB and minimum file size 10KB
-
-
-            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
-
-            '
-        govIdIssuanceDate:
-          type: string
-          format: date
-          description: The issue date of the Gov ID document in format yyyy-mm-dd.
-        govIdExpirationDate:
-          type: string
-          format: date
-          description: The expiry date of the Gov ID document in format yyyy-mm-dd.
-        govIdIssuanceAuthority:
-          type: string
-          description: Issuing authority of the Gov ID document.
-        proofOfAddressType:
-          type: string
-          enum:
-          - UTILITY_BILL
-          - BANK_STATEMENT
-          - RENTAL_AGREEMENT
-          - TAX_DOCUMENT
-        proofOfAddressUrl:
-          type: string
-          description: 'URL or Base64 encoded string of the file of the proof of address.
-
-
-            *If the file is base64 encoded, it must start with "data:"
-
-
-            *Maximum file size 3MB and minimum file size 10KB
-
-
-            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
-
-            '
-        authLetterUrl:
-          type: string
-          description: 'URL or Base64 encoded string of the authorization letter that the authorised person can act on behalf of the business.
-
-
-            *If the file is base64 encoded, it must start with "data:"
-
-
-            *Maximum file size 3MB and minimum file size 10KB
-
-
-            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
-
-            '
-        shareProportion:
-          type: number
-          description: 'Percentage of shares owned (greater than or equal to 25%), only for UBOs.
-
-            '
-        hasOwnership:
-          type: boolean
-          description: True if the person has at least 25% ownership of the business.
-        hasControl:
-          type: boolean
-          description: True if the person has a significant responsibility to control, manage, or direct the activities of the business. At least one of the ultimateBeneficialOwners needs to have this set to true.
-        isSigner:
-          type: boolean
-          description: True if the person can authorize transactions on behalf of the business. At least one of the ultimateBeneficialOwners needs to have this set to true.
-        relationshipEstablishedAt:
-          type: string
-          format: date
-          description: The date that the ultimateBeneficialOwners first became an owner, control person, or signer for the business in format yyyy-mm-dd.
-        supplementaryInfo:
-          type: string
-          description: 'This field allows the inclusion of additional textual information or context that may be relevant to the KYC process.
-
-            '
-        supplementaryUrl:
-          type: string
-          description: 'This field is designed to contain supplementary documents or files that can be uploaded as part of the KYC process.
-
-
-            URL or Base64 encoded string of the file of the supplementary information.
-
-
-            *If the file is base64 encoded, it must start with "data:"
-
-
-            *Maximum file size 3MB and minimum file size 10KB
-
-
-            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
-
-            '
-    KycLinkForUserCreation:
-      type: object
-      title: KYC Link for User Creation
-      required:
-      - userType
-      properties:
-        userType:
-          type: string
-          enum:
-          - INDIVIDUAL
-          - BUSINESS
-        rails:
-          type: array
-          items:
-            type: string
-            enum:
-            - USD
-            - SOUTH_AMERICA_STANDARD
-            - AFRICA_GENERAL
-            - AFRICA_NIGERIA
-          description: KYC rails to unlock for the user, if not provided, only wallet will be created
-        redirectUrl:
-          type: string
-          description: URL to redirect to after KYC information is submitted, userId will be appended to the URL as a query parameter
-        recipientEmail:
-          type: string
-          description: Email address to send the KYC link to if provided (only in production)
-        templateId:
-          type: string
-          description: Template ID to use for the KYC link, please contact HIFI for more information
-    AfricaNigeriaRailKycStatusObject:
-      type: object
-      title: Kyc Status Object (AFRICA_NIGERIA)
-      properties:
-        status:
-          $ref: '#/components/schemas/KycStatusEnum'
-        warnings:
-          type: array
-        message:
-          type: string
-        onRamp:
-          type: object
-          properties:
-            ngn:
-              type: object
-              properties:
-                bank:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-        offRamp:
-          type: object
-          properties:
-            ngn:
-              type: object
-              properties:
-                bank:
-                  $ref: '#/components/schemas/KycRailStatusObject'
-      required:
-      - status
-      - warnings
-      - message
-      - onRamp
-      - offRamp
     SouthAmericaRailKycSubmissionObject:
       type: object
       title: Kyc Submission Object (SOUTH_AMERICA_STANDARD)
@@ -2393,91 +1703,218 @@ components:
                           type: array
                           items:
                             type: string
-    SofEuQaKybReqOptObject:
+    RailsEnum:
+      type: string
+      description: The type of rail.
+      enum:
+      - USD
+      - SOUTH_AMERICA_STANDARD
+      - AFRICA_GENERAL
+      - AFRICA_NIGERIA
+      - GLOBAL_NETWORK
+    VerificationStatusObject:
       type: object
-      title: SofEuQuestionnaire Requirement (Business)
+      title: Verification Status
+      properties:
+        reviewResult:
+          $ref: '#/components/schemas/ReviewResultObject'
+    SofEuQaKycReqOptObject:
+      type: object
+      title: SofEuQuestionnaire Requirement (Individual)
       properties:
         required:
           type: object
           properties:
+            actingAsIntermediary:
+              type: string
+            employmentStatus:
+              type: string
+            expectedMonthlyPayments:
+              type: string
+            mostRecentOccupation:
+              type: string
             primaryPurpose:
               type: string
             sourceOfFunds:
               type: string
-            transmitsCustomerFunds:
-              type: string
-            conductsMoneyServices:
-              type: string
-            highRiskActivities:
-              type: string
-            estimatedAnnualRevenueUsd:
-              type: string
-            expectedMonthlyPaymentsUsd:
-              type: string
-            customerFundsDescription:
-              type: string
         optional:
           type: object
           properties:
-            operatesInProhibitedCountries:
-              type: string
             primaryPurposeOther:
               type: string
-            sourceOfFundsDescription:
-              type: string
-            transmitsCustomerFundsDescription:
-              type: string
-    AfricaNigeriaRailKycSubmissionObject:
+    ReviewResultObject:
       type: object
-      title: Kyc Submission Object (AFRICA_NIGERIA)
+      title: Review Result
       properties:
-        AFRICA_NIGERIA:
+        reviewAnswer:
+          type: string
+          enum:
+          - APPROVED
+          - DECLINED
+        reviewRejectType:
+          type: string
+          enum:
+          - FINAL
+          - RETRY
+        rejectReasons:
+          type: array
+          items:
+            type: string
+        comment:
+          type: string
+    GlobalNetworkRailKycStatusObject:
+      type: object
+      title: Kyc Status Object (GLOBAL_NETWORK)
+      properties:
+        status:
+          $ref: '#/components/schemas/KycStatusEnum'
+        warnings:
+          type: array
+        message:
+          type: string
+        onRamp:
           type: object
+          additionalProperties: false
+        offRamp:
+          type: object
+          additionalProperties: false
           properties:
-            status:
-              $ref: '#/components/schemas/KycStatusEnum'
-            warnings:
-              type: array
-            message:
-              type: string
-            onRamp:
+            brl:
               type: object
               properties:
-                ngn:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-            offRamp:
+                pix:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            hkd:
               type: object
               properties:
-                ngn:
-                  type: object
-                  properties:
-                    bank:
-                      $ref: '#/components/schemas/KycRailStatusObject'
-          required:
-          - status
-          - warnings
-          - message
-          - onRamp
-          - offRamp
+                wire:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            mxn:
+              type: object
+              properties:
+                spei:
+                  $ref: '#/components/schemas/KycRailStatusObject'
+            ngn:
+              type: object
+              properties:
+                bank:
+                  $ref: '#/components/schemas/KycRailStatusObject'
       required:
-      - AFRICA_NIGERIA
+      - status
+      - warnings
+      - message
+      - onRamp
+      - offRamp
+    DocGroupRequirementObject:
+      type: object
+      title: Document Group Requirement
+      description: 'Represents minimum document requirements for a specific rail. Each group specifies the minimum number of documents required from a list of accepted document types.
+
+        **Note: Only documents provided through the Documents Endpoint will be considered for fulfilling these requirements.**
+
+        '
+      properties:
+        minCount:
+          type: integer
+          description: 'Minimum number of documents needed from the `acceptedDocTypes`.
+
+            '
+        acceptedDocTypes:
+          type: array
+          description: 'List of accepted document types. The user must provide at least `minCount` documents from this list.
+
+            '
+          items:
+            type: string
+    DocumentObjectList:
+      type: object
+      title: Document Object List
+      properties:
+        count:
+          type: integer
+          description: Number of documents.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentObject'
+    IndividualDocumentAdd:
+      type: array
+      title: Add Individual Document
+      description: An array of documents to be added.
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+            description: 'Type of the document. This field is immutable once created.
+
+              '
+            enum:
+            - DRIVERS
+            - ID_CARD
+            - PASSPORT
+            - INCOME_SOURCE
+            - INVESTOR_DOC
+            - PAYMENT_SOURCE
+            - RESIDENCE_PERMIT
+            - SELFIE
+            - PROOF_OF_ADDRESS
+            - AUTH_LETTER
+            - OTHER
+          subType:
+            type: string
+            description: 'Subtype of the document. This field is immutable once created.
+
+              '
+            enum:
+            - FRONT_SIDE
+            - BACK_SIDE
+            - SINGLE_SIDE
+          issuedCountry:
+            type: string
+            description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
+          issuedDate:
+            type: string
+            description: Date of issue of the document.
+            format: date
+          expiryDate:
+            type: string
+            description: Expiry date of the document.
+            format: date
+          number:
+            type: string
+            description: If applicable, unique identification number of the document.
+          description:
+            type: string
+            description: Description of the document. Required if type is `OTHER`.
+          url:
+            type: string
+            deprecated: true
+            description: 'URL of the document. Either `url` or `fileId` is required, but not both.
+
+
+              *Maximum file size 10MB and minimum file size 10KB
+
+
+              *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
+
+              '
+          fileId:
+            type: string
+            description: The file ID returned from the file upload endpoint. Either `url` or `fileId` is required, but not both.
+          uboId:
+            type: string
+            description: If provided, this document will be attached to the specified UBO. This field is immutable once created.
+        required:
+        - type
+        - subType
+        - issuedCountry
     Unauthorized:
       type: object
       properties:
         error:
           type: string
           example: Not authorized
-    USDRailIndividualDocReqOptObject:
-      type: object
-      title: Document Group Requirements (Individual)
-      properties:
-        identity:
-          $ref: '#/components/schemas/DocGroupRequirementObject'
-        proofOfResidence:
-          $ref: '#/components/schemas/DocGroupRequirementObject'
     UboObject:
       type: object
       title: UBO Object
@@ -2946,120 +2383,720 @@ components:
           - message
       required:
       - USD
-    KycIndividualObject:
+    AllKycStatusesObject:
+      type: array
+      items:
+        type: object
+        properties:
+          user:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              type:
+                type: string
+                enum:
+                - individual
+                - business
+              name:
+                type: string
+              email:
+                type: string
+                format: email
+          rails:
+            $ref: '#/components/schemas/RailsEnum'
+          createdAt:
+            type: string
+            format: date-time
+          updatedAt:
+            type: string
+            format: date-time
+          status:
+            $ref: '#/components/schemas/KycStatusEnum'
+    BusinessDocumentUpdate:
       type: object
-      title: KYC Object (Individual)
+      title: Update Business Document
+      properties:
+        issuedCountry:
+          type: string
+          description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
+        issuedDate:
+          type: string
+          description: Date of issue of the document.
+          format: date
+        expiryDate:
+          type: string
+          description: Expiry date of the document.
+          format: date
+        number:
+          type: string
+          description: If applicable, unique identification number of the document.
+        description:
+          type: string
+          description: Description of the document. Required if type is `OTHER`.
+        url:
+          type: string
+          deprecated: true
+          description: 'URL of the document. Either `url` or `fileId` is required, but not both.
+
+
+            *Maximum file size 10MB and minimum file size 10KB
+
+
+            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
+
+            '
+        fileId:
+          type: string
+          description: The file ID returned from the file upload endpoint. Either `url` or `fileId` is required, but not both.
+    UboObjectList:
+      type: object
+      title: UBO Object List
+      properties:
+        count:
+          type: integer
+          description: The total number of documents.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UboObject'
+    AfricaNigeriaRailKycSubmissionObject:
+      type: object
+      title: Kyc Submission Object (AFRICA_NIGERIA)
+      properties:
+        AFRICA_NIGERIA:
+          type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/KycStatusEnum'
+            warnings:
+              type: array
+            message:
+              type: string
+            onRamp:
+              type: object
+              properties:
+                ngn:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+            offRamp:
+              type: object
+              properties:
+                ngn:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+          required:
+          - status
+          - warnings
+          - message
+          - onRamp
+          - offRamp
+      required:
+      - AFRICA_NIGERIA
+    KycLinkForUserCreation:
+      type: object
+      title: KYC Link for User Creation
+      required:
+      - userType
+      properties:
+        userType:
+          type: string
+          enum:
+          - INDIVIDUAL
+          - BUSINESS
+        rails:
+          type: array
+          items:
+            type: string
+            enum:
+            - USD
+            - SOUTH_AMERICA_STANDARD
+            - AFRICA_GENERAL
+            - AFRICA_NIGERIA
+          description: KYC rails to unlock for the user, if not provided, only wallet will be created
+        redirectUrl:
+          type: string
+          description: URL to redirect to after KYC information is submitted, userId will be appended to the URL as a query parameter
+        recipientEmail:
+          type: string
+          description: Email address to send the KYC link to if provided (only in production)
+        templateId:
+          type: string
+          description: Template ID to use for the KYC link, please contact HIFI for more information
+    SofEuKybQuestionnaire:
+      type: object
+      properties:
+        estimatedAnnualRevenueUsd:
+          type: string
+          description: Estimated annual revenue in USD.
+          enum:
+          - 0_99999
+          - '100000_999999'
+          - '1000000_9999999'
+          - '10000000_49999999'
+          - '50000000_249999999'
+          - 250000000_plus
+        expectedMonthlyPaymentsUsd:
+          type: string
+          description: Expected monthly payments in USD.
+        operatesInProhibitedCountries:
+          type: boolean
+          deprecated: true
+        primaryPurpose:
+          type: string
+          description: What is the primary purpose of the business account?
+          enum:
+          - charitable_donations
+          - ecommerce_retail_payments
+          - investment_purposes
+          - other
+          - payments_to_friends_or_family_abroad
+          - payroll
+          - personal_or_living_expenses
+          - protect_wealth
+          - purchase_goods_and_services
+          - receive_payments_for_goods_and_services
+          - tax_optimization
+          - third_party_money_transmission
+          - treasury_management
+        primaryPurposeOther:
+          type: string
+          description: Required if the primary purpose is 'other'.
+        highRiskActivities:
+          type: array
+          description: List of high-risk activities the business is involved in.
+          items:
+            type: string
+            enum:
+            - none_of_the_above
+            - adult_entertainment
+            - gambling
+            - hold_client_funds
+            - investment_services
+            - lending_banking
+            - marijuana_or_related_services
+            - money_services
+            - operate_foreign_exchange_virtual_currencies_brokerage_otc
+            - safe_deposit_box_rentals
+            - third_party_payment_processing
+            - weapons_firearms_and_explosives
+        sourceOfFunds:
+          type: string
+          description: What is the source of funds for the business account?
+          enum:
+          - business_loans
+          - grants
+          - inter_company_funds
+          - investment_proceeds
+          - legal_settlement
+          - owners_capital
+          - pension_retirement
+          - sale_of_assets
+          - sales_of_goods_and_services
+          - tax_refund
+          - third_party_funds
+          - treasury_reserves
+        sourceOfFundsDescription:
+          type: string
+          description: Description of the source of funds for the business' account.
+        transmitsCustomerFunds:
+          type: boolean
+          description: "Specifies whether the business directly receives, holds, or sends customer funds to another party on behalf of its users. \nA value of true means the business is acting as a money transmitter and is subject to money transmission regulations in addition to general money service obligations.\n"
+        transmitsCustomerFundsDescription:
+          type: string
+          description: "Describes whether and how the business actively transmits customer funds. i.e., moves money from one party to another on behalf of a customer (e.g., sending, remitting, or transferring funds). \nThis field should clarify the money-transmission activity performed.\n"
+        customerFundsDescription:
+          type: string
+          description: 'Describes the nature of the customer funds handled by the business. This field explains the characteristics of the funds rather than the act of transmitting them.
+
+            '
+        conductsMoneyServices:
+          type: boolean
+          description: "Indicates whether the business is engaged in providing money services as a line of business (e.g., money transmission, currency exchange, or other regulated financial activities). \nA value of true means the business is considered a Money Services Business (MSB) under applicable regulations and may be subject to AML, KYC, and licensing requirements.\n"
+    KycLinkForUnlockingRails:
+      type: object
+      title: KYC Link for Unlocking Rails
+      required:
+      - userId
+      - rails
+      properties:
+        userId:
+          type: string
+        rails:
+          type: array
+          items:
+            type: string
+            enum:
+            - USD
+            - SOUTH_AMERICA_STANDARD
+            - AFRICA_GENERAL
+            - AFRICA_NIGERIA
+          description: KYC rails to unlock for the user
+        redirectUrl:
+          type: string
+          description: URL to redirect to after KYC information is submitted, userId will be appended to the URL as a query parameter
+        recipientEmail:
+          type: string
+          description: Email address to send the KYC link to if provided (only in production)
+        templateId:
+          type: string
+          description: Template ID to use for the KYC link, please contact HIFI for more information
+    UboUpdate:
+      type: object
+      title: Add UBO
+      allOf:
+      - $ref: '#/components/schemas/UltimateBeneficialOwner'
+    USDRailIndividualKYCReqOptObject:
+      type: object
+      title: KYC Requirement Object (USD - Individual)
       properties:
         userId:
           type: string
           format: uuid
-        kycInfo:
+        rails:
+          $ref: '#/components/schemas/RailsEnum'
+        type:
+          type: string
+          enum:
+          - individual
+        required:
           type: object
+          description: KYC fields required for this rail. The required fields varies based on the Rail.
           properties:
-            type:
-              type: string
-              enum:
-              - individual
             firstName:
-              type: string
-            firstNameLocal:
-              type: string
-            middleName:
-              type: string
-            middleNameLocal:
               type: string
             lastName:
               type: string
-            lastNameLocal:
+            email:
+              type: string
+            phone:
               type: string
             nationality:
               type: string
-            email:
-              type: string
-              format: email
-            phone:
-              type: string
-            address:
-              type: object
-              $ref: '#/components/schemas/Address'
             dateOfBirth:
               type: string
-            countryOfBirth:
-              type: string
-            stateOfBirth:
-              type: string
-            placeOfBirth:
-              type: string
-            gender:
-              type: string
-            country:
-              type: string
+            address:
+              $ref: '#/components/schemas/AddressReqOptObject'
             taxIdentificationNumber:
               type: string
-            taxResidenceCountry:
-              type: string
-            govIdType:
-              type: string
-            govIdFrontUrl:
-              type: string
-            govIdBackUrl:
-              type: string
-            govIdCountry:
-              type: string
-            govIdNumber:
-              type: string
-            govIdIssuanceDate:
-              type: string
-            govIdExpirationDate:
-              type: string
-            govIdIssuanceAuthority:
-              type: string
-            govIdHandHoldUrl:
-              type: string
-            proofOfAddressType:
-              type: string
-            proofOfAddressUrl:
-              type: string
-            sofEuQuestionnaire:
-              type: object
-              $ref: '#/components/schemas/SofEuKycQuestionnaire'
-            ipAddress:
-              type: string
-            idType:
-              type: string
-            idNumber:
-              type: string
-            additionalIdType:
-              type: string
-            additionalIdNumber:
-              type: string
-            purpose:
-              type: string
-            productServiceCategory:
-              type: string
-            supplementaryInfo:
-              type: string
-            supplementaryUrl:
-              type: string
             documents:
+              $ref: '#/components/schemas/USDRailIndividualDocReqOptObject'
+        optional:
+          type: object
+          description: KYC fields that are optional for this rail. The optional fields varies based on the Rail.
+          properties:
+            sofEuQuestionnaire:
+              $ref: '#/components/schemas/SofEuQaKycReqOptObject'
+        invalid:
+          type: object
+          description: 'KYC fields the user currently holds that are either missing or invalid for this rail. The specific invalid fields vary depending on the user’s current KYC data.
+
+            '
+          properties:
+            message:
+              type: string
+            fields:
+              type: object
+              description: Any missing or invalid fields, which varies depending on the user’s current KYC data.
+              properties:
+                phone:
+                  type: string
+                nationality:
+                  type: string
+                taxIdentificationNumber:
+                  type: string
+            documents:
+              type: object
+              description: Any missing documents groups, which varies depending on the user’s current KYC documents data.
+              properties:
+                message:
+                  type: string
+                groups:
+                  type: object
+                  properties:
+                    identity:
+                      type: object
+                      properties:
+                        minCount:
+                          type: integer
+                        acceptedDocTypes:
+                          type: array
+                          items:
+                            type: string
+    GlobalNetworkRailKycSubmissionObject:
+      type: object
+      title: Kyc Submission Object (GLOBAL_NETWORK)
+      properties:
+        GLOBAL_NETWORK:
+          type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/KycStatusEnum'
+            warnings:
               type: array
-              items:
-                $ref: '#/components/schemas/DocumentObject'
+            message:
+              type: string
+            onRamp:
+              type: object
+              additionalProperties: false
+            offRamp:
+              type: object
+              additionalProperties: false
+              properties:
+                brl:
+                  type: object
+                  properties:
+                    pix:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                hkd:
+                  type: object
+                  properties:
+                    wire:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                mxn:
+                  type: object
+                  properties:
+                    spei:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                ngn:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+          required:
+          - status
+          - warnings
+          - message
+          - onRamp
+          - offRamp
+      required:
+      - GLOBAL_NETWORK
+    IndividualDocumentUpdate:
+      type: object
+      title: Update Individual Document
+      properties:
+        issuedCountry:
+          type: string
+          description: Three-letter alpha-3 country code as defined in the ISO 3166-1 spec.
+        issuedDate:
+          type: string
+          description: Date of issue of the document.
+          format: date
+        expiryDate:
+          type: string
+          description: Expiry date of the document.
+          format: date
+        number:
+          type: string
+          description: If applicable, unique identification number of the document.
+        description:
+          type: string
+          description: Description of the document. Required if type is `OTHER`.
+        url:
+          type: string
+          deprecated: true
+          description: 'URL of the document. Either `url` or `fileId` is required, but not both.
+
+
+            *Maximum file size 10MB and minimum file size 10KB
+
+
+            *Valid file types: .pdf, .jpeg, .jpg, .png, .heic, .tif
+
+            '
+        fileId:
+          type: string
+          description: The file ID returned from the file upload endpoint. Either `url` or `fileId` is required, but not both.
+    DocumentObject:
+      type: object
+      title: Document Object
+      properties:
+        type:
+          type: string
+        subType:
+          type: string
+        issuedCountry:
+          type: string
+        issuedDate:
+          type: string
+          format: date
+        expiryDate:
+          type: string
+          format: date
+        number:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+          deprecated: true
+        fileId:
+          type: string
+        uboId:
+          type: string
+    USDRailIndividualDocReqOptObject:
+      type: object
+      title: Document Group Requirements (Individual)
+      properties:
+        identity:
+          $ref: '#/components/schemas/DocGroupRequirementObject'
+        proofOfResidence:
+          $ref: '#/components/schemas/DocGroupRequirementObject'
+    Address:
+      type: object
+      properties:
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        city:
+          type: string
+        stateProvinceRegion:
+          type: string
+          description: "The second part of the [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2). This must be provided if the country has subdivisions.\n\nAn ISO 3166-2 code consists of two parts, separated by a hyphen (`-`):\n  1. The first part is the ISO 3166-1 alpha-2 code of the country (e.g., `US`, `CA`, `BR`);\n  2. The second part is a string of up to three alphanumeric characters representing a specific subdivision (e.g., state, province). This is typically based on national standards or developed by ISO.\n\n  Only provide the second part of the code (e.g., `CA` for California in `US-CA`, or `SP` for São Paulo in `BR-SP`).\n"
+        postalCode:
+          type: string
+          description: Must be supplied for countries that use postal codes.
+        country:
+          type: string
+          description: Three-letter alpha-3 country code as defined in the [ISO 3166-1 spec](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3).
+      required:
+      - addressLine1
+      - city
+      - stateProvinceRegion
+      - postalCode
+      - country
+    AfricaGeneralRailKycSubmissionObject:
+      type: object
+      title: Kyc Submission Object (AFRICA_GENERAL)
+      properties:
+        AFRICA_GENERAL:
+          type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/KycStatusEnum'
+            warnings:
+              type: array
+            message:
+              type: string
+            onRamp:
+              type: object
+              properties:
+                kes:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                ghs:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                tzs:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                ugx:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                bwp:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                xaf:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                mwk:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                rwf:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                zmw:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                xof:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+            offRamp:
+              type: object
+              properties:
+                kes:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                zar:
+                  type: object
+                  properties:
+                    bank:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                ghs:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                tzs:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                ugx:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                bwp:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                xaf:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                mwk:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                rwf:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                zmw:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+                xof:
+                  type: object
+                  properties:
+                    momo:
+                      $ref: '#/components/schemas/KycRailStatusObject'
+          required:
+          - status
+          - warnings
+          - message
+          - onRamp
+          - offRamp
+      required:
+      - AFRICA_GENERAL
+    SofEuQaKybReqOptObject:
+      type: object
+      title: SofEuQuestionnaire Requirement (Business)
+      properties:
+        required:
+          type: object
+          properties:
+            primaryPurpose:
+              type: string
+            sourceOfFunds:
+              type: string
+            transmitsCustomerFunds:
+              type: string
+            conductsMoneyServices:
+              type: string
+            highRiskActivities:
+              type: string
+            estimatedAnnualRevenueUsd:
+              type: string
+            expectedMonthlyPaymentsUsd:
+              type: string
+            customerFundsDescription:
+              type: string
+        optional:
+          type: object
+          properties:
+            operatesInProhibitedCountries:
+              type: string
+            primaryPurposeOther:
+              type: string
+            sourceOfFundsDescription:
+              type: string
+            transmitsCustomerFundsDescription:
+              type: string
+  requestBodies:
+    UpdateUboBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UboUpdate'
+    UpdateDocumentBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/IndividualDocumentUpdate'
+            - $ref: '#/components/schemas/BusinessDocumentUpdate'
+    AddUboBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UboAdd'
+    AddDocumentBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/IndividualDocumentAdd'
+            - $ref: '#/components/schemas/BusinessDocumentAdd'
+    RailsBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Rails'
+    KycUpdateBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/IndividualKycUpdate'
+            - $ref: '#/components/schemas/BusinessKycUpdate'
+    KycLinkBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/KycLinkForUserCreation'
+            - $ref: '#/components/schemas/KycLinkForUnlockingRails'
   examples:
-    DocumentObjectBusinessExample:
-      summary: Document Object (Business)
-      value:
-        id: 7c9439f6-655b-4aeb-9b32-e17759ee9134
-        type: CERTIFICATE_OF_INCORPORATION
-        subType: SINGLE_SIDE
-        issuedCountry: USA
-        issuedDate: null
-        expiryDate: null
-        number: null
-        description: null
-        url: https://example.com/doc_123
-        fileId: file_zEFpbPhk71NaQfEVMR544
-        uboId: null
     KycRequirementObjectBusinessUSDExample:
       summary: KYC Requirement Object (USD - Business)
       value:
@@ -3162,175 +3199,35 @@ components:
           incorporationCountry: string
           incorporationState: string
         invalid: {}
-    KycStatusObjectAfricaGeneralActiveExample:
-      summary: KYC Status Object (AFRICA_GENERAL - ACTIVE)
+    KycStatusObjectUSDPendingIndividualExample:
+      summary: KYC Status Object (USD - Individual - PENDING)
       value:
-        status: ACTIVE
-        warnings: []
+        status: PENDING
         message: ''
-        onRamp:
-          kes:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          ghs:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          tzs:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          ugx:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          bwp:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          xaf:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          mwk:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          rwf:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          zmw:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          xof:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-        offRamp:
-          kes:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          zar:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          gns:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          tzs:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          ugx:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          bwp:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          xaf:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          mwk:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          rwf:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          zmw:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          xof:
-            momo:
-              status: ACTIVE
-              warnings: []
-              message: ''
-    KycSubmissionObjectSouthAmericaStandardExample:
-      summary: KYC Submission Object (SOUTH_AMERICA_STANDARD)
-      value:
-        SOUTH_AMERICA_STANDARD:
-          status: PENDING
-          warnings: []
-          message: ''
-          limit: {}
-          onRamp:
-            brl:
-              pix:
-                status: PENDING
-                warnings: []
-                message: ''
-          offRamp:
-            brl:
-              pix:
-                status: PENDING
-                warnings: []
-                message: ''
-            mxn:
-              spei:
-                status: PENDING
-                warnings: []
-                message: ''
-            cop:
-              achCop:
-                status: PENDING
-                warnings: []
-                message: ''
-            ars:
-              transfers:
-                status: PENDING
-                warnings: []
-                message: ''
-    KycStatusObjectUSDInactiveExample:
-      summary: KYC Status Object (USD - INACTIVE)
-      value:
-        status: INACTIVE
-        message: The rail is not active.
+        reviewResult: {}
+        details:
+          identity:
+            reviewResult: {}
+            details:
+            - id: e423fa6b-6d05-4b21-8797-ba8c75effaa4
+              type: ID_CARD
+              subType: FRONT_SIDE
+              reviewResult: {}
+            - id: c819c689-7e50-4c39-bec7-76875a078495
+              type: ID_CARD
+              subType: BACK_SIDE
+              reviewResult: {}
+          questionnaire:
+            reviewResult: {}
+          personalInfo:
+            reviewResult: {}
+          proofOfAddress:
+            reviewResult: {}
+            details:
+            - id: 7bc43187-e7c2-496c-bd14-30b71cadadc3
+              type: PROOF_OF_ADDRESS
+              subType: SINGLE_SIDE
+              reviewResult: {}
     KycObjectBusinessExample:
       summary: KYC Object (Business)
       value:
@@ -3484,46 +3381,6 @@ components:
             supplementaryInfo: null
             supplementaryUrl: null
             documents: []
-    BasicKycStatusObjectListExample:
-      summary: Basic KYC Status Object List
-      value:
-      - user:
-          id: 35dbc7ea-2877-4a70-add6-b5458289df23
-          type: individual
-          name: John Doe
-          email: jd@hifibridge.com
-        rails: USD
-        createdAt: '2023-10-01T12:00:00Z'
-        updatedAt: '2023-10-02T12:00:00Z'
-        status: ACTIVE
-    KycStatusObjectGlobalNetworkActiveExample:
-      summary: KYC Status Object (GLOBAL_NETWORK - ACTIVE)
-      value:
-        status: ACTIVE
-        warnings: []
-        message: ''
-        onRamp: {}
-        offRamp:
-          brl:
-            pix:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          hkd:
-            wire:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          mxn:
-            spei:
-              status: ACTIVE
-              warnings: []
-              message: ''
-          ngn:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
     KycStatusObjectUSDActiveBusinessExample:
       summary: KYC Status Object (USD - Business - ACTIVE)
       value:
@@ -3623,6 +3480,95 @@ components:
                     reviewRejectType: ''
                     rejectReasons: []
                     comment: ''
+    KycSubmissionObjectGlobalNetworkExample:
+      summary: KYC Submission Object (GLOBAL_NETWORK)
+      value:
+        GLOBAL_NETWORK:
+          status: ACTIVE
+          warnings: []
+          message: ''
+          onRamp: {}
+          offRamp:
+            brl:
+              pix:
+                status: ACTIVE
+                warnings: []
+                message: ''
+            hkd:
+              wire:
+                status: ACTIVE
+                warnings: []
+                message: ''
+            mxn:
+              spei:
+                status: ACTIVE
+                warnings: []
+                message: ''
+            ngn:
+              bank:
+                status: ACTIVE
+                warnings: []
+                message: ''
+    KycStatusObjectUSDInactiveExample:
+      summary: KYC Status Object (USD - INACTIVE)
+      value:
+        status: INACTIVE
+        message: The rail is not active.
+    UboObjectListExample:
+      summary: UBO Object List
+      value:
+        count: 1
+        data:
+        - id: 03aef9fa-0e58-4f42-a22f-46de619b42e0
+          role: OWNER_OR_OPERATOR
+          roles:
+          - UBO
+          - DIRECTOR
+          businessTitle: CEO
+          firstName: John
+          firstNameLocal: John
+          middleName: null
+          middleNameLocal: null
+          lastName: Doe
+          lastNameLocal: Doe
+          nationality: USA
+          email: example@gmail.com
+          phone: '+12223334444'
+          address:
+            addressLine1: 123 Main St
+            addressLine2: null
+            city: San Francisco
+            stateProvinceRegion: CA
+            postalCode: '94105'
+            country: USA
+          dateOfBirth: '1990-01-01'
+          countryOfBirth: USA
+          stateOfBirth: NJ
+          placeOfBirth: null
+          gender: M
+          country: USA
+          taxIdentificationNumber: '123456789'
+          taxResidenceCountry: USA
+          ipAddress: null
+          hasOwnership: true
+          hasControl: true
+          isSigner: true
+          relationshipEstablishedAt: '2020-01-01'
+          govIdCountry: USA
+          govIdType: PASSPORT
+          govIdNumber: '123456789'
+          govIdFrontUrl: https://example.com
+          govIdBackUrl: https://example.com
+          govIdIssuanceDate: '2020-01-01'
+          govIdExpirationDate: '2027-01-01'
+          govIdIssuanceAuthority: null
+          proofOfAddressType: UTILITY_BILL
+          proofOfAddressUrl: https://example.com
+          authLetterUrl: https://example.com
+          shareProportion: 25
+          supplementaryInfo: null
+          supplementaryUrl: null
+          documents: []
     DocumentObjectUboExample:
       summary: Document Object (UBO)
       value:
@@ -3637,141 +3583,101 @@ components:
         url: https://example.com/doc_123
         fileId: file_zEFpbPhk71NaQfEVMR544
         uboId: 3285c3be-ef36-4f01-bf95-578d3116f0ff
-    KycLinkObjectExample:
-      summary: KYC Link Object
-      value:
-        kycLinkUrl: http://dashboard.hifibridge.com/production/kyc-link?sessionToken=768fb84ad65284cb5fffda212f5e779829318acwdab5a36efbf83c4f44369c73
-    KycStatusObjectAfricaNigeriaActiveExample:
-      summary: KYC Status Object (AFRICA_NIGERIA - ACTIVE)
-      value:
-        status: ACTIVE
-        warnings: []
-        message: ''
-        onRamp:
-          ngn:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
-        offRamp:
-          ngn:
-            bank:
-              status: ACTIVE
-              warnings: []
-              message: ''
-    KycStatusObjectUSDPendingIndividualExample:
-      summary: KYC Status Object (USD - Individual - PENDING)
-      value:
-        status: PENDING
-        message: ''
-        reviewResult: {}
-        details:
-          identity:
-            reviewResult: {}
-            details:
-            - id: e423fa6b-6d05-4b21-8797-ba8c75effaa4
-              type: ID_CARD
-              subType: FRONT_SIDE
-              reviewResult: {}
-            - id: c819c689-7e50-4c39-bec7-76875a078495
-              type: ID_CARD
-              subType: BACK_SIDE
-              reviewResult: {}
-          questionnaire:
-            reviewResult: {}
-          personalInfo:
-            reviewResult: {}
-          proofOfAddress:
-            reviewResult: {}
-            details:
-            - id: 7bc43187-e7c2-496c-bd14-30b71cadadc3
-              type: PROOF_OF_ADDRESS
-              subType: SINGLE_SIDE
-              reviewResult: {}
-    KycStatusObjectSouthAmericaPendingExample:
-      summary: KYC Status Object (SOUTH_AMERICA_STANDARD - PENDING)
-      value:
-        status: PENDING
-        warnings: []
-        message: ''
-        limit: {}
-        onRamp:
-          brl:
-            pix:
-              status: PENDING
-              warnings: []
-              message: ''
-        offRamp:
-          brl:
-            pix:
-              status: PENDING
-              warnings: []
-              message: ''
-          mxn:
-            spei:
-              status: PENDING
-              warnings: []
-              message: ''
-          cop:
-            achCop:
-              status: PENDING
-              warnings: []
-              message: ''
-          ars:
-            transfers:
-              status: PENDING
-              warnings: []
-              message: ''
-    KycObjectIndividualExample:
-      summary: KYC Object (Individual)
+    KycRequirementObjectIndividualUSDExample:
+      summary: KYC Requirement Object (USD - Individual)
       value:
         userId: 35dbc7ea-2877-4a70-add6-b5458289df23
-        kycInfo:
-          type: individual
-          firstName: John
-          firstNameLocal: Lil John
-          middleName: null
-          middleNameLocal: null
-          lastName: Doe
-          lastNameLocal: null
-          nationality: USA
-          email: example@gmail.com
-          phone: '+12223334444'
+        rails: USD
+        type: individual
+        required:
+          firstName: string
+          lastName: string
+          email: string
+          phone: string
           address:
-            addressLine1: 123 Main St
-            addressLine2: null
-            city: San Francisco
-            stateProvinceRegion: CA
-            postalCode: '94105'
-            country: USA
-          dateOfBirth: '1990-01-01'
-          countryOfBirth: USA
-          stateOfBirth: NY
-          placeOfBirth: null
-          taxIdentificationNumber: '123456789'
-          taxResidenceCountry: USA
-          govIdType: PASSPORT
-          govIdNumber: '123456789'
-          govIdFrontUrl: https://example.com
-          govIdBackUrl: https://example.com
-          govIdCountry: USA
-          govIdIssuanceDate: '2020-01-01'
-          govIdExpirationDate: '2027-01-01'
-          govIdIssuanceAuthority: null
-          govIdHandHoldUrl: https://example.com
-          proofOfAddressType: UTILITY_BILL
-          proofOfAddressUrl: https://example.com
-          sofEuQuestionnaire: null
-          ipAddress: 108.28.159.21
-          idType: NIN
-          idNumber: '123456789'
-          additionalIdType: null
-          additionalIdNumber: null
-          purpose: null
-          productServiceCategory: null
-          supplementaryInfo: null
-          supplementaryUrl: null
-          documents: []
+            required:
+              addressLine1: string
+              city: string
+              stateProvinceRegion: string
+              postalCode: string
+              country: string
+            optional:
+              addressLine2: string
+          nationality: string
+          dateOfBirth: string
+          taxIdentificationNumber: string
+          documents:
+            identity:
+              minCount: 1
+              acceptedDocTypes:
+              - DRIVERS
+              - ID_CARD
+              - PASSPORT
+              - RESIDENCE_PERMIT
+        optional: {}
+        invalid:
+          message: fields are either missing or invalid
+          fields:
+            phone: missing
+            nationality: missing
+            taxIdentificationNumber: missing
+          documents:
+            message: 'The following document groups are not satisfied: identity'
+            groups:
+              identity:
+                minCount: 1
+                acceptedDocTypes:
+                - DRIVERS
+                - ID_CARD
+                - PASSPORT
+                - RESIDENCE_PERMIT
+    BasicKycStatusObjectListExample:
+      summary: Basic KYC Status Object List
+      value:
+      - user:
+          id: 35dbc7ea-2877-4a70-add6-b5458289df23
+          type: individual
+          name: John Doe
+          email: jd@hifibridge.com
+        rails: USD
+        createdAt: '2023-10-01T12:00:00Z'
+        updatedAt: '2023-10-02T12:00:00Z'
+        status: ACTIVE
+    KycSubmissionObjectSouthAmericaStandardExample:
+      summary: KYC Submission Object (SOUTH_AMERICA_STANDARD)
+      value:
+        SOUTH_AMERICA_STANDARD:
+          status: PENDING
+          warnings: []
+          message: ''
+          limit: {}
+          onRamp:
+            brl:
+              pix:
+                status: PENDING
+                warnings: []
+                message: ''
+          offRamp:
+            brl:
+              pix:
+                status: PENDING
+                warnings: []
+                message: ''
+            mxn:
+              spei:
+                status: PENDING
+                warnings: []
+                message: ''
+            cop:
+              achCop:
+                status: PENDING
+                warnings: []
+                message: ''
+            ars:
+              transfers:
+                status: PENDING
+                warnings: []
+                message: ''
     UboObjectExample:
       summary: UBO Object
       value:
@@ -3825,6 +3731,348 @@ components:
         supplementaryInfo: null
         supplementaryUrl: null
         documents: []
+    KycSubmissionObjectAfricaNigeriaExample:
+      summary: KYC Submission Object (AFRICA_NIGERIA)
+      value:
+        AFRICA_NIGERIA:
+          status: PENDING
+          warnings: []
+          message: ''
+          onRamp:
+            ngn:
+              bank:
+                status: PENDING
+                warnings: []
+                message: ''
+          offRamp:
+            ngn:
+              bank:
+                status: PENDING
+                warnings: []
+                message: ''
+    KycStatusObjectUSDIncompleteBusinessExample:
+      summary: KYC Status Object (USD - Business - INCOMPLETE)
+      value:
+        status: INCOMPLETE
+        message: ''
+        reviewResult:
+          reviewAnswer: DECLINED
+          reviewRejectType: RETRY
+          rejectReasons:
+          - UNFILLED_ID
+          comment: ''
+        details:
+          companyInfo:
+            reviewResult:
+              reviewAnswer: APPROVED
+              reviewRejectType: ''
+              rejectReasons: []
+              comment: ''
+          questionnaire:
+            reviewResult:
+              reviewAnswer: APPROVED
+              reviewRejectType: ''
+              rejectReasons: []
+              comment: ''
+          companyDocuments:
+            reviewResult:
+              reviewAnswer: DECLINED
+              reviewRejectType: RETRY
+              rejectReasons: []
+              comment: ''
+            details:
+            - id: 04f809a1-e9fc-45d6-9c1f-b308cfb19c96
+              type: PROOF_OF_ADDRESS
+              subType: SINGLE_SIDE
+              reviewResult:
+                reviewAnswer: APPROVED
+                reviewRejectType: ''
+                rejectReasons: []
+                comment: ''
+            - id: b0436bee-0e80-46d3-98a2-6d58183eb84f
+              type: INFORMATION_STATEMENT
+              subType: SINGLE_SIDE
+              reviewResult:
+                reviewAnswer: APPROVED
+                reviewRejectType: ''
+                rejectReasons: []
+                comment: ''
+            - id: d9f38450-ec16-4a4b-bf69-f8c88bb73a94
+              type: SHAREHOLDER_REGISTRY
+              subType: SINGLE_SIDE
+              reviewResult:
+                reviewAnswer: DECLINED
+                reviewRejectType: RETRY
+                rejectReasons:
+                - UNFILLED_ID
+                comment: "This document is not accepted.\n - The document is missing key company identification details like the registration number or company name. Please upload a document that includes this information to verify its relevance."
+            - id: 7a9dc485-3216-47fd-baa4-a7ab4085b723
+              type: INCORPORATION_CERT
+              subType: SINGLE_SIDE
+              reviewResult:
+                reviewAnswer: APPROVED
+                reviewRejectType: ''
+                rejectReasons: []
+                comment: ''
+          ultimateBeneficialOwners:
+            reviewResult: {}
+            details:
+            - id: 74441b74-caab-5f74-8e24-3fcee83faac8
+              status: INCOMPLETE
+              message: ''
+              reviewResult:
+                reviewAnswer: DECLINED
+                reviewRejectType: RETRY
+                rejectReasons:
+                - SCREENSHOTS
+                - UNSATISFACTORY_PHOTOS
+                comment: ''
+              details:
+                identity:
+                  reviewResult:
+                    reviewAnswer: DECLINED
+                    reviewRejectType: RETRY
+                    rejectReasons: []
+                    comment: Screenshots aren’t accepted. Please upload a live photo of the document.
+                  details:
+                  - id: b4534db5-b759-4a4e-ad29-8ab5a1257936
+                    type: PASSPORT
+                    subType: SINGLE_SIDE
+                    reviewResult:
+                      reviewAnswer: DECLINED
+                      reviewRejectType: RETRY
+                      rejectReasons:
+                      - SCREENSHOTS - UNSATISFACTORY_PHOTOS
+                      comment: Screenshots aren’t accepted. Please upload a live photo of the document.
+                personalInfo:
+                  reviewResult:
+                    reviewAnswer: APPROVED
+                    reviewRejectType: ''
+                    rejectReasons: []
+                    comment: ''
+    KycStatusObjectGlobalNetworkActiveExample:
+      summary: KYC Status Object (GLOBAL_NETWORK - ACTIVE)
+      value:
+        status: ACTIVE
+        warnings: []
+        message: ''
+        onRamp: {}
+        offRamp:
+          brl:
+            pix:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          hkd:
+            wire:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          mxn:
+            spei:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          ngn:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
+    KycStatusObjectSouthAmericaPendingExample:
+      summary: KYC Status Object (SOUTH_AMERICA_STANDARD - PENDING)
+      value:
+        status: PENDING
+        warnings: []
+        message: ''
+        limit: {}
+        onRamp:
+          brl:
+            pix:
+              status: PENDING
+              warnings: []
+              message: ''
+        offRamp:
+          brl:
+            pix:
+              status: PENDING
+              warnings: []
+              message: ''
+          mxn:
+            spei:
+              status: PENDING
+              warnings: []
+              message: ''
+          cop:
+            achCop:
+              status: PENDING
+              warnings: []
+              message: ''
+          ars:
+            transfers:
+              status: PENDING
+              warnings: []
+              message: ''
+    KycStatusObjectAfricaGeneralActiveExample:
+      summary: KYC Status Object (AFRICA_GENERAL - ACTIVE)
+      value:
+        status: ACTIVE
+        warnings: []
+        message: ''
+        onRamp:
+          kes:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          ghs:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          tzs:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          ugx:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          bwp:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          xaf:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          mwk:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          rwf:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          zmw:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          xof:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+        offRamp:
+          kes:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          zar:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          gns:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          tzs:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          ugx:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          bwp:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          xaf:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          mwk:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          rwf:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          zmw:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+          xof:
+            momo:
+              status: ACTIVE
+              warnings: []
+              message: ''
+    DocumentObjectBusinessExample:
+      summary: Document Object (Business)
+      value:
+        id: 7c9439f6-655b-4aeb-9b32-e17759ee9134
+        type: CERTIFICATE_OF_INCORPORATION
+        subType: SINGLE_SIDE
+        issuedCountry: USA
+        issuedDate: null
+        expiryDate: null
+        number: null
+        description: null
+        url: https://example.com/doc_123
+        fileId: file_zEFpbPhk71NaQfEVMR544
+        uboId: null
+    KycStatusObjectAfricaNigeriaActiveExample:
+      summary: KYC Status Object (AFRICA_NIGERIA - ACTIVE)
+      value:
+        status: ACTIVE
+        warnings: []
+        message: ''
+        onRamp:
+          ngn:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
+        offRamp:
+          ngn:
+            bank:
+              status: ACTIVE
+              warnings: []
+              message: ''
     DocumentObjectListExample:
       summary: Document Object List
       value:
@@ -3889,6 +4137,56 @@ components:
               status: ACTIVE
               warnings: []
               message: ''
+    KycObjectIndividualExample:
+      summary: KYC Object (Individual)
+      value:
+        userId: 35dbc7ea-2877-4a70-add6-b5458289df23
+        kycInfo:
+          type: individual
+          firstName: John
+          firstNameLocal: Lil John
+          middleName: null
+          middleNameLocal: null
+          lastName: Doe
+          lastNameLocal: null
+          nationality: USA
+          email: example@gmail.com
+          phone: '+12223334444'
+          address:
+            addressLine1: 123 Main St
+            addressLine2: null
+            city: San Francisco
+            stateProvinceRegion: CA
+            postalCode: '94105'
+            country: USA
+          dateOfBirth: '1990-01-01'
+          countryOfBirth: USA
+          stateOfBirth: NY
+          placeOfBirth: null
+          taxIdentificationNumber: '123456789'
+          taxResidenceCountry: USA
+          govIdType: PASSPORT
+          govIdNumber: '123456789'
+          govIdFrontUrl: https://example.com
+          govIdBackUrl: https://example.com
+          govIdCountry: USA
+          govIdIssuanceDate: '2020-01-01'
+          govIdExpirationDate: '2027-01-01'
+          govIdIssuanceAuthority: null
+          govIdHandHoldUrl: https://example.com
+          proofOfAddressType: UTILITY_BILL
+          proofOfAddressUrl: https://example.com
+          sofEuQuestionnaire: null
+          ipAddress: 108.28.159.21
+          idType: NIN
+          idNumber: '123456789'
+          additionalIdType: null
+          additionalIdNumber: null
+          purpose: null
+          productServiceCategory: null
+          supplementaryInfo: null
+          supplementaryUrl: null
+          documents: []
     KycSubmissionObjectAfricaGeneralExample:
       summary: KYC Submission Object (AFRICA_GENERAL)
       value:
@@ -4019,31 +4317,6 @@ components:
                 status: PENDING
                 warnings: []
                 message: ''
-    KycSubmissionObjectAfricaNigeriaExample:
-      summary: KYC Submission Object (AFRICA_NIGERIA)
-      value:
-        AFRICA_NIGERIA:
-          status: PENDING
-          warnings: []
-          message: ''
-          onRamp:
-            ngn:
-              bank:
-                status: PENDING
-                warnings: []
-                message: ''
-          offRamp:
-            ngn:
-              bank:
-                status: PENDING
-                warnings: []
-                message: ''
-    KycSubmissionObjectUsdExample:
-      summary: KYC Submission Object (USD)
-      value:
-        USD:
-          status: CREATED
-          message: Your KYC application has been successfully created. We will review it shortly.
     DocumentObjectIndividualExample:
       summary: Document Object (Individual)
       value:
@@ -4057,239 +4330,91 @@ components:
         description: null
         url: https://example.com/doc_123
         fileId: file_zEFpbPhk71NaQfEVMR544
-    UboObjectListExample:
-      summary: UBO Object List
+    KycLinkObjectExample:
+      summary: KYC Link Object
       value:
-        count: 1
-        data:
-        - id: 03aef9fa-0e58-4f42-a22f-46de619b42e0
-          role: OWNER_OR_OPERATOR
-          roles:
-          - UBO
-          - DIRECTOR
-          businessTitle: CEO
-          firstName: John
-          firstNameLocal: John
-          middleName: null
-          middleNameLocal: null
-          lastName: Doe
-          lastNameLocal: Doe
-          nationality: USA
-          email: example@gmail.com
-          phone: '+12223334444'
-          address:
-            addressLine1: 123 Main St
-            addressLine2: null
-            city: San Francisco
-            stateProvinceRegion: CA
-            postalCode: '94105'
-            country: USA
-          dateOfBirth: '1990-01-01'
-          countryOfBirth: USA
-          stateOfBirth: NJ
-          placeOfBirth: null
-          gender: M
-          country: USA
-          taxIdentificationNumber: '123456789'
-          taxResidenceCountry: USA
-          ipAddress: null
-          hasOwnership: true
-          hasControl: true
-          isSigner: true
-          relationshipEstablishedAt: '2020-01-01'
-          govIdCountry: USA
-          govIdType: PASSPORT
-          govIdNumber: '123456789'
-          govIdFrontUrl: https://example.com
-          govIdBackUrl: https://example.com
-          govIdIssuanceDate: '2020-01-01'
-          govIdExpirationDate: '2027-01-01'
-          govIdIssuanceAuthority: null
-          proofOfAddressType: UTILITY_BILL
-          proofOfAddressUrl: https://example.com
-          authLetterUrl: https://example.com
-          shareProportion: 25
-          supplementaryInfo: null
-          supplementaryUrl: null
-          documents: []
-    KycStatusObjectUSDIncompleteBusinessExample:
-      summary: KYC Status Object (USD - Business - INCOMPLETE)
+        kycLinkUrl: http://dashboard.hifibridge.com/production/kyc-link?sessionToken=768fb84ad65284cb5fffda212f5e779829318acwdab5a36efbf83c4f44369c73
+    KycSubmissionObjectUsdExample:
+      summary: KYC Submission Object (USD)
       value:
-        status: INCOMPLETE
-        message: ''
-        reviewResult:
-          reviewAnswer: DECLINED
-          reviewRejectType: RETRY
-          rejectReasons:
-          - UNFILLED_ID
-          comment: ''
-        details:
-          companyInfo:
-            reviewResult:
-              reviewAnswer: APPROVED
-              reviewRejectType: ''
-              rejectReasons: []
-              comment: ''
-          questionnaire:
-            reviewResult:
-              reviewAnswer: APPROVED
-              reviewRejectType: ''
-              rejectReasons: []
-              comment: ''
-          companyDocuments:
-            reviewResult:
-              reviewAnswer: DECLINED
-              reviewRejectType: RETRY
-              rejectReasons: []
-              comment: ''
-            details:
-            - id: 04f809a1-e9fc-45d6-9c1f-b308cfb19c96
-              type: PROOF_OF_ADDRESS
-              subType: SINGLE_SIDE
-              reviewResult:
-                reviewAnswer: APPROVED
-                reviewRejectType: ''
-                rejectReasons: []
-                comment: ''
-            - id: b0436bee-0e80-46d3-98a2-6d58183eb84f
-              type: INFORMATION_STATEMENT
-              subType: SINGLE_SIDE
-              reviewResult:
-                reviewAnswer: APPROVED
-                reviewRejectType: ''
-                rejectReasons: []
-                comment: ''
-            - id: d9f38450-ec16-4a4b-bf69-f8c88bb73a94
-              type: SHAREHOLDER_REGISTRY
-              subType: SINGLE_SIDE
-              reviewResult:
-                reviewAnswer: DECLINED
-                reviewRejectType: RETRY
-                rejectReasons:
-                - UNFILLED_ID
-                comment: "This document is not accepted.\n - The document is missing key company identification details like the registration number or company name. Please upload a document that includes this information to verify its relevance."
-            - id: 7a9dc485-3216-47fd-baa4-a7ab4085b723
-              type: INCORPORATION_CERT
-              subType: SINGLE_SIDE
-              reviewResult:
-                reviewAnswer: APPROVED
-                reviewRejectType: ''
-                rejectReasons: []
-                comment: ''
-          ultimateBeneficialOwners:
-            reviewResult: {}
-            details:
-            - id: 74441b74-caab-5f74-8e24-3fcee83faac8
-              status: INCOMPLETE
-              message: ''
-              reviewResult:
-                reviewAnswer: DECLINED
-                reviewRejectType: RETRY
-                rejectReasons:
-                - SCREENSHOTS
-                - UNSATISFACTORY_PHOTOS
-                comment: ''
-              details:
-                identity:
-                  reviewResult:
-                    reviewAnswer: DECLINED
-                    reviewRejectType: RETRY
-                    rejectReasons: []
-                    comment: Screenshots aren’t accepted. Please upload a live photo of the document.
-                  details:
-                  - id: b4534db5-b759-4a4e-ad29-8ab5a1257936
-                    type: PASSPORT
-                    subType: SINGLE_SIDE
-                    reviewResult:
-                      reviewAnswer: DECLINED
-                      reviewRejectType: RETRY
-                      rejectReasons:
-                      - SCREENSHOTS - UNSATISFACTORY_PHOTOS
-                      comment: Screenshots aren’t accepted. Please upload a live photo of the document.
-                personalInfo:
-                  reviewResult:
-                    reviewAnswer: APPROVED
-                    reviewRejectType: ''
-                    rejectReasons: []
-                    comment: ''
-    KycSubmissionObjectGlobalNetworkExample:
-      summary: KYC Submission Object (GLOBAL_NETWORK)
-      value:
-        GLOBAL_NETWORK:
-          status: ACTIVE
-          warnings: []
-          message: ''
-          onRamp: {}
-          offRamp:
-            brl:
-              pix:
-                status: ACTIVE
-                warnings: []
-                message: ''
-            hkd:
-              wire:
-                status: ACTIVE
-                warnings: []
-                message: ''
-            mxn:
-              spei:
-                status: ACTIVE
-                warnings: []
-                message: ''
-            ngn:
-              bank:
-                status: ACTIVE
-                warnings: []
-                message: ''
-    KycRequirementObjectIndividualUSDExample:
-      summary: KYC Requirement Object (USD - Individual)
-      value:
-        userId: 35dbc7ea-2877-4a70-add6-b5458289df23
-        rails: USD
-        type: individual
-        required:
-          firstName: string
-          lastName: string
-          email: string
-          phone: string
-          address:
-            required:
-              addressLine1: string
-              city: string
-              stateProvinceRegion: string
-              postalCode: string
-              country: string
-            optional:
-              addressLine2: string
-          nationality: string
-          dateOfBirth: string
-          taxIdentificationNumber: string
-          documents:
-            identity:
-              minCount: 1
-              acceptedDocTypes:
-              - DRIVERS
-              - ID_CARD
-              - PASSPORT
-              - RESIDENCE_PERMIT
-        optional: {}
-        invalid:
-          message: fields are either missing or invalid
-          fields:
-            phone: missing
-            nationality: missing
-            taxIdentificationNumber: missing
-          documents:
-            message: 'The following document groups are not satisfied: identity'
-            groups:
-              identity:
-                minCount: 1
-                acceptedDocTypes:
-                - DRIVERS
-                - ID_CARD
-                - PASSPORT
-                - RESIDENCE_PERMIT
+        USD:
+          status: CREATED
+          message: Your KYC application has been successfully created. We will review it shortly.
   responses:
+    DocumentObjectAllRecordsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DocumentObjectList'
+          examples:
+            DocumentObjectListExample:
+              $ref: '#/components/examples/DocumentObjectListExample'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    KycRequirementResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/USDRailBusinessKYCReqOptObject'
+            - $ref: '#/components/schemas/USDRailIndividualKYCReqOptObject'
+          examples:
+            KycRequirementObjectBusinessUSDExample:
+              $ref: '#/components/examples/KycRequirementObjectBusinessUSDExample'
+            KycRequirementObjectIndividualUSDExample:
+              $ref: '#/components/examples/KycRequirementObjectIndividualUSDExample'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    AllKycStatusesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AllKycStatusesObject'
+          examples:
+            BasicKycStatusObjectListExample:
+              $ref: '#/components/examples/BasicKycStatusObjectListExample'
+    KycObjectResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/KycIndividualObject'
+            - $ref: '#/components/schemas/KycBusinessObject'
+          examples:
+            KycObjectIndividualExample:
+              $ref: '#/components/examples/KycObjectIndividualExample'
+            KycObjectBusinessExample:
+              $ref: '#/components/examples/KycObjectBusinessExample'
     DocumentObjectResponse:
       description: Success
       content:
@@ -4303,6 +4428,55 @@ components:
               $ref: '#/components/examples/DocumentObjectBusinessExample'
             DocumentObjectUboExample:
               $ref: '#/components/examples/DocumentObjectUboExample'
+    UboObjectResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UboObject'
+          examples:
+            UboObjectExample:
+              $ref: '#/components/examples/UboObjectExample'
+    KycStatusSubmitResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/UsdRailKycSubmissionObject'
+            - $ref: '#/components/schemas/SouthAmericaRailKycSubmissionObject'
+            - $ref: '#/components/schemas/AfricaGeneralRailKycSubmissionObject'
+            - $ref: '#/components/schemas/AfricaNigeriaRailKycSubmissionObject'
+            - $ref: '#/components/schemas/GlobalNetworkRailKycSubmissionObject'
+          examples:
+            KycSubmissionObjectUsdExample:
+              $ref: '#/components/examples/KycSubmissionObjectUsdExample'
+            KycSubmissionObjectSouthAmericaStandardExample:
+              $ref: '#/components/examples/KycSubmissionObjectSouthAmericaStandardExample'
+            KycSubmissionObjectAfricaGeneralExample:
+              $ref: '#/components/examples/KycSubmissionObjectAfricaGeneralExample'
+            KycSubmissionObjectAfricaNigeriaExample:
+              $ref: '#/components/examples/KycSubmissionObjectAfricaNigeriaExample'
+            KycSubmissionObjectGlobalNetworkExample:
+              $ref: '#/components/examples/KycSubmissionObjectGlobalNetworkExample'
+    KycLinkResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/KycLinkObject'
+          examples:
+            KycLinkObjectExample:
+              $ref: '#/components/examples/KycLinkObjectExample'
+    UboObjectAllRecordsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UboObjectList'
+          examples:
+            UboObjectListExample:
+              $ref: '#/components/examples/UboObjectListExample'
     KycStatusResponse:
       description: Success
       content:
@@ -4334,137 +4508,7 @@ components:
               $ref: '#/components/examples/KycStatusObjectAfricaNigeriaActiveExample'
             KycStatusObjectGlobalNetworkActiveExample:
               $ref: '#/components/examples/KycStatusObjectGlobalNetworkActiveExample'
-    UboObjectAllRecordsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UboObjectList'
-          examples:
-            UboObjectListExample:
-              $ref: '#/components/examples/UboObjectListExample'
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
-    DocumentObjectAllRecordsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DocumentObjectList'
-          examples:
-            DocumentObjectListExample:
-              $ref: '#/components/examples/DocumentObjectListExample'
-    KycLinkResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/KycLinkObject'
-          examples:
-            KycLinkObjectExample:
-              $ref: '#/components/examples/KycLinkObjectExample'
-    KycRequirementResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            oneOf:
-            - $ref: '#/components/schemas/USDRailBusinessKYCReqOptObject'
-            - $ref: '#/components/schemas/USDRailIndividualKYCReqOptObject'
-          examples:
-            KycRequirementObjectBusinessUSDExample:
-              $ref: '#/components/examples/KycRequirementObjectBusinessUSDExample'
-            KycRequirementObjectIndividualUSDExample:
-              $ref: '#/components/examples/KycRequirementObjectIndividualUSDExample'
-    AllKycStatusesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AllKycStatusesObject'
-          examples:
-            BasicKycStatusObjectListExample:
-              $ref: '#/components/examples/BasicKycStatusObjectListExample'
-    UboObjectResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UboObject'
-          examples:
-            UboObjectExample:
-              $ref: '#/components/examples/UboObjectExample'
-    NotFoundResponse:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                enum:
-                - error
-              error:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  message:
-                    type: string
-    KycStatusSubmitResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            oneOf:
-            - $ref: '#/components/schemas/UsdRailKycSubmissionObject'
-            - $ref: '#/components/schemas/SouthAmericaRailKycSubmissionObject'
-            - $ref: '#/components/schemas/AfricaGeneralRailKycSubmissionObject'
-            - $ref: '#/components/schemas/AfricaNigeriaRailKycSubmissionObject'
-            - $ref: '#/components/schemas/GlobalNetworkRailKycSubmissionObject'
-          examples:
-            KycSubmissionObjectUsdExample:
-              $ref: '#/components/examples/KycSubmissionObjectUsdExample'
-            KycSubmissionObjectSouthAmericaStandardExample:
-              $ref: '#/components/examples/KycSubmissionObjectSouthAmericaStandardExample'
-            KycSubmissionObjectAfricaGeneralExample:
-              $ref: '#/components/examples/KycSubmissionObjectAfricaGeneralExample'
-            KycSubmissionObjectAfricaNigeriaExample:
-              $ref: '#/components/examples/KycSubmissionObjectAfricaNigeriaExample'
-            KycSubmissionObjectGlobalNetworkExample:
-              $ref: '#/components/examples/KycSubmissionObjectGlobalNetworkExample'
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    KycObjectResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            oneOf:
-            - $ref: '#/components/schemas/KycIndividualObject'
-            - $ref: '#/components/schemas/KycBusinessObject'
-          examples:
-            KycObjectIndividualExample:
-              $ref: '#/components/examples/KycObjectIndividualExample'
-            KycObjectBusinessExample:
-              $ref: '#/components/examples/KycObjectBusinessExample'
   parameters:
-    UboIdPathParameter:
-      name: uboId
-      in: path
-      schema:
-        type: string
-      description: The ID of the Ultimate Beneficial Owner (UBO).
-      required: true
     DocumentIdPathParameter:
       name: documentId
       in: path
@@ -4472,26 +4516,15 @@ components:
         type: string
       description: The ID of the document.
       required: true
-    RailsTypeParameter:
-      name: rails
-      in: query
+    UserIdPathParameter:
+      name: userId
+      in: path
       schema:
-        $ref: '#/components/schemas/RailsEnum'
+        type: string
+      description: ID of the user
       required: true
-    UserEmailV2Parameter:
-      name: userEmail
-      in: query
-      schema:
-        type: string
-      required: false
-    UserNameParameter:
-      name: userName
-      in: query
-      schema:
-        type: string
-      required: false
-    CreatedBeforeParameter:
-      name: createdBefore
+    CreatedAfterParameter:
+      name: createdAfter
       in: query
       schema:
         type: string
@@ -4512,14 +4545,6 @@ components:
         type: string
       description: The user ID.
       required: false
-    CreatedAfterParameter:
-      name: createdAfter
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
     KycStatusArrayOptionalParameter:
       name: status
       in: query
@@ -4530,6 +4555,39 @@ components:
         minItems: 1
       description: The statuses of the KYC.
       required: false
+    UserNameParameter:
+      name: userName
+      in: query
+      schema:
+        type: string
+      required: false
+    UserEmailV2Parameter:
+      name: userEmail
+      in: query
+      schema:
+        type: string
+      required: false
+    RailsTypeParameter:
+      name: rails
+      in: query
+      schema:
+        $ref: '#/components/schemas/RailsEnum'
+      required: true
+    UboIdPathParameter:
+      name: uboId
+      in: path
+      schema:
+        type: string
+      description: The ID of the Ultimate Beneficial Owner (UBO).
+      required: true
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
     LimitParameter:
       name: limit
       in: query
@@ -4539,64 +4597,6 @@ components:
         maximum: 100
       description: default to 10, maximum to 100
       required: false
-    UserIdPathParameter:
-      name: userId
-      in: path
-      schema:
-        type: string
-      description: ID of the user
-      required: true
-  requestBodies:
-    AddDocumentBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            oneOf:
-            - $ref: '#/components/schemas/IndividualDocumentAdd'
-            - $ref: '#/components/schemas/BusinessDocumentAdd'
-    KycLinkBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            oneOf:
-            - $ref: '#/components/schemas/KycLinkForUserCreation'
-            - $ref: '#/components/schemas/KycLinkForUnlockingRails'
-    UpdateDocumentBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            oneOf:
-            - $ref: '#/components/schemas/IndividualDocumentUpdate'
-            - $ref: '#/components/schemas/BusinessDocumentUpdate'
-    KycUpdateBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            oneOf:
-            - $ref: '#/components/schemas/IndividualKycUpdate'
-            - $ref: '#/components/schemas/BusinessKycUpdate'
-    AddUboBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UboAdd'
-    RailsBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Rails'
-    UpdateUboBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UboUpdate'
   securitySchemes:
     bearerAuth:
       type: http
