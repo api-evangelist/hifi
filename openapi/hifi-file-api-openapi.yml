@@ -35,6 +35,18 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
     FileUploadResult:
       type: object
       properties:
@@ -60,18 +72,6 @@ components:
         fileName: document.pdf
         size: 204800
         mimeType: application/pdf
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Not authorized
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
     FileUpload:
       type: object
       properties:
@@ -81,12 +81,12 @@ components:
       required:
       - file
   responses:
-    UnauthorizedResponse:
-      description: Unauthorized
+    FileUploadResponse:
+      description: File uploaded successfully
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Unauthorized'
+            $ref: '#/components/schemas/FileUploadResult'
     InternalServerErrorResponse:
       description: Internal Server Error
       content:
@@ -111,12 +111,12 @@ components:
                     type: string
                   message:
                     type: string
-    FileUploadResponse:
-      description: File uploaded successfully
+    UnauthorizedResponse:
+      description: Unauthorized
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/FileUploadResult'
+            $ref: '#/components/schemas/Unauthorized'
   requestBodies:
     FileUploadBody:
       required: true

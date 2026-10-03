@@ -154,6 +154,12 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
     TransferApprovalSummary:
       type: object
       properties:
@@ -191,15 +197,48 @@ components:
           - WALLET.BRIDGE
           example: WALLET.TRANSFER
           description: Type of transfer requiring approval
-    ApproveTransferRequest:
+    GetTransferApprovalsResponse:
       type: object
-      description: Request body for approving a transfer
       properties:
-        comment:
+        success:
+          type: boolean
+          example: true
+          description: Whether the operation was successful
+        message:
+          type: string
+          example: Pending approvals retrieved successfully
+          description: Human-readable message about the operation
+        count:
+          type: integer
+          description: Total number of pending approvals
+          example: 2
+        approvals:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferApprovalSummary'
+          description: Array of pending approval records
+    RejectTransferRequest:
+      type: object
+      description: Request body for rejecting a transfer
+      properties:
+        reason:
           type: string
           maxLength: 1000
-          description: Optional comment explaining the approval decision
-          example: Approved after reviewing transaction details
+          description: Reason for rejecting the transfer
+          example: Transfer amount exceeds daily limit
+    GetTransferApprovalResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Whether the operation was successful
+        message:
+          type: string
+          example: Approval details retrieved successfully
+          description: Human-readable message about the operation
+        approval:
+          $ref: '#/components/schemas/TransferApprovalDetail'
     RejectTransferResponse:
       type: object
       properties:
@@ -231,87 +270,21 @@ components:
           format: date-time
           description: When the rejection was processed
           example: '2024-01-15T11:00:00.000Z'
-    GetTransferApprovalResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-          description: Whether the operation was successful
-        message:
-          type: string
-          example: Approval details retrieved successfully
-          description: Human-readable message about the operation
-        approval:
-          $ref: '#/components/schemas/TransferApprovalDetail'
     Unauthorized:
       type: object
       properties:
         error:
           type: string
           example: Not authorized
-    ApproveTransferResponse:
+    ApproveTransferRequest:
       type: object
+      description: Request body for approving a transfer
       properties:
-        success:
-          type: boolean
-          example: true
-          description: Whether the operation was successful
-        message:
-          type: string
-          example: Transfer approved and initiated successfully
-          description: Human-readable message about the operation
-        approvalId:
-          type: string
-          format: uuid
-          description: ID of the approval being processed
-          example: approval-123-e89b-12d3-a456-426614174002
-        status:
-          type: string
-          enum:
-          - APPROVED
-          example: APPROVED
-          description: Current status after approval
-        timestamp:
-          type: string
-          format: date-time
-          description: When the approval was processed
-          example: '2024-01-15T11:00:00.000Z'
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
-    RejectTransferRequest:
-      type: object
-      description: Request body for rejecting a transfer
-      properties:
-        reason:
+        comment:
           type: string
           maxLength: 1000
-          description: Reason for rejecting the transfer
-          example: Transfer amount exceeds daily limit
-    GetTransferApprovalsResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-          description: Whether the operation was successful
-        message:
-          type: string
-          example: Pending approvals retrieved successfully
-          description: Human-readable message about the operation
-        count:
-          type: integer
-          description: Total number of pending approvals
-          example: 2
-        approvals:
-          type: array
-          items:
-            $ref: '#/components/schemas/TransferApprovalSummary'
-          description: Array of pending approval records
+          description: Optional comment explaining the approval decision
+          example: Approved after reviewing transaction details
     TransferApprovalDetail:
       type: object
       properties:
@@ -354,6 +327,33 @@ components:
           items:
             $ref: '#/components/schemas/ApprovalVote'
           description: Array of votes cast on this approval
+    ApproveTransferResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Whether the operation was successful
+        message:
+          type: string
+          example: Transfer approved and initiated successfully
+          description: Human-readable message about the operation
+        approvalId:
+          type: string
+          format: uuid
+          description: ID of the approval being processed
+          example: approval-123-e89b-12d3-a456-426614174002
+        status:
+          type: string
+          enum:
+          - APPROVED
+          example: APPROVED
+          description: Current status after approval
+        timestamp:
+          type: string
+          format: date-time
+          description: When the approval was processed
+          example: '2024-01-15T11:00:00.000Z'
     ApprovalVote:
       type: object
       properties:
@@ -381,12 +381,6 @@ components:
           example: '2024-01-15T11:00:00.000Z'
           description: When the vote was cast
   responses:
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
     InternalServerErrorResponse:
       description: Internal Server Error
       content:
@@ -411,6 +405,12 @@ components:
                     type: string
                   message:
                     type: string
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
   securitySchemes:
     bearerAuth:
       type: http

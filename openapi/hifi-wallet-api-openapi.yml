@@ -141,14 +141,17 @@ paths:
       x-operation-id-source: derived
 components:
   examples:
-    ExternalWalletObjectExample:
-      summary: External Wallet Object
+    ExternalWalletObjectListExample:
+      summary: External Wallet Object List
       value:
-        address: '0xFE5ea74612ba174BaF7FC4C45f05dB7fF73aBA21'
-        chain: POLYGON
-        name: my-wallet
-        referenceId: my-wallet-reference-id
-        createdAt: '2025-09-24T19:03:41.107Z'
+        count: 1
+        externalWallets:
+        - address: '0xFE5ea74612ba174BaF7FC4C45f05dB7fF73aBA21'
+          chain: POLYGON
+          name: my-wallet
+          referenceId: my-wallet-reference-id
+          createdAt: '2025-09-24T19:03:41.107Z'
+        nextCursor: '2025-09-24T19:03:41.107Z'
     WalletBalanceObjectExample:
       summary: Wallet Balance Object
       value:
@@ -160,20 +163,14 @@ components:
           name: USDC
           symbol: USDC
           decimals: 6
-    UserObjectIndividualExample:
-      summary: User Object (Individual)
+    ExternalWalletObjectExample:
+      summary: External Wallet Object
       value:
-        id: 4d93ab4f-3983-4ac0-8c97-54bbc0f287fa
-        createdAt: '2025-09-24T19:12:20.541Z'
-        type: individual
-        email: john.doe@hifibridge.com
-        name: John Doe
-        wallets:
-          INDIVIDUAL:
-            ETHEREUM:
-              address: '0x43B343Bb48E23F58406271131B71448fF95787AD'
-            POLYGON:
-              address: '0x43B343Bb48E23F58406271131B71448fF95787AD'
+        address: '0xFE5ea74612ba174BaF7FC4C45f05dB7fF73aBA21'
+        chain: POLYGON
+        name: my-wallet
+        referenceId: my-wallet-reference-id
+        createdAt: '2025-09-24T19:03:41.107Z'
     WalletDepositObjectExample:
       summary: Wallet Deposit Object
       value:
@@ -196,17 +193,6 @@ components:
           contractAddress: '0x41E94Eb019C0762f9Bfcf9Fb1E58725BfB0e7582'
           amount: '19'
           unitAmount: '19000000'
-    ExternalWalletObjectListExample:
-      summary: External Wallet Object List
-      value:
-        count: 1
-        externalWallets:
-        - address: '0xFE5ea74612ba174BaF7FC4C45f05dB7fF73aBA21'
-          chain: POLYGON
-          name: my-wallet
-          referenceId: my-wallet-reference-id
-          createdAt: '2025-09-24T19:03:41.107Z'
-        nextCursor: '2025-09-24T19:03:41.107Z'
     UserObjectBusinessExample:
       summary: User Object (Business)
       value:
@@ -221,6 +207,20 @@ components:
               address: '0x2f78AEFA879819D7a5C9a87fE8BF5e7B961f5500'
             POLYGON:
               address: '0x2f78AEFA879819D7a5C9a87fE8BF5e7B961f5500'
+    UserObjectIndividualExample:
+      summary: User Object (Individual)
+      value:
+        id: 4d93ab4f-3983-4ac0-8c97-54bbc0f287fa
+        createdAt: '2025-09-24T19:12:20.541Z'
+        type: individual
+        email: john.doe@hifibridge.com
+        name: John Doe
+        wallets:
+          INDIVIDUAL:
+            ETHEREUM:
+              address: '0x43B343Bb48E23F58406271131B71448fF95787AD'
+            POLYGON:
+              address: '0x43B343Bb48E23F58406271131B71448fF95787AD'
     WalletDepositObjectListExample:
       summary: Wallet Deposit Object List
       value:
@@ -275,43 +275,6 @@ components:
                   $ref: '#/components/schemas/WalletAddressObject'
                 POLYGON:
                   $ref: '#/components/schemas/WalletAddressObject'
-    ExternalWalletsObject:
-      type: object
-      properties:
-        count:
-          type: integer
-        externalWallets:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExternalWalletObject'
-        nextCursor:
-          type: string
-          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
-    AddExternalWallets:
-      type: object
-      properties:
-        address:
-          type: string
-          description: The wallet address to add
-        chain:
-          type: string
-          enum:
-          - POLYGON
-          - SOLANA
-          - ETHEREUM
-          - BASE
-          description: The blockchain network for this wallet
-        name:
-          type: string
-          description: Name for the wallet
-        referenceId:
-          type: string
-          description: A custom reference ID for the wallet
-      required:
-      - address
-      - chain
-      - name
-      - referenceId
     WalletDepositsObject:
       type: object
       properties:
@@ -324,118 +287,6 @@ components:
         nextCursor:
           type: string
           description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
-    WalletBalanceObject:
-      type: object
-      properties:
-        balance:
-          type: string
-          description: The raw balance of the wallet expressed in the smallest denomination of the token. This format is ideal for backend calculations, automation processes, or when precise, unrounded figures are necessary for smart contract interactions. For example, use this when calculating transaction fees or performing token transfer operations that require exact values.
-        displayBalance:
-          type: string
-          description: The wallet balance formatted as a decimal string for display purposes, adjusted according to the token's decimal places to facilitate human readability. This format is best used in user interfaces where balances are displayed to end-users, such as in wallet apps or dashboards, where readability and familiarity are crucial. For instance, displaying an account balance on a user's home screen or summary page.
-        tokenInfo:
-          type: object
-          description: Detailed information about the token.
-          properties:
-            tokenAddress:
-              type: string
-              description: Blockchain generated unique identifier, associated with wallet (account), smart contract or other blockchain objects.
-            standard:
-              type: string
-              enum:
-              - ERC20
-              - ERC721
-              - ERC1155
-            name:
-              type: string
-              description: Blockchain name of the specified token.
-            symbol:
-              type: string
-              description: Blockchain symbol of the specified token.
-            decimals:
-              type: integer
-              description: Number of decimal places shown in the token amount.
-    UserV2AddWallets:
-      type: object
-      properties:
-        chains:
-          type: array
-          items:
-            type: string
-            description: The chains to create wallets for.
-            enum:
-            - POLYGON
-            - SOLANA
-            - ETHEREUM
-            - BASE
-      required:
-      - chains
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Not authorized
-    IndividualUserV2Object:
-      type: object
-      title: User Object (Individual)
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: User ID
-        createdAt:
-          type: string
-          format: date-time
-          description: Data and time when the user was created
-        type:
-          type: string
-        email:
-          type: string
-        name:
-          type: string
-        wallets:
-          type: object
-          properties:
-            INDIVIDUAL:
-              type: object
-              properties:
-                ETHEREUM:
-                  $ref: '#/components/schemas/WalletAddressObject'
-                POLYGON:
-                  $ref: '#/components/schemas/WalletAddressObject'
-    ExternalWalletObject:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        userId:
-          type: string
-          format: uuid
-        chain:
-          type: string
-          enum:
-          - POLYGON
-          - SOLANA
-          - ETHEREUM
-          - BASE
-        name:
-          type: string
-        address:
-          type: string
-        referenceId:
-          type: string
-        active:
-          type: boolean
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
     WalletDepositObject:
       type: object
       properties:
@@ -499,6 +350,65 @@ components:
               type: string
             unitAmount:
               type: string
+    IndividualUserV2Object:
+      type: object
+      title: User Object (Individual)
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User ID
+        createdAt:
+          type: string
+          format: date-time
+          description: Data and time when the user was created
+        type:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        wallets:
+          type: object
+          properties:
+            INDIVIDUAL:
+              type: object
+              properties:
+                ETHEREUM:
+                  $ref: '#/components/schemas/WalletAddressObject'
+                POLYGON:
+                  $ref: '#/components/schemas/WalletAddressObject'
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+    AddExternalWallets:
+      type: object
+      properties:
+        address:
+          type: string
+          description: The wallet address to add
+        chain:
+          type: string
+          enum:
+          - POLYGON
+          - SOLANA
+          - ETHEREUM
+          - BASE
+          description: The blockchain network for this wallet
+        name:
+          type: string
+          description: Name for the wallet
+        referenceId:
+          type: string
+          description: A custom reference ID for the wallet
+      required:
+      - address
+      - chain
+      - name
+      - referenceId
     WalletAddressObject:
       type: object
       properties:
@@ -507,113 +417,116 @@ components:
           description: Wallet address
       required:
       - address
+    UserV2AddWallets:
+      type: object
+      properties:
+        chains:
+          type: array
+          items:
+            type: string
+            description: The chains to create wallets for.
+            enum:
+            - POLYGON
+            - SOLANA
+            - ETHEREUM
+            - BASE
+      required:
+      - chains
+    ExternalWalletsObject:
+      type: object
+      properties:
+        count:
+          type: integer
+        externalWallets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalWalletObject'
+        nextCursor:
+          type: string
+          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
     InternalServerError:
       type: object
       properties:
         error:
           type: string
           example: Unexpected error happened
-  responses:
-    ExternalWalletsObjectResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ExternalWalletsObject'
-          examples:
-            ExternalWalletObjectListExample:
-              $ref: '#/components/examples/ExternalWalletObjectListExample'
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
-    WalletDepositObjectResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/WalletDepositObject'
-          examples:
-            WalletDepositObjectExample:
-              $ref: '#/components/examples/WalletDepositObjectExample'
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    ExternalWalletObjectResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ExternalWalletObject'
-          examples:
-            ExternalWalletObjectExample:
-              $ref: '#/components/examples/ExternalWalletObjectExample'
-    UserV2ObjectResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            oneOf:
-            - $ref: '#/components/schemas/IndividualUserV2Object'
-            - $ref: '#/components/schemas/BusinessUserV2Object'
-          examples:
-            UserObjectIndividualExample:
-              $ref: '#/components/examples/UserObjectIndividualExample'
-            UserObjectBusinessExample:
-              $ref: '#/components/examples/UserObjectBusinessExample'
-    WalletBalanceResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/WalletBalanceObject'
-          examples:
-            WalletBalanceObjectExample:
-              $ref: '#/components/examples/WalletBalanceObjectExample'
-    WalletDepositsObjectResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/WalletDepositsObject'
-          examples:
-            WalletDepositObjectListExample:
-              $ref: '#/components/examples/WalletDepositObjectListExample'
+    WalletBalanceObject:
+      type: object
+      properties:
+        balance:
+          type: string
+          description: The raw balance of the wallet expressed in the smallest denomination of the token. This format is ideal for backend calculations, automation processes, or when precise, unrounded figures are necessary for smart contract interactions. For example, use this when calculating transaction fees or performing token transfer operations that require exact values.
+        displayBalance:
+          type: string
+          description: The wallet balance formatted as a decimal string for display purposes, adjusted according to the token's decimal places to facilitate human readability. This format is best used in user interfaces where balances are displayed to end-users, such as in wallet apps or dashboards, where readability and familiarity are crucial. For instance, displaying an account balance on a user's home screen or summary page.
+        tokenInfo:
+          type: object
+          description: Detailed information about the token.
+          properties:
+            tokenAddress:
+              type: string
+              description: Blockchain generated unique identifier, associated with wallet (account), smart contract or other blockchain objects.
+            standard:
+              type: string
+              enum:
+              - ERC20
+              - ERC721
+              - ERC1155
+            name:
+              type: string
+              description: Blockchain name of the specified token.
+            symbol:
+              type: string
+              description: Blockchain symbol of the specified token.
+            decimals:
+              type: integer
+              description: Number of decimal places shown in the token amount.
+    ExternalWalletObject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        chain:
+          type: string
+          enum:
+          - POLYGON
+          - SOLANA
+          - ETHEREUM
+          - BASE
+        name:
+          type: string
+        address:
+          type: string
+        referenceId:
+          type: string
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
   parameters:
+    ExternalWalletIdPathParameter:
+      name: externalWalletId
+      in: path
+      schema:
+        type: string
+      description: ID of the external wallet
+      required: true
     MinAmountParameter:
       name: minAmount
       in: query
       schema:
         type: number
       description: Minimum amount of the deposit, default is 0.01
-      required: false
-    DepositIdPathParameter:
-      name: depositId
-      in: path
-      schema:
-        type: string
-      description: ID of the deposit
-      required: true
-    CreatedAfterParameter:
-      name: createdAfter
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
-    CreatedBeforeParameter:
-      name: createdBefore
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
       required: false
     ChainParameter:
       name: chain
@@ -627,30 +540,14 @@ components:
         - BASE
       description: The blockchain network to retrieve the wallet balance from.
       required: true
-    ExternalWalletIdPathParameter:
-      name: externalWalletId
-      in: path
-      schema:
-        type: string
-      description: ID of the external wallet
-      required: true
-    WalletDepositStatusParameter:
-      name: status
+    CreatedAfterParameter:
+      name: createdAfter
       in: query
       schema:
         type: string
-        enum:
-        - CONFIRMED
-        - COMPLETED
-      description: Status of the deposit, CONFIRMED indicates the deposit is found in the blockchain, COMPLETED indicates the deposit is completed and unlikely to be reverted.
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
       required: false
-    UserIdPathParameter:
-      name: userId
-      in: path
-      schema:
-        type: string
-      description: ID of the user
-      required: true
     CryptoCurrencyParameter:
       name: currency
       in: query
@@ -662,6 +559,38 @@ components:
         - usdHifi
       description: The type of currency to check the balance for. Currently, only usdc is supported.
       required: true
+    UserIdPathParameter:
+      name: userId
+      in: path
+      schema:
+        type: string
+      description: ID of the user
+      required: true
+    WalletDepositStatusParameter:
+      name: status
+      in: query
+      schema:
+        type: string
+        enum:
+        - CONFIRMED
+        - COMPLETED
+      description: Status of the deposit, CONFIRMED indicates the deposit is found in the blockchain, COMPLETED indicates the deposit is completed and unlikely to be reverted.
+      required: false
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    DepositIdPathParameter:
+      name: depositId
+      in: path
+      schema:
+        type: string
+      description: ID of the deposit
+      required: true
     LimitParameter:
       name: limit
       in: query
@@ -671,6 +600,77 @@ components:
         maximum: 100
       description: default to 10, maximum to 100
       required: false
+  responses:
+    WalletDepositsObjectResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WalletDepositsObject'
+          examples:
+            WalletDepositObjectListExample:
+              $ref: '#/components/examples/WalletDepositObjectListExample'
+    WalletDepositObjectResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WalletDepositObject'
+          examples:
+            WalletDepositObjectExample:
+              $ref: '#/components/examples/WalletDepositObjectExample'
+    UserV2ObjectResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/IndividualUserV2Object'
+            - $ref: '#/components/schemas/BusinessUserV2Object'
+          examples:
+            UserObjectIndividualExample:
+              $ref: '#/components/examples/UserObjectIndividualExample'
+            UserObjectBusinessExample:
+              $ref: '#/components/examples/UserObjectBusinessExample'
+    ExternalWalletObjectResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ExternalWalletObject'
+          examples:
+            ExternalWalletObjectExample:
+              $ref: '#/components/examples/ExternalWalletObjectExample'
+    WalletBalanceResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WalletBalanceObject'
+          examples:
+            WalletBalanceObjectExample:
+              $ref: '#/components/examples/WalletBalanceObjectExample'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    ExternalWalletsObjectResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ExternalWalletsObject'
+          examples:
+            ExternalWalletObjectListExample:
+              $ref: '#/components/examples/ExternalWalletObjectListExample'
   requestBodies:
     UserV2AddWalletsBody:
       required: true
