@@ -34,7 +34,59 @@ paths:
       operationId: postV2Files
       x-operation-id-source: derived
 components:
+  requestBodies:
+    FileUploadBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/FileUpload'
+  responses:
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    FileUploadResponse:
+      description: File uploaded successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FileUploadResult'
   schemas:
+    FileUpload:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+      required:
+      - file
     InternalServerError:
       type: object
       properties:
@@ -72,58 +124,6 @@ components:
         fileName: document.pdf
         size: 204800
         mimeType: application/pdf
-    FileUpload:
-      type: object
-      properties:
-        file:
-          type: string
-          format: binary
-      required:
-      - file
-  responses:
-    FileUploadResponse:
-      description: File uploaded successfully
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FileUploadResult'
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    NotFoundResponse:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                enum:
-                - error
-              error:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  message:
-                    type: string
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
-  requestBodies:
-    FileUploadBody:
-      required: true
-      content:
-        multipart/form-data:
-          schema:
-            $ref: '#/components/schemas/FileUpload'
   securitySchemes:
     bearerAuth:
       type: http

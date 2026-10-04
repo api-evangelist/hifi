@@ -180,63 +180,6 @@ components:
               type: string
               description: Amount to receive (either source.amount or destination.amount must be provided)
               example: '10000'
-    WalletSwapQuoteInformationObject:
-      type: object
-      properties:
-        sendGross:
-          $ref: '#/components/schemas/WalletSwapAmountObject'
-        sendNet:
-          $ref: '#/components/schemas/WalletSwapAmountObject'
-        receiveGross:
-          $ref: '#/components/schemas/WalletSwapAmountObject'
-        receiveNet:
-          $ref: '#/components/schemas/WalletSwapAmountObject'
-        rate:
-          type: string
-          example: '1'
-        expiresAt:
-          type: string
-          format: date-time
-          example: '2025-08-20T03:55:59.539+00:00'
-    WalletSwapSourceObject:
-      type: object
-      properties:
-        currency:
-          type: string
-          example: usdc
-        amount:
-          type: number
-          example: 10
-        chain:
-          type: string
-          example: POLYGON
-        userId:
-          type: string
-          format: uuid
-          example: 05179f69-1988-4b46-a847-dd4eea0984d6
-    WalletSwapObject:
-      type: object
-      properties:
-        transferType:
-          type: string
-          example: WALLET.SWAP
-        transferDetails:
-          $ref: '#/components/schemas/WalletSwapDetailsObject'
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Not authorized
-    WalletSwapAmountObject:
-      type: object
-      properties:
-        amount:
-          type: string
-          example: '10'
-        currency:
-          type: string
-          example: usdc
     WalletSwapDestinationObject:
       type: object
       properties:
@@ -265,6 +208,62 @@ components:
           type: string
           pattern: ^0x[a-fA-F0-9]{40}$
           example: '0xe5727a4B1d93A26D6A7Adfaae145EFa41ED7f204'
+    WalletSwapAmountObject:
+      type: object
+      properties:
+        amount:
+          type: string
+          example: '10'
+        currency:
+          type: string
+          example: usdc
+    WalletSwapQuoteInformationObject:
+      type: object
+      properties:
+        sendGross:
+          $ref: '#/components/schemas/WalletSwapAmountObject'
+        sendNet:
+          $ref: '#/components/schemas/WalletSwapAmountObject'
+        receiveGross:
+          $ref: '#/components/schemas/WalletSwapAmountObject'
+        receiveNet:
+          $ref: '#/components/schemas/WalletSwapAmountObject'
+        rate:
+          type: string
+          example: '1'
+        expiresAt:
+          type: string
+          format: date-time
+          example: '2025-08-20T03:55:59.539+00:00'
+    WalletSwapAllRecordsObject:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WalletSwapObject'
+        nextCursor:
+          type: string
+          format: date-time
+          example: '2025-08-20T04:08:10.837+00:00'
+    WalletSwapObject:
+      type: object
+      properties:
+        transferType:
+          type: string
+          example: WALLET.SWAP
+        transferDetails:
+          $ref: '#/components/schemas/WalletSwapDetailsObject'
+    WalletSwapBillingInformationObject:
+      type: object
+      properties:
+        fees:
+          type: array
+          items:
+            $ref: '#/components/schemas/WalletSwapFeeObject'
     WalletSwapDetailsObject:
       type: object
       properties:
@@ -316,20 +315,6 @@ components:
         error:
           type: string
           example: Unexpected error happened
-    WalletSwapAllRecordsObject:
-      type: object
-      properties:
-        count:
-          type: integer
-          example: 1
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WalletSwapObject'
-        nextCursor:
-          type: string
-          format: date-time
-          example: '2025-08-20T04:08:10.837+00:00'
     WalletSwapFeeObject:
       type: object
       properties:
@@ -355,14 +340,89 @@ components:
           - ON_INVOICE
           - ON_TRANSACTION
           example: ON_INVOICE
-    WalletSwapBillingInformationObject:
+    WalletSwapSourceObject:
       type: object
       properties:
-        fees:
-          type: array
-          items:
-            $ref: '#/components/schemas/WalletSwapFeeObject'
+        currency:
+          type: string
+          example: usdc
+        amount:
+          type: number
+          example: 10
+        chain:
+          type: string
+          example: POLYGON
+        userId:
+          type: string
+          format: uuid
+          example: 05179f69-1988-4b46-a847-dd4eea0984d6
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+  responses:
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    WalletSwapAllRecordsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WalletSwapAllRecordsObject'
+    WalletSwapResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WalletSwapObject'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
   parameters:
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
     SwapTransferIDPathParameter:
       name: swapId
       in: path
@@ -385,66 +445,6 @@ components:
         type: string
       description: The user ID.
       required: false
-    CreatedBeforeParameter:
-      name: createdBefore
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
-    LimitParameter:
-      name: limit
-      in: query
-      schema:
-        type: string
-        minimum: 1
-        maximum: 100
-      description: default to 10, maximum to 100
-      required: false
-  responses:
-    WalletSwapAllRecordsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/WalletSwapAllRecordsObject'
-    NotFoundResponse:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                enum:
-                - error
-              error:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  message:
-                    type: string
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
-    WalletSwapResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/WalletSwapObject'
   requestBodies:
     CreateWalletSwapBody:
       required: true

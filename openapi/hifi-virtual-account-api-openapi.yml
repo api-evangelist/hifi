@@ -171,39 +171,18 @@ paths:
       x-operation-id-source: derived
 components:
   responses:
-    CreateVirtualAccountResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateVirtualAccountObject'
-          examples:
-            VirtualAccountObjectCreationExample:
-              $ref: '#/components/examples/VirtualAccountObjectCreationExample'
-    GetAllVirtualAccountsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/VirtualAccountListObject'
-          examples:
-            VirtualAccountObjectListExample:
-              $ref: '#/components/examples/VirtualAccountObjectListExample'
-    DeactivateVirtualAccountResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DeactivateVirtualAccountObject'
-          examples:
-            VirtualAccountObjectDeactivateExample:
-              $ref: '#/components/examples/VirtualAccountObjectDeactivateExample'
     UpdateVirtualAccountResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/UpdateVirtualAccountObject'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
     SimulateVirtualAccountDepositResponse:
       description: Successfully triggered sandbox deposit
       content:
@@ -213,6 +192,39 @@ components:
           examples:
             VirtualAccountDepositSimulationObjectExample:
               $ref: '#/components/examples/VirtualAccountDepositSimulationObjectExample'
+    GetVirtualAccountResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VirtualAccountObject'
+          examples:
+            VirtualAccountObjectExample:
+              $ref: '#/components/examples/VirtualAccountObjectExample'
+    DeactivateVirtualAccountResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeactivateVirtualAccountObject'
+          examples:
+            VirtualAccountObjectDeactivateExample:
+              $ref: '#/components/examples/VirtualAccountObjectDeactivateExample'
+    GetAllVirtualAccountsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VirtualAccountListObject'
+          examples:
+            VirtualAccountObjectListExample:
+              $ref: '#/components/examples/VirtualAccountObjectListExample'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
     NotFoundResponse:
       description: Resource not found
       content:
@@ -240,236 +252,108 @@ components:
           examples:
             VirtualAccountObjectCreationExample:
               $ref: '#/components/examples/VirtualAccountObjectCreationExample'
-    GetVirtualAccountResponse:
+    CreateVirtualAccountResponse:
       description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/VirtualAccountObject'
+            $ref: '#/components/schemas/CreateVirtualAccountObject'
           examples:
-            VirtualAccountObjectExample:
-              $ref: '#/components/examples/VirtualAccountObjectExample'
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
-  examples:
-    VirtualAccountDepositSimulationObjectExample:
-      summary: Virtual Account Deposit Simulation Object
-      value:
-        amount: '88.8'
-        paymentRail: WIRE
-        requestId: 550e8400-e29b-41d4-a716-446655440000
-        source:
-          routingNumber: '021000021'
-          accountNumber: '123456789'
-          name: Henry Wu
-          bankName: Bank of NoWhere
-        userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
-        reference: Test deposit
-        description: Simulated test deposit
-    VirtualAccountObjectExample:
-      summary: Virtual Account Object
-      value:
-        id: cfbc005d-8640-57a4-89e1-539c974fa780
-        createdAt: '2025-09-27T03:08:11.548Z'
-        updatedAt: '2025-09-27T03:08:11.548Z'
-        userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
-        source:
-          paymentRail:
-          - ach
-          - wire
-          - rtp
-          currency: usd
-        destination:
-          chain: POLYGON
-          currency: usdc
-          walletAddress: '0xd102C4130985B7fcB95697616eaf5542c4f98d49'
-          externalWalletId: null
-        status: activated
-        depositInstructions:
-          bankName: Bank of NoWhere
-          bankAddress: 123 Main St, New York, NY 10001, USA
-          beneficiary:
-            name: Henry Wu
-            address: Example St 1., Apt 123, New York, NY, 10010, US
-          ach:
-            routingNumber: 028000024
-            accountNumber: '123456789'
-          wire:
-            routingNumber: '021000021'
-            accountNumber: '123456789'
-          rtp:
-            routingNumber: '021000021'
-            accountNumber: '123456789'
-          instruction: Please deposit usd to the bank account provided. Please ensure that the beneficiary name matches the account holder name provided, or the payment may be rejected.
-        settlementRuleId: null
-    VirtualAccountObjectCreationExample:
-      summary: Virtual Account Object (Creation)
-      value:
-        message: Virtual account created successfully
-        accountInfo:
-          id: cfbc005d-8640-57a4-89e1-539c974fa780
-          createdAt: '2025-09-27T03:08:11.548Z'
-          updatedAt: '2025-09-27T03:08:11.548Z'
-          userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
-          source:
-            paymentRail:
-            - ach
-            - wire
-            - rtp
-            currency: usd
-          destination:
-            chain: POLYGON
-            currency: usdc
-            walletAddress: '0xd102C4130985B7fcB95697616eaf5542c4f98d49'
-            externalWalletId: null
-          status: activated
-          depositInstructions:
-            bankName: Bank of NoWhere
-            bankAddress: 123 Main St, New York, NY 10001, USA
-            beneficiary:
-              name: Henry Wu
-              address: Example St 1., Apt 123, New York, NY, 10010, US
-            ach:
-              routingNumber: 028000024
-              accountNumber: '123456789'
-            wire:
-              routingNumber: '021000021'
-              accountNumber: '123456789'
-            rtp:
-              routingNumber: '021000021'
-              accountNumber: '123456789'
-            instruction: Please deposit usd to the bank account provided. Please ensure that the beneficiary name matches the account holder name provided, or the payment may be rejected.
-          settlementRuleId: null
-    VirtualAccountObjectDeactivateExample:
-      summary: Virtual Account Object (Deactivation)
-      value:
-        message: Virtual account deactivated
-        accountInfo:
-          id: cfbc005d-8640-57a4-89e1-539c974fa780
-          createdAt: '2025-09-27T03:08:11.548Z'
-          updatedAt: '2025-09-27T03:08:11.548Z'
-          userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
-          source:
-            paymentRail:
-            - ach
-            - wire
-            - rtp
-            currency: usd
-          destination:
-            chain: POLYGON
-            currency: usdc
-            walletAddress: '0xd102C4130985B7fcB95697616eaf5542c4f98d49'
-            externalWalletId: null
-          status: deactivated
-          depositInstructions:
-            bankName: Bank of NoWhere
-            bankAddress: 123 Main St, New York, NY 10001, USA
-            beneficiary:
-              name: Henry Wu
-              address: Example St 1., Apt 123, New York, NY, 10010, US
-            ach:
-              routingNumber: 028000024
-              accountNumber: '123456789'
-            wire:
-              routingNumber: '021000021'
-              accountNumber: '123456789'
-            rtp:
-              routingNumber: '021000021'
-              accountNumber: '123456789'
-            instruction: Please deposit usd to the bank account provided. Please ensure that the beneficiary name matches the account holder name provided, or the payment may be rejected.
-          settlementRuleId: null
-    VirtualAccountObjectListExample:
-      summary: Virtual Account Object List
-      value:
-        count: 1
-        data:
-        - id: cfbc005d-8640-57a4-89e1-539c974fa780
-          createdAt: '2025-09-27T03:08:11.548Z'
-          updatedAt: '2025-09-27T03:08:11.548Z'
-          userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
-          source:
-            paymentRail:
-            - ach
-            - wire
-            - rtp
-            currency: usd
-          destination:
-            chain: POLYGON
-            currency: usdc
-            walletAddress: '0xd102C4130985B7fcB95697616eaf5542c4f98d49'
-            externalWalletId: null
-          status: activated
-          depositInstructions:
-            bankName: Bank of NoWhere
-            bankAddress: 123 Main St, New York, NY 10001, USA
-            beneficiary:
-              name: Henry Wu
-              address: Example St 1., Apt 123, New York, NY, 10010, US
-            ach:
-              routingNumber: 028000024
-              accountNumber: '123456789'
-            wire:
-              routingNumber: '021000021'
-              accountNumber: '123456789'
-            rtp:
-              routingNumber: '021000021'
-              accountNumber: '123456789'
-            instruction: Please deposit usd to the bank account provided. Please ensure that the beneficiary name matches the account holder name provided, or the payment may be rejected.
-          settlementRuleId: null
-        nextCursor: '2025-09-27T03:08:11.548Z'
+            VirtualAccountObjectCreationExample:
+              $ref: '#/components/examples/VirtualAccountObjectCreationExample'
+  parameters:
+    UserIdPathParameter:
+      name: userId
+      in: path
+      schema:
+        type: string
+      description: ID of the user
+      required: true
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    VASourceCurrencyParameter:
+      name: sourceCurrency
+      in: query
+      schema:
+        type: string
+        enum:
+        - usd
+      description: Source currency
+      required: false
+    VACreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+      description: Return the micro deposit records that created before this eventId
+      required: false
+    CreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    VALimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: Number of micro deposit records return for the virtual account, default to 10 maximum to 100
+      required: false
+    VADestinationCurrencyParameter:
+      name: destinationCurrency
+      in: query
+      schema:
+        type: string
+        enum:
+        - usdc
+        - usdt
+      description: Destination currency
+      required: false
+    VACreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+      description: Return the micro deposit records that created after this eventId
+      required: false
+    VADestinationChainParameter:
+      name: destinationChain
+      in: query
+      schema:
+        type: string
+        enum:
+        - POLYGON
+      description: Destination chain
+      required: false
+    VirtualAccountIdPathParameter:
+      name: accountId
+      in: path
+      schema:
+        type: string
+      description: ID of the virtual account
+      required: true
   schemas:
-    CreateVirtualAccount:
-      type: object
-      title: Create Virtual Account
-      properties:
-        sourceCurrency:
-          type: string
-          enum:
-          - usd
-        destinationCurrency:
-          type: string
-          enum:
-          - usdc
-          - usdt
-          description: 'usdt is only supported on ethereum
-
-            '
-        destinationChain:
-          type: string
-          enum:
-          - POLYGON
-          - ETHEREUM
-          - SOLANA
-          - BASE
-          description: 'Either `externalWalletId` or `destinationChain` must be provided.
-
-            '
-        externalWalletId:
-          type: string
-          description: 'Either `externalWalletId` or `destinationChain` must be provided.
-
-            '
-      required:
-      - sourceCurrency
-      - destinationCurrency
     ReactivateVirtualAccountObject:
-      type: object
-      properties:
-        message:
-          type: string
-        accountInfo:
-          $ref: '#/components/schemas/VirtualAccountObject'
-    UpdateVirtualAccountObject:
       type: object
       properties:
         message:
@@ -582,39 +466,6 @@ components:
         settlementRuleId:
           type: string
           format: uuid
-    DeactivateVirtualAccountObject:
-      type: object
-      properties:
-        message:
-          type: string
-        accountInfo:
-          $ref: '#/components/schemas/VirtualAccountObject'
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Not authorized
-    VirtualAccountListObject:
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of virtual accounts.
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/VirtualAccountObject'
-        nextCursor:
-          type: string
-          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
-    CreateVirtualAccountObject:
-      type: object
-      properties:
-        message:
-          type: string
-        accountInfo:
-          $ref: '#/components/schemas/VirtualAccountObject'
     InboundObject:
       type: object
       properties:
@@ -646,46 +497,13 @@ components:
           - ach
           - wire
           - rtp
-    InternalServerError:
+    UpdateVirtualAccountObject:
       type: object
       properties:
-        error:
+        message:
           type: string
-          example: Unexpected error happened
-    UpdateVirtualAccount:
-      type: object
-      title: Update Virtual Account
-      properties:
-        sourceCurrency:
-          type: string
-          enum:
-          - usd
-        destinationCurrency:
-          type: string
-          enum:
-          - usdc
-          - usdt
-          description: 'usdt is only supported on ethereum
-
-            '
-        destinationChain:
-          type: string
-          enum:
-          - POLYGON
-          - ETHEREUM
-          - SOLANA
-          - BASE
-          description: 'Either `externalWalletId` or `destinationChain` must be provided.
-
-            '
-        externalWalletId:
-          type: string
-          description: 'Either `externalWalletId` or `destinationChain` must be provided.
-
-            '
-      required:
-      - sourceCurrency
-      - destinationCurrency
+        accountInfo:
+          $ref: '#/components/schemas/VirtualAccountObject'
     SimulateVirtualAccountDeposit:
       type: object
       title: Simulate Virtual Account Deposit
@@ -736,110 +554,292 @@ components:
       - paymentRail
       - requestId
       - source
-  parameters:
-    VADestinationChainParameter:
-      name: destinationChain
-      in: query
-      schema:
-        type: string
-        enum:
-        - POLYGON
-      description: Destination chain
-      required: false
-    VACreatedAfterParameter:
-      name: createdAfter
-      in: query
-      schema:
-        type: string
-      description: Return the micro deposit records that created after this eventId
-      required: false
-    VACreatedBeforeParameter:
-      name: createdBefore
-      in: query
-      schema:
-        type: string
-      description: Return the micro deposit records that created before this eventId
-      required: false
-    VADestinationCurrencyParameter:
-      name: destinationCurrency
-      in: query
-      schema:
-        type: string
-        enum:
-        - usdc
-        - usdt
-      description: Destination currency
-      required: false
-    VASourceCurrencyParameter:
-      name: sourceCurrency
-      in: query
-      schema:
-        type: string
-        enum:
-        - usd
-      description: Source currency
-      required: false
-    CreatedAfterParameter:
-      name: createdAfter
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
-    VirtualAccountIdPathParameter:
-      name: accountId
-      in: path
-      schema:
-        type: string
-      description: ID of the virtual account
-      required: true
-    UserIdPathParameter:
-      name: userId
-      in: path
-      schema:
-        type: string
-      description: ID of the user
-      required: true
-    CreatedBeforeParameter:
-      name: createdBefore
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
-    VALimitParameter:
-      name: limit
-      in: query
-      schema:
-        type: string
-        minimum: 1
-        maximum: 100
-      description: Number of micro deposit records return for the virtual account, default to 10 maximum to 100
-      required: false
-    LimitParameter:
-      name: limit
-      in: query
-      schema:
-        type: string
-        minimum: 1
-        maximum: 100
-      description: default to 10, maximum to 100
-      required: false
+    VirtualAccountListObject:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of virtual accounts.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VirtualAccountObject'
+        nextCursor:
+          type: string
+          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
+    CreateVirtualAccount:
+      type: object
+      title: Create Virtual Account
+      properties:
+        sourceCurrency:
+          type: string
+          enum:
+          - usd
+        destinationCurrency:
+          type: string
+          enum:
+          - usdc
+          - usdt
+          description: 'usdt is only supported on ethereum
+
+            '
+        destinationChain:
+          type: string
+          enum:
+          - POLYGON
+          - ETHEREUM
+          - SOLANA
+          - BASE
+          description: 'Either `externalWalletId` or `destinationChain` must be provided.
+
+            '
+        externalWalletId:
+          type: string
+          description: 'Either `externalWalletId` or `destinationChain` must be provided.
+
+            '
+      required:
+      - sourceCurrency
+      - destinationCurrency
+    UpdateVirtualAccount:
+      type: object
+      title: Update Virtual Account
+      properties:
+        sourceCurrency:
+          type: string
+          enum:
+          - usd
+        destinationCurrency:
+          type: string
+          enum:
+          - usdc
+          - usdt
+          description: 'usdt is only supported on ethereum
+
+            '
+        destinationChain:
+          type: string
+          enum:
+          - POLYGON
+          - ETHEREUM
+          - SOLANA
+          - BASE
+          description: 'Either `externalWalletId` or `destinationChain` must be provided.
+
+            '
+        externalWalletId:
+          type: string
+          description: 'Either `externalWalletId` or `destinationChain` must be provided.
+
+            '
+      required:
+      - sourceCurrency
+      - destinationCurrency
+    CreateVirtualAccountObject:
+      type: object
+      properties:
+        message:
+          type: string
+        accountInfo:
+          $ref: '#/components/schemas/VirtualAccountObject'
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
+    DeactivateVirtualAccountObject:
+      type: object
+      properties:
+        message:
+          type: string
+        accountInfo:
+          $ref: '#/components/schemas/VirtualAccountObject'
+  examples:
+    VirtualAccountDepositSimulationObjectExample:
+      summary: Virtual Account Deposit Simulation Object
+      value:
+        amount: '88.8'
+        paymentRail: WIRE
+        requestId: 550e8400-e29b-41d4-a716-446655440000
+        source:
+          routingNumber: '021000021'
+          accountNumber: '123456789'
+          name: Henry Wu
+          bankName: Bank of NoWhere
+        userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
+        reference: Test deposit
+        description: Simulated test deposit
+    VirtualAccountObjectExample:
+      summary: Virtual Account Object
+      value:
+        id: cfbc005d-8640-57a4-89e1-539c974fa780
+        createdAt: '2025-09-27T03:08:11.548Z'
+        updatedAt: '2025-09-27T03:08:11.548Z'
+        userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
+        source:
+          paymentRail:
+          - ach
+          - wire
+          - rtp
+          currency: usd
+        destination:
+          chain: POLYGON
+          currency: usdc
+          walletAddress: '0xd102C4130985B7fcB95697616eaf5542c4f98d49'
+          externalWalletId: null
+        status: activated
+        depositInstructions:
+          bankName: Bank of NoWhere
+          bankAddress: 123 Main St, New York, NY 10001, USA
+          beneficiary:
+            name: Henry Wu
+            address: Example St 1., Apt 123, New York, NY, 10010, US
+          ach:
+            routingNumber: 028000024
+            accountNumber: '123456789'
+          wire:
+            routingNumber: '021000021'
+            accountNumber: '123456789'
+          rtp:
+            routingNumber: '021000021'
+            accountNumber: '123456789'
+          instruction: Please deposit usd to the bank account provided. Please ensure that the beneficiary name matches the account holder name provided, or the payment may be rejected.
+        settlementRuleId: null
+    VirtualAccountObjectCreationExample:
+      summary: Virtual Account Object (Creation)
+      value:
+        message: Virtual account created successfully
+        accountInfo:
+          id: cfbc005d-8640-57a4-89e1-539c974fa780
+          createdAt: '2025-09-27T03:08:11.548Z'
+          updatedAt: '2025-09-27T03:08:11.548Z'
+          userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
+          source:
+            paymentRail:
+            - ach
+            - wire
+            - rtp
+            currency: usd
+          destination:
+            chain: POLYGON
+            currency: usdc
+            walletAddress: '0xd102C4130985B7fcB95697616eaf5542c4f98d49'
+            externalWalletId: null
+          status: activated
+          depositInstructions:
+            bankName: Bank of NoWhere
+            bankAddress: 123 Main St, New York, NY 10001, USA
+            beneficiary:
+              name: Henry Wu
+              address: Example St 1., Apt 123, New York, NY, 10010, US
+            ach:
+              routingNumber: 028000024
+              accountNumber: '123456789'
+            wire:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            rtp:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            instruction: Please deposit usd to the bank account provided. Please ensure that the beneficiary name matches the account holder name provided, or the payment may be rejected.
+          settlementRuleId: null
+    VirtualAccountObjectListExample:
+      summary: Virtual Account Object List
+      value:
+        count: 1
+        data:
+        - id: cfbc005d-8640-57a4-89e1-539c974fa780
+          createdAt: '2025-09-27T03:08:11.548Z'
+          updatedAt: '2025-09-27T03:08:11.548Z'
+          userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
+          source:
+            paymentRail:
+            - ach
+            - wire
+            - rtp
+            currency: usd
+          destination:
+            chain: POLYGON
+            currency: usdc
+            walletAddress: '0xd102C4130985B7fcB95697616eaf5542c4f98d49'
+            externalWalletId: null
+          status: activated
+          depositInstructions:
+            bankName: Bank of NoWhere
+            bankAddress: 123 Main St, New York, NY 10001, USA
+            beneficiary:
+              name: Henry Wu
+              address: Example St 1., Apt 123, New York, NY, 10010, US
+            ach:
+              routingNumber: 028000024
+              accountNumber: '123456789'
+            wire:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            rtp:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            instruction: Please deposit usd to the bank account provided. Please ensure that the beneficiary name matches the account holder name provided, or the payment may be rejected.
+          settlementRuleId: null
+        nextCursor: '2025-09-27T03:08:11.548Z'
+    VirtualAccountObjectDeactivateExample:
+      summary: Virtual Account Object (Deactivation)
+      value:
+        message: Virtual account deactivated
+        accountInfo:
+          id: cfbc005d-8640-57a4-89e1-539c974fa780
+          createdAt: '2025-09-27T03:08:11.548Z'
+          updatedAt: '2025-09-27T03:08:11.548Z'
+          userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
+          source:
+            paymentRail:
+            - ach
+            - wire
+            - rtp
+            currency: usd
+          destination:
+            chain: POLYGON
+            currency: usdc
+            walletAddress: '0xd102C4130985B7fcB95697616eaf5542c4f98d49'
+            externalWalletId: null
+          status: deactivated
+          depositInstructions:
+            bankName: Bank of NoWhere
+            bankAddress: 123 Main St, New York, NY 10001, USA
+            beneficiary:
+              name: Henry Wu
+              address: Example St 1., Apt 123, New York, NY, 10010, US
+            ach:
+              routingNumber: 028000024
+              accountNumber: '123456789'
+            wire:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            rtp:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            instruction: Please deposit usd to the bank account provided. Please ensure that the beneficiary name matches the account holder name provided, or the payment may be rejected.
+          settlementRuleId: null
   requestBodies:
-    SimulateVirtualAccountDepositBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SimulateVirtualAccountDeposit'
     CreateVirtualAccountBody:
       required: true
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/CreateVirtualAccount'
+    SimulateVirtualAccountDepositBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimulateVirtualAccountDeposit'
     UpdateVirtualAccountBody:
       required: true
       content:
