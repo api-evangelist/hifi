@@ -48,6 +48,10 @@ x-tier-reason: portfolio-lead
 specificationVersion: '0.23'
 created: '2026-07-17'
 modified: '2026-07-19'
+x-docs-platform: mintlify
+x-docs-platform-confidence: medium
+x-docs-platform-checked: 2026-10-03
+x-docs-hosting: vercel
 tags:
 - Company
 - Stablecoins
@@ -288,6 +292,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/hifi-capability-edges.yml
+  name: Hifi Business Capability Map
 - type: DomainSecurity
   url: security/hifi-domain-security.yml
 - type: AgenticAccess
