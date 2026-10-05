@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.hifi.com/openapi.json",
+ "requested_url": "https://docs.hifi.com/openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 800884,
+ "sha256": "74d9e530fbea44504470aeeeecf3a6067b1cd6f2a8f2d1f468a6a87f2f640fd2",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
