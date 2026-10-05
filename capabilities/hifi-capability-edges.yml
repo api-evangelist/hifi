@@ -1,0 +1,26 @@
+slug: hifi
+provider: Hifi
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 1
+edges:
+- tag: KYC
+  spec_file: hifi-kyc-api-openapi.yml
+  capability_id: BC-130.10
+  capability_id_l1: BC-130
+  capability_name: Regulatory Compliance Management
+  confidence: 0.7
+  evidence: Submit KYC; Retrieve KYC requirements; Add a UBO; schemas UltimateBeneficialOwner, SofEuKybQuestionnaire,
+    DocumentVerificationStatusObject
+  reason: Know-Your-Customer / KYB identity verification, UBO capture and document verification are AML/CTF
+    regulatory obligations, best matched by Regulatory Compliance Management. Some ambiguity because it
+    also functions as customer onboarding, hence moderate confidence.
