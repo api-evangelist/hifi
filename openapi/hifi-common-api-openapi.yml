@@ -38,19 +38,25 @@ components:
         message:
           type: string
           example: pong
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
     Unauthorized:
       type: object
       properties:
         error:
           type: string
           example: Not authorized
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
   responses:
+    PingResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Pong'
     UnauthorizedResponse:
       description: Unauthorized
       content:
@@ -81,12 +87,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/InternalServerError'
-    PingResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Pong'
   securitySchemes:
     bearerAuth:
       type: http

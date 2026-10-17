@@ -99,70 +99,220 @@ paths:
       operationId: deleteV2UsersByUserIdAccountsByAccountId
       x-operation-id-source: derived
 components:
-  parameters:
-    UserIdPathParameter:
-      name: userId
-      in: path
-      schema:
-        type: string
-      description: ID of the user
-      required: true
-    CurrencyAnyOptionalParameter:
-      name: currency
-      in: query
-      schema:
-        type: string
-      required: false
-    LimitParameter:
-      name: limit
-      in: query
-      schema:
-        type: string
-        minimum: 1
-        maximum: 100
-      description: default to 10, maximum to 100
-      required: false
-    AccountTypeOptionalParameter:
-      name: type
-      in: query
-      schema:
-        $ref: '#/components/schemas/AccountTypeEnum'
-      description: account type
-      required: false
-    CreatedBeforeParameter:
-      name: createdBefore
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
-    AccountRailOptionalParameter:
-      name: rail
-      in: query
-      schema:
-        type: string
-        enum:
-        - onramp
-        - offramp
-      description: onramp or offramp
-      required: false
-    CreatedAfterParameter:
-      name: createdAfter
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
-    AccountIdPathParameter:
-      name: accountId
-      in: path
-      schema:
-        type: string
-      description: ID of the account
-      required: true
   schemas:
+    ColombiaAccountHolder:
+      type: object
+      title: Account Holder
+      properties:
+        type:
+          type: string
+          enum:
+          - individual
+          - business
+        name:
+          type: string
+          description: 'The name of the account holder.
+
+            `individual`: first name and last name seperated by space.
+
+            `business`: legal name of the business.
+
+            '
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        address:
+          type: object
+          description: Address of the accountHolder.
+          $ref: '#/components/schemas/Address'
+        idType:
+          type: string
+          enum:
+          - CC
+          - CE
+          - NIT
+          - PASS
+          - PEP
+          description: 'The type of ID document provided by the account holder.
+
+            `CC`: Citizenship ID
+
+            `CE`: Foreign ID
+
+            `NIT`: National ID
+
+            `PASS`: Passport
+
+            `PEP`: Special Stay Permit
+
+            '
+        idNumber:
+          type: string
+          description: 'The ID number of the account holder.
+
+            '
+      required:
+      - type
+      - name
+      - email
+      - idType
+      - idNumber
+    AccountHolder:
+      type: object
+      title: Account Holder
+      properties:
+        type:
+          type: string
+          enum:
+          - individual
+          - business
+        name:
+          type: string
+          description: 'The name of the account holder.
+
+            `individual`: first name and last name seperated by space.
+
+            `business`: legal name of the business.
+
+            '
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        address:
+          type: object
+          description: Address of the accountHolder.
+          $ref: '#/components/schemas/Address'
+        idType:
+          type: string
+          enum:
+          - CC
+          - CE
+          - NIT
+          - PASS
+          - PEP
+          description: 'The type of ID document provided by the account holder.
+
+            `CC`: Citizenship ID
+
+            `CE`: Foreign ID
+
+            `NIT`: National ID
+
+            `PASS`: Passport
+
+            `PEP`: Special Stay Permit
+
+            '
+        idNumber:
+          type: string
+          description: 'The ID number of the account holder.
+
+            '
+      required:
+      - type
+      - name
+    BrazilGlobalNetworkAccount:
+      type: object
+      title: Brazil Global Network Account
+      properties:
+        email:
+          type: string
+          format: email
+          description: 'Provide when idNumber does not serve as offramp destination identifier
+
+            At most one of the following fields can be provided: pix, email, phone.
+
+            '
+        phone:
+          type: string
+          description: 'Provide when idNumber does not serve as offramp destination identifier
+
+            At most one of the following fields can be provided: pix, email, phone.
+
+            '
+        pix:
+          type: string
+          description: 'Provide when idNumber does not serve as offramp destination identifier
+
+            At most one of the following fields can be provided: pix, email, phone.
+
+            '
+        currency:
+          type: string
+          enum:
+          - brl
+          description: The currency for the account
+      required:
+      - currency
+    ArgentinaAccount:
+      type: object
+      title: Account Info
+      properties:
+        accountType:
+          type: string
+          enum:
+          - CVU
+          - CBU
+          - ALIAS
+          description: 'The type of account.
+
+            '
+        accountNumber:
+          type: string
+          description: 'The account number of the account.
+
+            '
+        currency:
+          type: string
+          enum:
+          - ars
+          description: 'The currency of the account.
+
+            '
+      required:
+      - accountType
+      - accountNumber
+      - currency
+    CreateAccountObject:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        id:
+          type: string
+    SingaporeGlobalNetworkAccount:
+      type: object
+      title: Singapore Global Network Account
+      properties:
+        bankName:
+          type: string
+          description: Bank name for the account
+        accountNumber:
+          type: string
+          description: Bank account number
+        swiftCode:
+          type: string
+          description: Bank code
+        currency:
+          type: string
+          enum:
+          - usd
+          - sgd
+          description: The currency for the account
+      required:
+      - currency
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not authorized
     CreateSingaporeGlobalNetworkAccountIndividual:
       type: object
       title: Singapore Global Network Individual Account
@@ -191,130 +341,31 @@ components:
       - type
       - accountHolder
       - singaporeGlobalNetwork
-    NigeriaGlobalNetworkAccount:
+    BrazilAccount:
       type: object
-      title: Nigeria Global Network Account
+      title: Account Info
       properties:
-        bankName:
+        pixKey:
           type: string
-          description: Bank name for the account
-        accountNumber:
-          type: string
-          description: Bank account number
-        currency:
-          type: string
-          enum:
-          - ngn
-          description: The currency for the account
-      required:
-      - currency
-    Address:
-      type: object
-      properties:
-        addressLine1:
-          type: string
-        addressLine2:
-          type: string
-        city:
-          type: string
-        stateProvinceRegion:
-          type: string
-          description: "The second part of the [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2). This must be provided if the country has subdivisions.\n\nAn ISO 3166-2 code consists of two parts, separated by a hyphen (`-`):\n  1. The first part is the ISO 3166-1 alpha-2 code of the country (e.g., `US`, `CA`, `BR`);\n  2. The second part is a string of up to three alphanumeric characters representing a specific subdivision (e.g., state, province). This is typically based on national standards or developed by ISO.\n\n  Only provide the second part of the code (e.g., `CA` for California in `US-CA`, or `SP` for São Paulo in `BR-SP`).\n"
-        postalCode:
-          type: string
-          description: Must be supplied for countries that use postal codes.
-        country:
-          type: string
-          description: Three-letter alpha-3 country code as defined in the [ISO 3166-1 spec](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3).
-      required:
-      - addressLine1
-      - city
-      - stateProvinceRegion
-      - postalCode
-      - country
-    ChinaGlobalNetworkAccount:
-      type: object
-      title: China Global Network Account
-      properties:
-        bankName:
-          type: string
-          description: Bank name for the account
-        accountNumber:
-          type: string
-          description: Bank account number
-        swiftCode:
-          type: string
-          description: Bank code
-        currency:
-          type: string
-          enum:
-          - usd
-          - cny
-          description: The currency for the account
-      required:
-      - currency
-    CreateBrazilGlobalNetworkAccountIndividual:
-      type: object
-      title: Brazil Global Network Individual Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+          description: 'The PIX key of the account.
 
             '
-          enum:
-          - brazilGlobalNetwork
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
-        brazilGlobalNetwork:
-          type: object
-          description: Brazil Global Network account.
-          $ref: '#/components/schemas/BrazilGlobalNetworkAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - brazilGlobalNetwork
-    HongKongGlobalNetworkAccount:
-      type: object
-      title: Hong Kong Global Network Account
-      properties:
-        bankName:
-          type: string
-          description: Bank name for the account
-        accountNumber:
-          type: string
-          description: Bank account number
-        swiftCode:
-          type: string
-          description: Bank code
         currency:
           type: string
           enum:
-          - hkd
-          - usd
-          description: The currency for the account
-        bankCode:
-          type: string
-          description: Bank code. Only required when transferType is chats or fps.
-        transferType:
-          type: string
-          enum:
-          - chats
-          - fps
-          - swift
-          description: Transfer type of the account. `swift` is the default transfer type if not provided.
+          - brl
+          description: 'The currency of the account.
+
+            '
       required:
+      - pixKey
       - currency
-      - bankName
-      - accountNumber
-      - swiftCode
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unexpected error happened
     AccountObject:
       type: object
       properties:
@@ -390,425 +441,6 @@ components:
       - address
       - formationDate
       - idNumber
-    AccountHolder:
-      type: object
-      title: Account Holder
-      properties:
-        type:
-          type: string
-          enum:
-          - individual
-          - business
-        name:
-          type: string
-          description: 'The name of the account holder.
-
-            `individual`: first name and last name seperated by space.
-
-            `business`: legal name of the business.
-
-            '
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        address:
-          type: object
-          description: Address of the accountHolder.
-          $ref: '#/components/schemas/Address'
-        idType:
-          type: string
-          enum:
-          - CC
-          - CE
-          - NIT
-          - PASS
-          - PEP
-          description: 'The type of ID document provided by the account holder.
-
-            `CC`: Citizenship ID
-
-            `CE`: Foreign ID
-
-            `NIT`: National ID
-
-            `PASS`: Passport
-
-            `PEP`: Special Stay Permit
-
-            '
-        idNumber:
-          type: string
-          description: 'The ID number of the account holder.
-
-            '
-      required:
-      - type
-      - name
-    CreateBrazilGlobalNetworkAccountBusiness:
-      type: object
-      title: Brazil Global Network Business Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - brazilGlobalNetwork
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
-        brazilGlobalNetwork:
-          type: object
-          description: Brazil Global Network account.
-          $ref: '#/components/schemas/BrazilGlobalNetworkAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - brazilGlobalNetwork
-    CreateNigeriaGlobalNetworkAccountBusiness:
-      type: object
-      title: Nigeria Global Network Business Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - nigeriaGlobalNetwork
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/GlobalNetworkBusinessAccountHolder'
-        nigeriaGlobalNetwork:
-          type: object
-          description: Nigeria Global Network account.
-          $ref: '#/components/schemas/NigeriaGlobalNetworkAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - nigeriaGlobalNetwork
-    CreateAfricaOfframpAccount:
-      type: object
-      title: Africa Offramp Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - africa
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/AfricaAccountHolder'
-        africa:
-          type: object
-          description: Africa account.
-          $ref: '#/components/schemas/AfricaAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - africa
-    ColombiaAccountHolder:
-      type: object
-      title: Account Holder
-      properties:
-        type:
-          type: string
-          enum:
-          - individual
-          - business
-        name:
-          type: string
-          description: 'The name of the account holder.
-
-            `individual`: first name and last name seperated by space.
-
-            `business`: legal name of the business.
-
-            '
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        address:
-          type: object
-          description: Address of the accountHolder.
-          $ref: '#/components/schemas/Address'
-        idType:
-          type: string
-          enum:
-          - CC
-          - CE
-          - NIT
-          - PASS
-          - PEP
-          description: 'The type of ID document provided by the account holder.
-
-            `CC`: Citizenship ID
-
-            `CE`: Foreign ID
-
-            `NIT`: National ID
-
-            `PASS`: Passport
-
-            `PEP`: Special Stay Permit
-
-            '
-        idNumber:
-          type: string
-          description: 'The ID number of the account holder.
-
-            '
-      required:
-      - type
-      - name
-      - email
-      - idType
-      - idNumber
-    CreateArgentinaAccount:
-      type: object
-      title: Argentina Offramp Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - argentina
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/AccountHolder'
-        argentina:
-          type: object
-          description: Argentina account.
-          $ref: '#/components/schemas/ArgentinaAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - argentina
-    AccountTypeEnum:
-      type: string
-      description: The type of account.
-      enum:
-      - us
-      - brazil
-      - colombia
-      - argentina
-      - mexico
-      - africa
-      - brazilGlobalNetwork
-      - nigeriaGlobalNetwork
-      - mexicoGlobalNetwork
-      - hongKongGlobalNetwork
-      - chinaGlobalNetwork
-      - singaporeGlobalNetwork
-    MexicoAccount:
-      type: object
-      title: Account Info
-      properties:
-        speiProtocol:
-          type: string
-          enum:
-          - clabe
-          - debitcard
-          - phonenum
-          description: 'The SPEI protocol of the account.
-
-            '
-        speiInstitutionCode:
-          type: string
-          description: 'The institution code of the account. Required only if `speiProtocol` is `debitcard` or `phonenum`.
-
-            '
-        speiClabe:
-          type: string
-        currency:
-          type: string
-          enum:
-          - mxn
-          description: 'The currency of the account.
-
-            '
-      required:
-      - speiProtocol
-      - speiClabe
-      - currency
-    DeleteAccountObject:
-      type: object
-      properties:
-        status:
-          type: string
-        message:
-          type: string
-    CreateChinaGlobalNetworkAccountBusiness:
-      type: object
-      title: China Global Network Business Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - chinaGlobalNetwork
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/GlobalNetworkBusinessAccountHolder'
-        chinaGlobalNetwork:
-          type: object
-          description: China Global Network account.
-          $ref: '#/components/schemas/ChinaGlobalNetworkAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - chinaGlobalNetwork
-    UsAccount:
-      type: object
-      title: Account Info
-      properties:
-        transferType:
-          type: string
-          enum:
-          - ach
-          - wire
-          - swift
-          description: 'The type of transfer this account facilitates. `rtp` will come shortly.
-
-            '
-        accountType:
-          type: string
-          enum:
-          - Checking
-          - Savings
-          description: 'The type of account.
-
-            '
-        accountNumber:
-          type: string
-          description: 'The account number of the account.
-
-            '
-        routingNumber:
-          type: string
-          description: 'The routing number of the account.
-
-            '
-        iban:
-          type: string
-          description: 'Only one of `accountNumber` or `iban` can be provided.
-
-            '
-        swiftCode:
-          type: string
-          description: 'The SWIFT code of the bank where the account is held. Required if `transferType` is `swift`.
-
-            '
-        bankName:
-          type: string
-          description: 'The name of the bank where the account is held.
-
-            '
-        bankAddress:
-          type: object
-          description: Address of the bank.
-          $ref: '#/components/schemas/Address'
-        currency:
-          type: string
-          enum:
-          - usd
-          description: 'The currency of the account.
-
-            '
-      required:
-      - transferType
-      - accountType
-      - bankName
-      - currency
-    ArgentinaAccount:
-      type: object
-      title: Account Info
-      properties:
-        accountType:
-          type: string
-          enum:
-          - CVU
-          - CBU
-          - ALIAS
-          description: 'The type of account.
-
-            '
-        accountNumber:
-          type: string
-          description: 'The account number of the account.
-
-            '
-        currency:
-          type: string
-          enum:
-          - ars
-          description: 'The currency of the account.
-
-            '
-      required:
-      - accountType
-      - accountNumber
-      - currency
-    BrazilAccount:
-      type: object
-      title: Account Info
-      properties:
-        pixKey:
-          type: string
-          description: 'The PIX key of the account.
-
-            '
-        currency:
-          type: string
-          enum:
-          - brl
-          description: 'The currency of the account.
-
-            '
-      required:
-      - pixKey
-      - currency
     AfricaAccount:
       type: object
       title: Account Info
@@ -858,59 +490,9 @@ components:
       - accountType
       - currency
       - country
-    GlobalNetworkIndividualAccountHolder:
+    CreateBrazilAccount:
       type: object
-      description: account holder information.
-      properties:
-        name:
-          type: string
-          description: Full name of the account holder
-        type:
-          type: string
-          enum:
-          - individual
-          description: Type of account holder
-        address:
-          type: object
-          properties:
-            city:
-              type: string
-            country:
-              type: string
-            postalCode:
-              type: string
-            addressLine1:
-              type: string
-            addressLine2:
-              type: string
-            stateProvinceRegion:
-              type: string
-          required:
-          - city
-          - country
-          - postalCode
-          - addressLine1
-          - stateProvinceRegion
-        dateOfBirth:
-          type: string
-          format: date
-          description: Date of birth in YYYY-MM-DD format
-        idNumber:
-          type: string
-          description: Government issued ID number
-        nationality:
-          type: string
-          description: Three-letter country code (ISO 3166-1 alpha-3)
-      required:
-      - name
-      - type
-      - address
-      - dateOfBirth
-      - idNumber
-      - nationality
-    CreateSingaporeGlobalNetworkAccountBusiness:
-      type: object
-      title: Singapore Global Network Business Account
+      title: Brazil Offramp Account
       properties:
         rail:
           type: string
@@ -922,345 +504,15 @@ components:
 
             '
           enum:
-          - singaporeGlobalNetwork
-        accountHolder:
+          - brazil
+        brazil:
           type: object
-          description: account holder information.
-          $ref: '#/components/schemas/GlobalNetworkBusinessAccountHolder'
-        singaporeGlobalNetwork:
-          type: object
-          description: Singapore Global Network account.
-          $ref: '#/components/schemas/SingaporeGlobalNetworkAccount'
+          description: Brazil account.
+          $ref: '#/components/schemas/BrazilAccount'
       required:
       - rail
       - type
-      - accountHolder
-      - singaporeGlobalNetwork
-    CreateNigeriaGlobalNetworkAccountIndividual:
-      type: object
-      title: Nigeria Global Network Individual Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - nigeriaGlobalNetwork
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
-        nigeriaGlobalNetwork:
-          type: object
-          description: Nigeria Global Network account.
-          $ref: '#/components/schemas/NigeriaGlobalNetworkAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - nigeriaGlobalNetwork
-    AfricaAccountHolder:
-      type: object
-      title: Account Holder
-      properties:
-        type:
-          type: string
-          enum:
-          - individual
-          - business
-        name:
-          type: string
-          description: 'The name of the account holder.
-
-            `individual`: first name and last name seperated by space.
-
-            `business`: legal name of the business.
-
-            '
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        address:
-          type: object
-          description: Address of the accountHolder.
-          $ref: '#/components/schemas/Address'
-        idType:
-          type: string
-          enum:
-          - CC
-          - CE
-          - NIT
-          - PASS
-          - PEP
-          description: 'The type of ID document provided by the account holder.
-
-            `CC`: Citizenship ID
-
-            `CE`: Foreign ID
-
-            `NIT`: National ID
-
-            `PASS`: Passport
-
-            `PEP`: Special Stay Permit
-
-            '
-        idNumber:
-          type: string
-          description: 'The ID number of the account holder.
-
-            '
-      required:
-      - type
-      - name
-      - phone
-    CreateMexicoAccount:
-      type: object
-      title: Mexico Offramp Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - mexico
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/AccountHolder'
-        mexico:
-          type: object
-          description: Mexico account.
-          $ref: '#/components/schemas/MexicoAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - mexico
-    AllAccountObjects:
-      type: object
-      properties:
-        count:
-          type: integer
-        banks:
-          type: array
-          items:
-            type: object
-            properties:
-              accountId:
-                type: string
-              createdAt:
-                type: string
-                format: date-time
-              status:
-                type: string
-              accountType:
-                type: string
-              businessIdentifierCode:
-                type: string
-              accountNumber:
-                type: string
-              routingNumber:
-                type: string
-              accountHolderName:
-                type: string
-              accountHolderCity:
-                type: string
-              accountHolderCountry:
-                type: string
-              accountHolderStreetLine1:
-                type: string
-              accountHolderStateProvinceRegion:
-                type: string
-              accountHolderPostalCode:
-                type: string
-              bankCountry:
-                type: string
-              userId:
-                type: string
-              rail:
-                type: object
-                properties:
-                  currency:
-                    type: string
-                  railType:
-                    type: string
-                  paymentRail:
-                    type: string
-        nextCursor:
-          type: string
-          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
-    CreateColombiaAccount:
-      type: object
-      title: Colombia Offramp Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - colombia
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/ColombiaAccountHolder'
-        colombia:
-          type: object
-          description: Colombia account.
-          $ref: '#/components/schemas/ColombiaAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - colombia
-    CreateHongKongGlobalNetworkAccountBusiness:
-      type: object
-      title: Hong Kong Global Network Business Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - hongKongGlobalNetwork
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/GlobalNetworkBusinessAccountHolder'
-        hongKongGlobalNetwork:
-          type: object
-          description: Hong Kong Global Network account.
-          $ref: '#/components/schemas/HongKongGlobalNetworkAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - hongKongGlobalNetwork
-    MexicoGlobalNetworkAccount:
-      type: object
-      title: Mexico Global Network Account
-      properties:
-        speiClabe:
-          type: string
-          description: SPEI CLABE number for the account
-        currency:
-          type: string
-          enum:
-          - mxn
-          description: The currency for the account
-      required:
-      - currency
-    BrazilGlobalNetworkAccount:
-      type: object
-      title: Brazil Global Network Account
-      properties:
-        email:
-          type: string
-          format: email
-          description: 'Provide when idNumber does not serve as offramp destination identifier
-
-            At most one of the following fields can be provided: pix, email, phone.
-
-            '
-        phone:
-          type: string
-          description: 'Provide when idNumber does not serve as offramp destination identifier
-
-            At most one of the following fields can be provided: pix, email, phone.
-
-            '
-        pix:
-          type: string
-          description: 'Provide when idNumber does not serve as offramp destination identifier
-
-            At most one of the following fields can be provided: pix, email, phone.
-
-            '
-        currency:
-          type: string
-          enum:
-          - brl
-          description: The currency for the account
-      required:
-      - currency
-    CreateMexicoGlobalNetworkAccountIndividual:
-      type: object
-      title: Mexico Global Network Individual Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - mexicoGlobalNetwork
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
-        mexicoGlobalNetwork:
-          type: object
-          description: Mexico Global Network account.
-          $ref: '#/components/schemas/MexicoGlobalNetworkAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - mexicoGlobalNetwork
-    CreateChinaGlobalNetworkAccountIndividual:
-      type: object
-      title: China Global Network Individual Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - chinaGlobalNetwork
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
-        chinaGlobalNetwork:
-          type: object
-          description: China Global Network account.
-          $ref: '#/components/schemas/ChinaGlobalNetworkAccount'
-      required:
-      - rail
-      - type
-      - accountHolder
-      - chinaGlobalNetwork
+      - brazil
     CreateAccount:
       type: object
       title: Account
@@ -1323,96 +575,62 @@ components:
       required:
       - rail
       - type
-    UsAccountObject:
+    AllAccountObjects:
       type: object
-      title: Account Object (US)
       properties:
-        id:
+        count:
+          type: integer
+        banks:
+          type: array
+          items:
+            type: object
+            properties:
+              accountId:
+                type: string
+              createdAt:
+                type: string
+                format: date-time
+              status:
+                type: string
+              accountType:
+                type: string
+              businessIdentifierCode:
+                type: string
+              accountNumber:
+                type: string
+              routingNumber:
+                type: string
+              accountHolderName:
+                type: string
+              accountHolderCity:
+                type: string
+              accountHolderCountry:
+                type: string
+              accountHolderStreetLine1:
+                type: string
+              accountHolderStateProvinceRegion:
+                type: string
+              accountHolderPostalCode:
+                type: string
+              bankCountry:
+                type: string
+              userId:
+                type: string
+              rail:
+                type: object
+                properties:
+                  currency:
+                    type: string
+                  railType:
+                    type: string
+                  paymentRail:
+                    type: string
+        nextCursor:
           type: string
-          description: Account ID
-        userId:
-          type: string
-          description: User ID
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        accountHolder:
-          $ref: '#/components/schemas/UsAccountHolder'
-        isValid:
-          type: boolean
-          description: Indicates if the account is valid
-        reason:
-          type: string
-          description: Reason for invalidity, if applicable
-        us:
-          type: object
-          properties:
-            accountType:
-              type: string
-              enum:
-              - Checking
-              - Savings
-              description: 'The type of account.
-
-                '
-            accountNumber:
-              type: string
-              description: 'The account number of the account.
-
-                '
-            routingNumber:
-              type: string
-              description: 'The routing number of the account.
-
-                '
-            iban:
-              type: string
-              description: 'Only one of `accountNumber` or `iban` can be provided.
-
-                '
-            swiftCode:
-              type: string
-              description: 'The SWIFT code of the bank where the account is held. Required if `transferType` is `swift`.
-
-                '
-            bankName:
-              type: string
-              description: 'The name of the bank where the account is held.
-
-                '
-            bankAddress:
-              type: object
-              description: Address of the bank. Required if `transferType` is `swift`.
-              $ref: '#/components/schemas/Address'
-            currency:
-              type: string
-              enum:
-              - usd
-              description: 'The currency of the account.
-
-                '
-        rail:
-          type: object
-          properties:
-            currency:
-              type: string
-              enum:
-              - usd
-              description: 'The currency of the account.
-
-                '
-            railType:
-              type: string
-              enum:
-              - offramp
-            paymentRail:
-              type: string
-    CreateBrazilAccount:
+          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
+    CreateHongKongGlobalNetworkAccountIndividual:
       type: object
-      title: Brazil Offramp Account
+      title: Hong Kong Global Network Individual Account
       properties:
         rail:
           type: string
@@ -1424,92 +642,139 @@ components:
 
             '
           enum:
-          - brazil
-        brazil:
-          type: object
-          description: Brazil account.
-          $ref: '#/components/schemas/BrazilAccount'
-      required:
-      - rail
-      - type
-      - brazil
-    CreateMexicoGlobalNetworkAccountBusiness:
-      type: object
-      title: Mexico Global Network Business Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
-
-            '
-          enum:
-          - mexicoGlobalNetwork
+          - hongKongGlobalNetwork
         accountHolder:
           type: object
           description: account holder information.
-          $ref: '#/components/schemas/GlobalNetworkBusinessAccountHolder'
-        mexicoGlobalNetwork:
+          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
+        hongKongGlobalNetwork:
           type: object
-          description: Mexico Global Network account.
-          $ref: '#/components/schemas/MexicoGlobalNetworkAccount'
+          description: Hong Kong Global Network account.
+          $ref: '#/components/schemas/HongKongGlobalNetworkAccount'
       required:
       - rail
       - type
       - accountHolder
-      - mexicoGlobalNetwork
-    SingaporeGlobalNetworkAccount:
+      - hongKongGlobalNetwork
+    MexicoAccount:
       type: object
-      title: Singapore Global Network Account
+      title: Account Info
       properties:
-        bankName:
+        speiProtocol:
           type: string
-          description: Bank name for the account
+          enum:
+          - clabe
+          - debitcard
+          - phonenum
+          description: 'The SPEI protocol of the account.
+
+            '
+        speiInstitutionCode:
+          type: string
+          description: 'The institution code of the account. Required only if `speiProtocol` is `debitcard` or `phonenum`.
+
+            '
+        speiClabe:
+          type: string
+        currency:
+          type: string
+          enum:
+          - mxn
+          description: 'The currency of the account.
+
+            '
+      required:
+      - speiProtocol
+      - speiClabe
+      - currency
+    UsAccountHolder:
+      type: object
+      title: Account Holder
+      properties:
+        type:
+          type: string
+          enum:
+          - individual
+          - business
+        name:
+          type: string
+          description: 'The name of the account holder.
+
+            `individual`: first name and last name seperated by space.
+
+            `business`: legal name of the business.
+
+            '
+        address:
+          type: object
+          description: Address of the accountHolder.
+          $ref: '#/components/schemas/Address'
+      required:
+      - type
+      - name
+      - address
+    UsAccount:
+      type: object
+      title: Account Info
+      properties:
+        transferType:
+          type: string
+          enum:
+          - ach
+          - wire
+          - swift
+          description: 'The type of transfer this account facilitates. `rtp` will come shortly.
+
+            '
+        accountType:
+          type: string
+          enum:
+          - Checking
+          - Savings
+          description: 'The type of account.
+
+            '
         accountNumber:
           type: string
-          description: Bank account number
+          description: 'The account number of the account.
+
+            '
+        routingNumber:
+          type: string
+          description: 'The routing number of the account.
+
+            '
+        iban:
+          type: string
+          description: 'Only one of `accountNumber` or `iban` can be provided.
+
+            '
         swiftCode:
           type: string
-          description: Bank code
+          description: 'The SWIFT code of the bank where the account is held. Required if `transferType` is `swift`.
+
+            '
+        bankName:
+          type: string
+          description: 'The name of the bank where the account is held.
+
+            '
+        bankAddress:
+          type: object
+          description: Address of the bank.
+          $ref: '#/components/schemas/Address'
         currency:
           type: string
           enum:
           - usd
-          - sgd
-          description: The currency for the account
-      required:
-      - currency
-    CreateUsAccount:
-      type: object
-      title: US Offramp Account
-      properties:
-        rail:
-          type: string
-          enum:
-          - offramp
-        type:
-          type: string
-          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+          description: 'The currency of the account.
 
             '
-          enum:
-          - us
-        accountHolder:
-          type: object
-          description: account holder information.
-          $ref: '#/components/schemas/UsAccountHolder'
-        us:
-          type: object
-          description: US account.
-          $ref: '#/components/schemas/UsAccount'
       required:
-      - rail
-      - type
-      - accountHolder
-      - us
+      - transferType
+      - accountType
+      - bankName
+      - currency
     ColombiaAccount:
       type: object
       title: Account Info
@@ -1599,16 +864,111 @@ components:
       - accountNumber
       - accountType
       - currency
-    CreateAccountObject:
+    CreateNigeriaGlobalNetworkAccountBusiness:
       type: object
+      title: Nigeria Global Network Business Account
       properties:
-        status:
+        rail:
           type: string
-        message:
+          enum:
+          - offramp
+        type:
           type: string
-        id:
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - nigeriaGlobalNetwork
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/GlobalNetworkBusinessAccountHolder'
+        nigeriaGlobalNetwork:
+          type: object
+          description: Nigeria Global Network account.
+          $ref: '#/components/schemas/NigeriaGlobalNetworkAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - nigeriaGlobalNetwork
+    CreateSingaporeGlobalNetworkAccountBusiness:
+      type: object
+      title: Singapore Global Network Business Account
+      properties:
+        rail:
           type: string
-    UsAccountHolder:
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - singaporeGlobalNetwork
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/GlobalNetworkBusinessAccountHolder'
+        singaporeGlobalNetwork:
+          type: object
+          description: Singapore Global Network account.
+          $ref: '#/components/schemas/SingaporeGlobalNetworkAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - singaporeGlobalNetwork
+    HongKongGlobalNetworkAccount:
+      type: object
+      title: Hong Kong Global Network Account
+      properties:
+        bankName:
+          type: string
+          description: Bank name for the account
+        accountNumber:
+          type: string
+          description: Bank account number
+        swiftCode:
+          type: string
+          description: Bank code
+        currency:
+          type: string
+          enum:
+          - hkd
+          - usd
+          description: The currency for the account
+        bankCode:
+          type: string
+          description: Bank code. Only required when transferType is chats or fps.
+        transferType:
+          type: string
+          enum:
+          - chats
+          - fps
+          - swift
+          description: Transfer type of the account. `swift` is the default transfer type if not provided.
+      required:
+      - currency
+      - bankName
+      - accountNumber
+      - swiftCode
+    MexicoGlobalNetworkAccount:
+      type: object
+      title: Mexico Global Network Account
+      properties:
+        speiClabe:
+          type: string
+          description: SPEI CLABE number for the account
+        currency:
+          type: string
+          enum:
+          - mxn
+          description: The currency for the account
+      required:
+      - currency
+    AfricaAccountHolder:
       type: object
       title: Account Holder
       properties:
@@ -1626,17 +986,143 @@ components:
             `business`: legal name of the business.
 
             '
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
         address:
           type: object
           description: Address of the accountHolder.
           $ref: '#/components/schemas/Address'
+        idType:
+          type: string
+          enum:
+          - CC
+          - CE
+          - NIT
+          - PASS
+          - PEP
+          description: 'The type of ID document provided by the account holder.
+
+            `CC`: Citizenship ID
+
+            `CE`: Foreign ID
+
+            `NIT`: National ID
+
+            `PASS`: Passport
+
+            `PEP`: Special Stay Permit
+
+            '
+        idNumber:
+          type: string
+          description: 'The ID number of the account holder.
+
+            '
       required:
       - type
       - name
-      - address
-    CreateHongKongGlobalNetworkAccountIndividual:
+      - phone
+    CreateChinaGlobalNetworkAccountBusiness:
       type: object
-      title: Hong Kong Global Network Individual Account
+      title: China Global Network Business Account
+      properties:
+        rail:
+          type: string
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - chinaGlobalNetwork
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/GlobalNetworkBusinessAccountHolder'
+        chinaGlobalNetwork:
+          type: object
+          description: China Global Network account.
+          $ref: '#/components/schemas/ChinaGlobalNetworkAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - chinaGlobalNetwork
+    NigeriaGlobalNetworkAccount:
+      type: object
+      title: Nigeria Global Network Account
+      properties:
+        bankName:
+          type: string
+          description: Bank name for the account
+        accountNumber:
+          type: string
+          description: Bank account number
+        currency:
+          type: string
+          enum:
+          - ngn
+          description: The currency for the account
+      required:
+      - currency
+    GlobalNetworkIndividualAccountHolder:
+      type: object
+      description: account holder information.
+      properties:
+        name:
+          type: string
+          description: Full name of the account holder
+        type:
+          type: string
+          enum:
+          - individual
+          description: Type of account holder
+        address:
+          type: object
+          properties:
+            city:
+              type: string
+            country:
+              type: string
+            postalCode:
+              type: string
+            addressLine1:
+              type: string
+            addressLine2:
+              type: string
+            stateProvinceRegion:
+              type: string
+          required:
+          - city
+          - country
+          - postalCode
+          - addressLine1
+          - stateProvinceRegion
+        dateOfBirth:
+          type: string
+          format: date
+          description: Date of birth in YYYY-MM-DD format
+        idNumber:
+          type: string
+          description: Government issued ID number
+        nationality:
+          type: string
+          description: Three-letter country code (ISO 3166-1 alpha-3)
+      required:
+      - name
+      - type
+      - address
+      - dateOfBirth
+      - idNumber
+      - nationality
+    CreateHongKongGlobalNetworkAccountBusiness:
+      type: object
+      title: Hong Kong Global Network Business Account
       properties:
         rail:
           type: string
@@ -1652,7 +1138,7 @@ components:
         accountHolder:
           type: object
           description: account holder information.
-          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
+          $ref: '#/components/schemas/GlobalNetworkBusinessAccountHolder'
         hongKongGlobalNetwork:
           type: object
           description: Hong Kong Global Network account.
@@ -1662,18 +1148,86 @@ components:
       - type
       - accountHolder
       - hongKongGlobalNetwork
-    InternalServerError:
+    Address:
       type: object
       properties:
-        error:
+        addressLine1:
           type: string
-          example: Unexpected error happened
-    Unauthorized:
+        addressLine2:
+          type: string
+        city:
+          type: string
+        stateProvinceRegion:
+          type: string
+          description: "The second part of the [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2). This must be provided if the country has subdivisions.\n\nAn ISO 3166-2 code consists of two parts, separated by a hyphen (`-`):\n  1. The first part is the ISO 3166-1 alpha-2 code of the country (e.g., `US`, `CA`, `BR`);\n  2. The second part is a string of up to three alphanumeric characters representing a specific subdivision (e.g., state, province). This is typically based on national standards or developed by ISO.\n\n  Only provide the second part of the code (e.g., `CA` for California in `US-CA`, or `SP` for São Paulo in `BR-SP`).\n"
+        postalCode:
+          type: string
+          description: Must be supplied for countries that use postal codes.
+        country:
+          type: string
+          description: Three-letter alpha-3 country code as defined in the [ISO 3166-1 spec](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3).
+      required:
+      - addressLine1
+      - city
+      - stateProvinceRegion
+      - postalCode
+      - country
+    CreateArgentinaAccount:
       type: object
+      title: Argentina Offramp Account
       properties:
-        error:
+        rail:
           type: string
-          example: Not authorized
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - argentina
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/AccountHolder'
+        argentina:
+          type: object
+          description: Argentina account.
+          $ref: '#/components/schemas/ArgentinaAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - argentina
+    CreateBrazilGlobalNetworkAccountBusiness:
+      type: object
+      title: Brazil Global Network Business Account
+      properties:
+        rail:
+          type: string
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - brazilGlobalNetwork
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
+        brazilGlobalNetwork:
+          type: object
+          description: Brazil Global Network account.
+          $ref: '#/components/schemas/BrazilGlobalNetworkAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - brazilGlobalNetwork
     CreateAfricaOnrampAccount:
       type: object
       title: Africa Onramp Account
@@ -1697,75 +1251,389 @@ components:
       - rail
       - type
       - africa
-  responses:
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    CreateAccountResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateAccountObject'
-          examples:
-            AccountObjectCreationExample:
-              $ref: '#/components/examples/AccountObjectCreationExample'
-    GetAllAccountsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AllAccountObjects'
-          examples:
-            AccountObjectListUSExample:
-              $ref: '#/components/examples/AccountObjectListUSExample'
-    NotFoundResponse:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                enum:
-                - error
-              error:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  message:
-                    type: string
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
-    DeleteAccountResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DeleteAccountObject'
-          examples:
-            AccountObjectDeletionExample:
-              $ref: '#/components/examples/AccountObjectDeletionExample'
-    GetAccountResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            oneOf:
-            - $ref: '#/components/schemas/AccountObject'
-            - $ref: '#/components/schemas/UsAccountObject'
-          examples:
-            AccountObjectUSExample:
-              $ref: '#/components/examples/AccountObjectUSExample'
+    CreateMexicoGlobalNetworkAccountBusiness:
+      type: object
+      title: Mexico Global Network Business Account
+      properties:
+        rail:
+          type: string
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - mexicoGlobalNetwork
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/GlobalNetworkBusinessAccountHolder'
+        mexicoGlobalNetwork:
+          type: object
+          description: Mexico Global Network account.
+          $ref: '#/components/schemas/MexicoGlobalNetworkAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - mexicoGlobalNetwork
+    DeleteAccountObject:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+    CreateAfricaOfframpAccount:
+      type: object
+      title: Africa Offramp Account
+      properties:
+        rail:
+          type: string
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - africa
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/AfricaAccountHolder'
+        africa:
+          type: object
+          description: Africa account.
+          $ref: '#/components/schemas/AfricaAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - africa
+    ChinaGlobalNetworkAccount:
+      type: object
+      title: China Global Network Account
+      properties:
+        bankName:
+          type: string
+          description: Bank name for the account
+        accountNumber:
+          type: string
+          description: Bank account number
+        swiftCode:
+          type: string
+          description: Bank code
+        currency:
+          type: string
+          enum:
+          - usd
+          - cny
+          description: The currency for the account
+      required:
+      - currency
+    AccountTypeEnum:
+      type: string
+      description: The type of account.
+      enum:
+      - us
+      - brazil
+      - colombia
+      - argentina
+      - mexico
+      - africa
+      - brazilGlobalNetwork
+      - nigeriaGlobalNetwork
+      - mexicoGlobalNetwork
+      - hongKongGlobalNetwork
+      - chinaGlobalNetwork
+      - singaporeGlobalNetwork
+    CreateBrazilGlobalNetworkAccountIndividual:
+      type: object
+      title: Brazil Global Network Individual Account
+      properties:
+        rail:
+          type: string
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - brazilGlobalNetwork
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
+        brazilGlobalNetwork:
+          type: object
+          description: Brazil Global Network account.
+          $ref: '#/components/schemas/BrazilGlobalNetworkAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - brazilGlobalNetwork
+    CreateColombiaAccount:
+      type: object
+      title: Colombia Offramp Account
+      properties:
+        rail:
+          type: string
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - colombia
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/ColombiaAccountHolder'
+        colombia:
+          type: object
+          description: Colombia account.
+          $ref: '#/components/schemas/ColombiaAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - colombia
+    CreateNigeriaGlobalNetworkAccountIndividual:
+      type: object
+      title: Nigeria Global Network Individual Account
+      properties:
+        rail:
+          type: string
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - nigeriaGlobalNetwork
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
+        nigeriaGlobalNetwork:
+          type: object
+          description: Nigeria Global Network account.
+          $ref: '#/components/schemas/NigeriaGlobalNetworkAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - nigeriaGlobalNetwork
+    CreateUsAccount:
+      type: object
+      title: US Offramp Account
+      properties:
+        rail:
+          type: string
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - us
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/UsAccountHolder'
+        us:
+          type: object
+          description: US account.
+          $ref: '#/components/schemas/UsAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - us
+    CreateMexicoGlobalNetworkAccountIndividual:
+      type: object
+      title: Mexico Global Network Individual Account
+      properties:
+        rail:
+          type: string
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - mexicoGlobalNetwork
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
+        mexicoGlobalNetwork:
+          type: object
+          description: Mexico Global Network account.
+          $ref: '#/components/schemas/MexicoGlobalNetworkAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - mexicoGlobalNetwork
+    CreateChinaGlobalNetworkAccountIndividual:
+      type: object
+      title: China Global Network Individual Account
+      properties:
+        rail:
+          type: string
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - chinaGlobalNetwork
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/GlobalNetworkIndividualAccountHolder'
+        chinaGlobalNetwork:
+          type: object
+          description: China Global Network account.
+          $ref: '#/components/schemas/ChinaGlobalNetworkAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - chinaGlobalNetwork
+    UsAccountObject:
+      type: object
+      title: Account Object (US)
+      properties:
+        id:
+          type: string
+          description: Account ID
+        userId:
+          type: string
+          description: User ID
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        accountHolder:
+          $ref: '#/components/schemas/UsAccountHolder'
+        isValid:
+          type: boolean
+          description: Indicates if the account is valid
+        reason:
+          type: string
+          description: Reason for invalidity, if applicable
+        us:
+          type: object
+          properties:
+            accountType:
+              type: string
+              enum:
+              - Checking
+              - Savings
+              description: 'The type of account.
+
+                '
+            accountNumber:
+              type: string
+              description: 'The account number of the account.
+
+                '
+            routingNumber:
+              type: string
+              description: 'The routing number of the account.
+
+                '
+            iban:
+              type: string
+              description: 'Only one of `accountNumber` or `iban` can be provided.
+
+                '
+            swiftCode:
+              type: string
+              description: 'The SWIFT code of the bank where the account is held. Required if `transferType` is `swift`.
+
+                '
+            bankName:
+              type: string
+              description: 'The name of the bank where the account is held.
+
+                '
+            bankAddress:
+              type: object
+              description: Address of the bank. Required if `transferType` is `swift`.
+              $ref: '#/components/schemas/Address'
+            currency:
+              type: string
+              enum:
+              - usd
+              description: 'The currency of the account.
+
+                '
+        rail:
+          type: object
+          properties:
+            currency:
+              type: string
+              enum:
+              - usd
+              description: 'The currency of the account.
+
+                '
+            railType:
+              type: string
+              enum:
+              - offramp
+            paymentRail:
+              type: string
+    CreateMexicoAccount:
+      type: object
+      title: Mexico Offramp Account
+      properties:
+        rail:
+          type: string
+          enum:
+          - offramp
+        type:
+          type: string
+          description: 'The type of account to create. The value of this field should match the acount info object field submitted. eg. if the type is `us`, only the `us` account object should be filled.
+
+            '
+          enum:
+          - mexico
+        accountHolder:
+          type: object
+          description: account holder information.
+          $ref: '#/components/schemas/AccountHolder'
+        mexico:
+          type: object
+          description: Mexico account.
+          $ref: '#/components/schemas/MexicoAccount'
+      required:
+      - rail
+      - type
+      - accountHolder
+      - mexico
   examples:
     AccountObjectListUSExample:
       summary: Account Object List (US)
@@ -1806,17 +1674,17 @@ components:
             railType: offramp
             paymentRail: ach
         nextCursor: '2025-09-27T03:34:12.181Z'
-    AccountObjectCreationExample:
-      summary: Account Object (Creation)
-      value:
-        status: ACTIVE
-        message: Account created successfully
-        id: 583eb259-e78b-4f0c-a4b5-a8957876fa6f
     AccountObjectDeletionExample:
       summary: Account Object (Deletion)
       value:
         status: INACTIVE
         message: Account deleted successfully
+        id: 583eb259-e78b-4f0c-a4b5-a8957876fa6f
+    AccountObjectCreationExample:
+      summary: Account Object (Creation)
+      value:
+        status: ACTIVE
+        message: Account created successfully
         id: 583eb259-e78b-4f0c-a4b5-a8957876fa6f
     AccountObjectUSExample:
       summary: Account Object (US)
@@ -1854,6 +1722,138 @@ components:
           currency: usd
           railType: offramp
           paymentRail: ach
+  responses:
+    GetAllAccountsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AllAccountObjects'
+          examples:
+            AccountObjectListUSExample:
+              $ref: '#/components/examples/AccountObjectListUSExample'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    CreateAccountResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateAccountObject'
+          examples:
+            AccountObjectCreationExample:
+              $ref: '#/components/examples/AccountObjectCreationExample'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    GetAccountResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/AccountObject'
+            - $ref: '#/components/schemas/UsAccountObject'
+          examples:
+            AccountObjectUSExample:
+              $ref: '#/components/examples/AccountObjectUSExample'
+    DeleteAccountResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeleteAccountObject'
+          examples:
+            AccountObjectDeletionExample:
+              $ref: '#/components/examples/AccountObjectDeletionExample'
+  parameters:
+    AccountIdPathParameter:
+      name: accountId
+      in: path
+      schema:
+        type: string
+      description: ID of the account
+      required: true
+    CurrencyAnyOptionalParameter:
+      name: currency
+      in: query
+      schema:
+        type: string
+      required: false
+    AccountTypeOptionalParameter:
+      name: type
+      in: query
+      schema:
+        $ref: '#/components/schemas/AccountTypeEnum'
+      description: account type
+      required: false
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+    AccountRailOptionalParameter:
+      name: rail
+      in: query
+      schema:
+        type: string
+        enum:
+        - onramp
+        - offramp
+      description: onramp or offramp
+      required: false
+    UserIdPathParameter:
+      name: userId
+      in: path
+      schema:
+        type: string
+      description: ID of the user
+      required: true
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    CreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
   requestBodies:
     CreateAccountBody:
       required: true
