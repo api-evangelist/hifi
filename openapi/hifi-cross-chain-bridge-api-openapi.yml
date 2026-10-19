@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   title: Hifi Cross-Chain Bridge API
   version: 2.0.0
-  description: API documentation for Hifi
+  description: API documentation for HIFI
 servers:
 - url: https://production.hifibridge.com
   description: Production server
@@ -93,87 +93,77 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    BridgeAssetTransferListObject:
+    BridgingRequestDestination:
       type: object
       properties:
-        count:
-          type: integer
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/BridgeAssetTransferObject'
-        nextCursor:
+        userId:
           type: string
-          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
-      example:
-        count: 1
-        data:
-        - transferType: WALLET.BRIDGE
-          transferDetails:
-            id: 9ccafd0f-e47f-43c2-8693-13741b67d638
-            requestId: 1d860428-1d0b-47c5-9e65-98961ff59215
-            createdAt: '2025-02-24T17:44:54.781+00:00'
-            updatedAt: '2025-02-24T17:57:01.185+00:00'
-            amount: 0.01
-            status: COMPLETED
-            source:
-              userId: a804f891-b63c-4b36-99ee-0aa83e6facde
-              walletAddress: '0xE9cfBf1D690565579D823264170eE357f80e9A34'
-              chain: POLYGON
-              currency: usdc
-            destination:
-              userId: a804f891-b63c-4b36-99ee-0aa83e6facde
-              walletAddress: '0x17f043FB0a39334641beD627551AC095941157B0'
-              chain: ETHEREUM
-              currency: usdc
-            failedReason: null
-            receipt:
-              transactionHash: '0x17f043FB0a39334641beD627551AC095941157B0'
-              operations:
-                mint:
-                  transactionHash: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
-                  userOpHash: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
-                  chain: ETHEREUM
-                approve:
-                  transactionHash: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
-                  userOpHash: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
-                  chain: POLYGON
-                burn:
-                  transactionHash: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
-                  userOpHash: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
-                  chain: POLYGON
-            fee: null
-            quoteInformation:
-              sendGross:
-                amount: '0.01'
-                currency: usdc
-              sendNet:
-                amount: '0.01'
-                currency: usdc
-              railFee:
-                amount: '0'
-                currency: usdc
-              receiveGross:
-                amount: '0.01'
-                currency: usdc
-              receiveNet:
-                amount: '0.01'
-                currency: usdc
-              rate: '1'
-              expiresAt: '2025-02-25T17:44:54.781Z'
-        nextCursor: '2025-02-24T17:44:54.781+00:00'
-    Unauthorized:
+          format: uuid
+          description: user who is receiving the crypto
+        chain:
+          type: string
+          enum:
+          - POLYGON
+          - ETHEREUM
+          - BASE
+          - SOLANA
+          - FLOW_EVM
+          - CANTON
+        currency:
+          type: string
+          enum:
+          - usdc
+          - usdt
+          - usdg
+          - pyusd
+          - usdcx
+          description: crypto currency
+        walletAddress:
+          type: string
+          description: 'wallet address that is receiving the crypto (should provide either `userId` or `walletAddress`)
+
+            To use this feature, please ensure you''re enrolled in HIFI''s Gas Sponsorship Program or provide a userId; otherwise, the transaction may get stuck.
+
+            '
+      required:
+      - chain
+      - currency
+    CreateBridgingRequest:
       type: object
+      title: Bridging Request
       properties:
-        error:
+        requestId:
           type: string
-          example: Not authorized
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
+          description: unique identifier for the request (recommend using uuid v4)
+        amount:
+          type: number
+          format: float
+          minimum: 0
+          description: amount of crypto currency to bridge
+        source:
+          type: object
+          description: bridging source
+          $ref: '#/components/schemas/BridgingRequestSource'
+        destination:
+          type: object
+          description: bridging destination
+          $ref: '#/components/schemas/BridgingRequestDestination'
+        requireApproval:
+          type: boolean
+          description: 'Whether this bridging request requires approval before processing.
+
+            - `true`: Request will enter approval workflow
+
+            - `false` or omitted: Request proceeds immediately
+
+            '
+          default: false
+          example: false
+      required:
+      - requestId
+      - amount
+      - source
+      - destination
     BridgeAssetTransferObject:
       type: object
       properties:
@@ -298,7 +288,16 @@ components:
               - number
               - 'null'
             quoteInformation:
-              type: object
+              type:
+              - object
+              - 'null'
+              description: '`null` while the bridge is waiting for approval (`PENDING_APPROVAL`), and if the
+
+                approval is rejected or expires. A bridge that requires approval is quoted when it
+
+                is approved.
+
+                '
               properties:
                 sendGross:
                   type: object
@@ -394,38 +393,30 @@ components:
               currency: usdc
             rate: '1'
             expiresAt: '2025-02-25T17:44:54.781Z'
-    BridgingRequestDestination:
+    Unauthorized:
       type: object
       properties:
-        userId:
+        code:
+          type: integer
+          description: Error code
+        error:
           type: string
-          format: uuid
-          description: user who is receiving the crypto
-        chain:
+          description: Error type
+        errorDetails:
           type: string
-          enum:
-          - POLYGON
-          - ETHEREUM
-          - BASE
-          - OPTIMISM
-          - ARBITRUM
-          - SOLANA
-        currency:
+          description: Detailed error message
+    InternalServerError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
           type: string
-          enum:
-          - usdc
-          - usdt
-          description: crypto currency
-        walletAddress:
+          description: Error type
+        errorDetails:
           type: string
-          description: 'wallet address that is receiving the crypto (should provide either `userId` or `walletAddress`)
-
-            To use this feature, please ensure you''re enrolled in HIFI''s Gas Sponsorship Program or provide a userId; otherwise, the transaction may get stuck.
-
-            '
-      required:
-      - chain
-      - currency
+          description: Detailed error message
     BridgingRequestSource:
       type: object
       properties:
@@ -439,75 +430,106 @@ components:
           - POLYGON
           - ETHEREUM
           - SOLANA
+          - FLOW_EVM
+          - CANTON
+          - BASE
         currency:
           type: string
           enum:
           - usdc
           - usdt
+          - usdg
+          - pyusd
+          - usdcx
           description: crypto currency
       required:
       - userId
       - chain
       - currency
-    CreateBridgingRequest:
+    BridgeAssetTransferListObject:
       type: object
-      title: Bridging Request
       properties:
-        requestId:
+        count:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BridgeAssetTransferObject'
+        nextCursor:
           type: string
-          description: unique identifier for the request (recommend using uuid v4)
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of crypto currency to bridge
-        source:
-          type: object
-          description: bridging source
-          $ref: '#/components/schemas/BridgingRequestSource'
-        destination:
-          type: object
-          description: bridging destination
-          $ref: '#/components/schemas/BridgingRequestDestination'
-        requireApproval:
-          type: boolean
-          description: 'Whether this bridging request requires approval before processing.
-
-            - `true`: Request will enter approval workflow
-
-            - `false` or omitted: Request proceeds immediately
-
-            '
-          default: false
-          example: false
-      required:
-      - requestId
-      - amount
-      - source
-      - destination
-  parameters:
-    UserIdOptionalParameter:
-      name: userId
-      in: query
-      schema:
-        type: string
-      description: The user ID.
-      required: false
-    BridgingRequestIDPathParameter:
-      name: transferId
-      in: path
-      schema:
-        type: string
-      description: Transfer record ID.
+          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
+      example:
+        count: 1
+        data:
+        - transferType: WALLET.BRIDGE
+          transferDetails:
+            id: 9ccafd0f-e47f-43c2-8693-13741b67d638
+            requestId: 1d860428-1d0b-47c5-9e65-98961ff59215
+            createdAt: '2025-02-24T17:44:54.781+00:00'
+            updatedAt: '2025-02-24T17:57:01.185+00:00'
+            amount: 0.01
+            status: COMPLETED
+            source:
+              userId: a804f891-b63c-4b36-99ee-0aa83e6facde
+              walletAddress: '0xE9cfBf1D690565579D823264170eE357f80e9A34'
+              chain: POLYGON
+              currency: usdc
+            destination:
+              userId: a804f891-b63c-4b36-99ee-0aa83e6facde
+              walletAddress: '0x17f043FB0a39334641beD627551AC095941157B0'
+              chain: ETHEREUM
+              currency: usdc
+            failedReason: null
+            receipt:
+              transactionHash: '0x17f043FB0a39334641beD627551AC095941157B0'
+              operations:
+                mint:
+                  transactionHash: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
+                  userOpHash: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+                  chain: ETHEREUM
+                approve:
+                  transactionHash: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
+                  userOpHash: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+                  chain: POLYGON
+                burn:
+                  transactionHash: '0x5784890f9efd0160e9401439a5cf2aa5350580ecf48f9ca2af617338ae089e53'
+                  userOpHash: '0xef7bdb071b1fcfb5df629bd4d27ffa6dc32d0a5df676f26fb8c25311df1185ac'
+                  chain: POLYGON
+            fee: null
+            quoteInformation:
+              sendGross:
+                amount: '0.01'
+                currency: usdc
+              sendNet:
+                amount: '0.01'
+                currency: usdc
+              railFee:
+                amount: '0'
+                currency: usdc
+              receiveGross:
+                amount: '0.01'
+                currency: usdc
+              receiveNet:
+                amount: '0.01'
+                currency: usdc
+              rate: '1'
+              expiresAt: '2025-02-25T17:44:54.781Z'
+        nextCursor: '2025-02-24T17:44:54.781+00:00'
+  requestBodies:
+    CreateBridgingRequestBody:
       required: true
-    LimitParameter:
-      name: limit
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateBridgingRequest'
+  parameters:
+    CreatedAfterParameter:
+      name: createdAfter
       in: query
       schema:
         type: string
-        minimum: 1
-        maximum: 100
-      description: default to 10, maximum to 100
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
       required: false
     CreatedBeforeParameter:
       name: createdBefore
@@ -517,15 +539,42 @@ components:
         format: date
       description: 'ISO format: YYYY-MM-DD'
       required: false
-    CreatedAfterParameter:
-      name: createdAfter
+    UserIdOptionalParameter:
+      name: userId
       in: query
       schema:
         type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
+      description: The user ID.
       required: false
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+    BridgingRequestIDPathParameter:
+      name: transferId
+      in: path
+      schema:
+        type: string
+      description: Transfer record ID.
+      required: true
   responses:
+    BridgeAssetAllRecordsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BridgeAssetTransferListObject'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
     NotFoundResponse:
       description: Resource not found
       content:
@@ -544,24 +593,12 @@ components:
                     type: string
                   message:
                     type: string
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
     UnauthorizedResponse:
       description: Unauthorized
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Unauthorized'
-    BridgeAssetAllRecordsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BridgeAssetTransferListObject'
     BridgeAssetRecordResponse:
       description: Success
       content:
@@ -574,13 +611,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/BridgeAssetTransferObject'
-  requestBodies:
-    CreateBridgingRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateBridgingRequest'
   securitySchemes:
     bearerAuth:
       type: http

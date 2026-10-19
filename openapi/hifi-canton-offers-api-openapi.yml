@@ -1,0 +1,333 @@
+openapi: 3.2.0
+info:
+  title: Hifi Canton Offers API
+  version: 2.0.0
+  description: API documentation for HIFI
+servers:
+- url: https://production.hifibridge.com
+  description: Production server
+- url: https://sandbox.hifibridge.com
+  description: Sandbox server
+security:
+- bearerAuth: []
+tags:
+- name: Canton Offers
+  description: Canton Offers endpoints
+paths:
+  /v2/wallets/{walletId}/offers:
+    get:
+      summary: List all offers for a wallet
+      description: Retrieve all Canton offers associated with a specific wallet. Offers can be filtered by creation date and limited by count.
+      tags:
+      - Canton Offers
+      parameters:
+      - $ref: '#/components/parameters/WalletIdPathParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      - $ref: '#/components/parameters/CreatedBeforeParameter'
+      - $ref: '#/components/parameters/CreatedAfterParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAllCantonOffersResponse'
+        '400':
+          $ref: '#/components/responses/FieldValidationErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2WalletsByWalletIdOffers
+      x-operation-id-source: derived
+  /v2/wallets/{walletId}/offers/{offerId}:
+    get:
+      summary: Retrieve a Canton offer
+      description: Get details of a specific Canton offer by its ID. The offer must belong to the specified wallet.
+      tags:
+      - Canton Offers
+      parameters:
+      - $ref: '#/components/parameters/WalletIdPathParameter'
+      - $ref: '#/components/parameters/OfferIdPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetCantonOfferResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2WalletsByWalletIdOffersByOfferId
+      x-operation-id-source: derived
+  /v2/wallets/{walletId}/offers/{offerId}/accept:
+    post:
+      summary: Accept a Canton offer
+      description: Accept a Canton offer. The offer must be in RECEIVED status and not expired. Upon acceptance, the offer status will change to PENDING and a job will be created to process the acceptance.
+      tags:
+      - Canton Offers
+      parameters:
+      - $ref: '#/components/parameters/WalletIdPathParameter'
+      - $ref: '#/components/parameters/OfferIdPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/AcceptCantonOfferResponse'
+        '400':
+          $ref: '#/components/responses/InvalidOfferErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: postV2WalletsByWalletIdOffersByOfferIdAccept
+      x-operation-id-source: derived
+  /v2/wallets/{walletId}/offers/{offerId}/reject:
+    post:
+      summary: Reject a Canton offer
+      description: Reject a Canton offer. The offer must be in RECEIVED status and not expired. Upon rejection, the offer status will change to PENDING and a job will be created to process the rejection.
+      tags:
+      - Canton Offers
+      parameters:
+      - $ref: '#/components/parameters/WalletIdPathParameter'
+      - $ref: '#/components/parameters/OfferIdPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/RejectCantonOfferResponse'
+        '400':
+          $ref: '#/components/responses/InvalidOfferErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: postV2WalletsByWalletIdOffersByOfferIdReject
+      x-operation-id-source: derived
+components:
+  responses:
+    GetAllCantonOffersResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AllCantonOffersObject'
+    GetCantonOfferResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CantonOfferObject'
+    InvalidOfferErrorResponse:
+      description: Invalid Offer Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    AcceptCantonOfferResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CantonOfferObject'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    RejectCantonOfferResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CantonOfferObject'
+    FieldValidationErrorResponse:
+      description: Field Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  parameters:
+    WalletIdPathParameter:
+      name: walletId
+      in: path
+      schema:
+        type: string
+        format: uuid
+      description: ID of the wallet
+      required: true
+    CreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    OfferIdPathParameter:
+      name: offerId
+      in: path
+      schema:
+        type: string
+        format: uuid
+      description: ID of the Canton offer
+      required: true
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+  schemas:
+    Unauthorized:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    CantonOfferObject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the Canton offer
+        status:
+          type: string
+          description: Current status of the offer
+          enum:
+          - RECEIVED
+          - PENDING
+          - ACCEPTED
+          - REJECTED
+          - WITHDRAWN
+          - EXPIRED
+        amount:
+          type: string
+          description: The amount of the offer
+        currency:
+          type: string
+          enum:
+          - usdcx
+          description: The currency of the offer
+        source:
+          type: object
+          properties:
+            party:
+              type: string
+              description: The party created the offer
+        destination:
+          type: object
+          properties:
+            userId:
+              type: string
+              format: uuid
+              description: The user ID receiving the offer
+            userWalletId:
+              type: string
+              format: uuid
+              description: The wallet ID receiving the offer
+            party:
+              type: string
+              description: The party receiving the offer
+        creationTransactionHash:
+          type: string
+          description: The transaction hash when the offer was created
+        executionTransactionHash:
+          type:
+          - string
+          - 'null'
+          description: The transaction hash when the offer was accepted or rejected (null if not yet executed)
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the offer was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the offer was last updated
+        expiresAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Timestamp when the offer expires (null if no expiration)
+    InternalServerError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    AllCantonOffersObject:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of offers returned
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/CantonOfferObject'
+        nextCursor:
+          type:
+          - string
+          - 'null'
+          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results. Null if there are no more records.
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message describing what went wrong
+          example: Invalid API key or user not found
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

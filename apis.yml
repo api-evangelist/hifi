@@ -299,6 +299,48 @@ apis:
     url: https://docs.hifi.com/guides/quickstart
   - type: APIReference
     url: https://docs.hifi.com/api-reference
+- aid: hifi:hifi-canton-offers-api
+  name: Hifi Canton Offers API
+  description: Canton Offers endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Canton Offers
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-canton-offers-api-openapi.yml
+- aid: hifi:hifi-external-account-api
+  name: Hifi External Account API
+  description: External Account endpoints for managing beneficiary bank accounts
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - External Account
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-external-account-api-openapi.yml
+- aid: hifi:hifi-orchestration-address-api
+  name: Hifi Orchestration Address API
+  description: >-
+    Orchestration Address endpoints — persistent on-chain wallets that automatically off-ramp incoming
+    stablecoin deposits to a USD bank account
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - Orchestration Address
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-orchestration-address-api-openapi.yml
+- aid: hifi:hifi-rfi-api
+  name: Hifi RFI API
+  description: Request for information (RFI) endpoints
+  humanURL: https://docs.hifi.com
+  baseURL: https://production.hifibridge.com
+  tags:
+  - RFI
+  properties:
+  - type: OpenAPI
+    url: openapi/hifi-rfi-api-openapi.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

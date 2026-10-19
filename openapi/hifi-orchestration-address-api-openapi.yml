@@ -1,0 +1,1270 @@
+openapi: 3.2.0
+info:
+  title: Hifi Orchestration Address API
+  version: 2.0.0
+  description: API documentation for HIFI
+servers:
+- url: https://production.hifibridge.com
+  description: Production server
+- url: https://sandbox.hifibridge.com
+  description: Sandbox server
+security:
+- bearerAuth: []
+tags:
+- name: Orchestration Address
+  description: Orchestration Address endpoints — persistent on-chain wallets that automatically off-ramp incoming stablecoin deposits to a USD bank account
+paths:
+  /v2/users/{userId}/orchestration-addresses:
+    post:
+      summary: Create an orchestration address
+      description: 'Create a persistent on-chain wallet that automatically offramps any
+
+        stablecoin deposit to a USD bank account.
+
+
+        The endpoint provisions the escrow wallet synchronously, so the response
+
+        typically already carries `status=ACTIVE` and a populated `address`. If
+
+        the provider call is mid-flight, `status=PENDING_WALLET` and `address=null`
+
+        — retry the same call (same `requestId`) to drive provisioning forward.
+
+
+        **Idempotency.** Repeating the same `requestId` with an identical payload
+
+        returns the existing record (200). Repeating it with a *different* payload
+
+        returns `409 RESOURCE_CONFLICT` indicating which field differs (e.g.
+
+        `requestId already used with a different source.chain`).
+
+
+        **Mode rules:**
+
+        * `PER_DEPOSIT` — each deposit is batched into its own offramp immediately, unless it''s below the destination rail''s offramp minimum, in which case it''s held `PENDING` until the cumulative pending reaches the minimum, then batched together.
+
+        * `SCHEDULED` — deposits accumulate until the next `HOURLY`/`DAILY`/`WEEKLY` tick.
+
+        * `THRESHOLD` — deposits accumulate until `thresholdAmount` is reached.
+
+
+        **Source & minimums.** `source.currency` must be supported on `source.chain`
+
+        (e.g. USDT on TRON, USDC on Base/Polygon/Ethereum/Solana) — unsupported pairs
+
+        like USDC on TRON return `400`. Each rail also has a minimum offramp amount
+
+        (e.g. ≥ 5 for SWIFT, ≥ 1 for wire/ACH/RTP; USDT ≥ 10); `THRESHOLD`''s
+
+        `thresholdAmount` must meet it.
+
+
+        See the schema description on `CreateOrchestrationAddress` for the exact
+
+        field-combination rules.'
+      tags:
+      - Orchestration Address
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationProfileIdQueryParameter'
+      requestBody:
+        $ref: '#/components/requestBodies/CreateOrchestrationAddressBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/OrchestrationAddressResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '409':
+          $ref: '#/components/responses/ConflictResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: postV2UsersByUserIdOrchestrationAddresses
+      x-operation-id-source: derived
+    get:
+      summary: List orchestration addresses
+      description: 'Return all orchestration addresses owned by the user, most recent first.
+
+        Includes both `ACTIVE` and `DEACTIVATED` addresses.'
+      tags:
+      - Orchestration Address
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationCreatedBeforeQueryParameter'
+      - $ref: '#/components/parameters/OrchestrationLimitQueryParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/OrchestrationAddressAllRecordsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2UsersByUserIdOrchestrationAddresses
+      x-operation-id-source: derived
+  /v2/users/{userId}/orchestration-addresses/{orchestrationAddressId}:
+    get:
+      summary: Retrieve an orchestration address
+      description: 'Fetch a single orchestration address by ID. Returns `404 RESOURCE_NOT_FOUND`
+
+        if the address doesn''t exist *or* doesn''t belong to the specified user —
+
+        the API never discloses whether a foreign address exists.'
+      tags:
+      - Orchestration Address
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationAddressIdPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/OrchestrationAddressResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2UsersByUserIdOrchestrationAddressesByOrchestrationAddressId
+      x-operation-id-source: derived
+  /v2/users/{userId}/orchestration-addresses/{orchestrationAddressId}/update:
+    post:
+      summary: Update an orchestration address
+      description: 'Partial update of an existing orchestration address. Any combination of
+
+        `mode`, `schedule`, `thresholdAmount`, `offrampMessage`, and `destination.accountId` may
+
+        be passed.
+
+
+        **Behavior notes:**
+
+        * Switching mode wipes the irrelevant config columns.
+
+        * Changing `schedule.interval` without an explicit `nextRunAt` resets the next tick to `now + newInterval`.
+
+        * Changing `destination.accountId` re-validates the new account.
+
+        * Queued batches use the current settings when the worker reads the OA to begin creating their offramp. Later edits do not change that attempt or the saved message of an initialized offramp, including on retry.
+
+
+        Cannot update a `DEACTIVATED` address — returns `400 RESOURCE_CONFLICT`.
+
+        If the destination, message, mode, or status changes after validation but before
+
+        the update is saved, returns `409 RESOURCE_CONFLICT`; reload the settings and retry.'
+      tags:
+      - Orchestration Address
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationAddressIdPathParameter'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateOrchestrationAddressBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/OrchestrationAddressResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '409':
+          $ref: '#/components/responses/ConflictResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: postV2UsersByUserIdOrchestrationAddressesByOrchestrationAddressIdUpdate
+      x-operation-id-source: derived
+  /v2/users/{userId}/orchestration-addresses/{orchestrationAddressId}/deactivate:
+    post:
+      summary: Deactivate an orchestration address
+      description: 'Soft-delete the address: sets `status=DEACTIVATED` and `deactivatedAt=now()`.
+
+        Requires a `walletAddress` in the body — any deposits still `PENDING` (not yet
+
+        rolled into a batch) are refunded in-kind to it. The claim and refund run
+
+        atomically under the address row lock, so a deposit can never be both
+
+        offramped and refunded. Idempotent — calling on an already-deactivated address
+
+        returns 200 with the current record and issues no second refund.
+
+
+        **After deactivation:**
+
+        * The on-chain wallet still exists and can receive funds (we can''t take it offline).
+
+        * Incoming deposits are recorded with `status=IGNORED` and `ignoredReason=ADDRESS_DEACTIVATED`. A Slack alert fires for manual ops follow-up. These are NOT auto-refunded — only the deposits that were `PENDING` at deactivation are.
+
+        * The escrow wallet stays locked to this address (it''s never returned to the general allocation pool).
+
+        * Batches already in `PROCESSING` continue to completion; batches still `PENDING` will be marked `FAILED` with `failureReason=ADDRESS_NOT_ACTIVE` on the next worker tick.'
+      tags:
+      - Orchestration Address
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationAddressIdPathParameter'
+      requestBody:
+        $ref: '#/components/requestBodies/DeactivateOrchestrationAddressBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/OrchestrationAddressResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: postV2UsersByUserIdOrchestrationAddressesByOrchestrationAddressIdDeactivate
+      x-operation-id-source: derived
+  /v2/users/{userId}/orchestration-addresses/{orchestrationAddressId}/orchestrate:
+    post:
+      summary: Manually trigger an orchestration
+      description: 'Force an immediate batch of all currently-`PENDING` deposits for the
+
+        address, regardless of the configured mode. Useful for `SCHEDULED`
+
+        addresses that you want to drain ahead of schedule, for `THRESHOLD`
+
+        addresses that haven''t crossed yet, or simply for operational backfill.
+
+
+        **Idempotent.** If no PENDING deposits exist (or the address was
+
+        deactivated between the read and the row lock), returns 200 with
+
+        `triggered: false` and a `reason`.
+
+
+        For `SCHEDULED` addresses, manual trigger does NOT advance
+
+        `nextRunAt` — the scheduled tick still fires at its appointed time
+
+        (it''ll find zero PENDING deposits and no-op).
+
+
+        The endpoint serializes against concurrent THRESHOLD webhooks and the
+
+        SCHEDULED job via a `FOR UPDATE` row lock, so at most one batch is ever
+
+        produced for a given set of PENDING deposits.'
+      tags:
+      - Orchestration Address
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationAddressIdPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/OrchestrationManualTriggerResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: postV2UsersByUserIdOrchestrationAddressesByOrchestrationAddressIdOrchestrate
+      x-operation-id-source: derived
+  /v2/users/{userId}/orchestration-addresses/{orchestrationAddressId}/deposits:
+    get:
+      summary: List deposits for an orchestration address
+      description: 'List on-chain deposits detected for the address, most recent first.
+
+        Filterable by status, batch ID, and a created-at window.'
+      tags:
+      - Orchestration Address
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationAddressIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationDepositStatusQueryParameter'
+      - $ref: '#/components/parameters/OrchestrationDepositBatchIdQueryParameter'
+      - $ref: '#/components/parameters/OrchestrationCreatedAfterQueryParameter'
+      - $ref: '#/components/parameters/OrchestrationCreatedBeforeQueryParameter'
+      - $ref: '#/components/parameters/OrchestrationLimitQueryParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/OrchestrationDepositAllRecordsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2UsersByUserIdOrchestrationAddressesByOrchestrationAddressIdDeposits
+      x-operation-id-source: derived
+  /v2/users/{userId}/orchestration-addresses/{orchestrationAddressId}/deposits/{depositId}:
+    get:
+      summary: Retrieve a deposit
+      description: 'Fetch a single deposit by ID. Returns `404 RESOURCE_NOT_FOUND` if the
+
+        deposit doesn''t exist, doesn''t belong to the named orchestration address,
+
+        or the orchestration address doesn''t belong to the named user.'
+      tags:
+      - Orchestration Address
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationAddressIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationDepositIdPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/OrchestrationDepositResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2UsersByUserIdOrchestrationAddressesByOrchestrationAddressIdDepositsByDepositId
+      x-operation-id-source: derived
+  /v2/users/{userId}/orchestration-addresses/{orchestrationAddressId}/batches:
+    get:
+      summary: List batches for an orchestration address
+      description: 'List batches produced from this address''s deposits. Each batch carries
+
+        the IDs of the deposits it rolled up and (once the worker runs) the
+
+        `offrampTransactionId` of the produced offramp.
+
+
+        To get full offramp details, call `GET /v2/offramps/{offrampTransactionId}`.'
+      tags:
+      - Orchestration Address
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationAddressIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationBatchStatusQueryParameter'
+      - $ref: '#/components/parameters/OrchestrationCreatedAfterQueryParameter'
+      - $ref: '#/components/parameters/OrchestrationCreatedBeforeQueryParameter'
+      - $ref: '#/components/parameters/OrchestrationLimitQueryParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/OrchestrationBatchAllRecordsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2UsersByUserIdOrchestrationAddressesByOrchestrationAddressIdBatches
+      x-operation-id-source: derived
+  /v2/users/{userId}/orchestration-addresses/{orchestrationAddressId}/batches/{batchId}:
+    get:
+      summary: Retrieve a batch
+      description: 'Fetch a single batch by ID. Returns `404 RESOURCE_NOT_FOUND` if the batch
+
+        doesn''t exist, doesn''t belong to the named orchestration address, or the
+
+        orchestration address doesn''t belong to the named user.'
+      tags:
+      - Orchestration Address
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationAddressIdPathParameter'
+      - $ref: '#/components/parameters/OrchestrationBatchIdPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/OrchestrationBatchResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2UsersByUserIdOrchestrationAddressesByOrchestrationAddressIdBatchesByBatchId
+      x-operation-id-source: derived
+components:
+  parameters:
+    OrchestrationLimitQueryParameter:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 50
+      required: false
+      description: Maximum number of records to return. 1–200, defaults to 50.
+    UserIdPathParameter:
+      name: userId
+      in: path
+      schema:
+        type: string
+      description: ID of the user
+      required: true
+    OrchestrationDepositIdPathParameter:
+      name: depositId
+      in: path
+      schema:
+        type: string
+        format: uuid
+      required: true
+      description: 'ID of the orchestration deposit. Deterministically derived from the
+
+        provider''s deposit reference and escrow wallet ID, so the same on-chain
+
+        deposit always maps to the same `depositId` across webhook re-deliveries.
+
+        '
+    OrchestrationCreatedAfterQueryParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+        format: date-time
+      required: false
+      description: Inclusive lower bound on `createdAt` (ISO 8601). Only records created at or after this timestamp are returned.
+    OrchestrationBatchStatusQueryParameter:
+      name: status
+      in: query
+      schema:
+        type: string
+        enum:
+        - PENDING
+        - PROCESSING
+        - COMPLETED
+        - FAILED
+      required: false
+      description: Filter batches by status.
+    OrchestrationDepositBatchIdQueryParameter:
+      name: batchId
+      in: query
+      schema:
+        type: string
+        format: uuid
+      required: false
+      description: Filter deposits to those included in a specific batch.
+    OrchestrationBatchIdPathParameter:
+      name: batchId
+      in: path
+      schema:
+        type: string
+        format: uuid
+      required: true
+      description: ID of the orchestration batch.
+    OrchestrationAddressIdPathParameter:
+      name: orchestrationAddressId
+      in: path
+      schema:
+        type: string
+        format: uuid
+      required: true
+      description: ID of the orchestration address.
+    OrchestrationCreatedBeforeQueryParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date-time
+      required: false
+      description: Cursor for the next page. Pass the previous response's `nextCursor` value to return records created strictly before that timestamp.
+    OrchestrationDepositStatusQueryParameter:
+      name: status
+      in: query
+      schema:
+        type: string
+        enum:
+        - PENDING
+        - BATCHED
+        - IGNORED
+        - REFUNDED
+      required: false
+      description: Filter deposits by status.
+    OrchestrationProfileIdQueryParameter:
+      name: profileId
+      in: query
+      schema:
+        type: string
+        format: uuid
+      required: false
+      description: 'Optional profile (client/organization) scope. When omitted the request is
+
+        scoped to the caller''s default profile. Used by `requestId` idempotency:
+
+        addresses are unique per `(profileId, requestId)`.
+
+        '
+  responses:
+    OrchestrationDepositResponse:
+      description: A single deposit record.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrchestrationDepositObject'
+    OrchestrationBatchResponse:
+      description: A single batch record (with its included deposit IDs and the linked offramp).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrchestrationBatchObject'
+    OrchestrationManualTriggerResponse:
+      description: 'Result of `POST /orchestrate`. Either a freshly-created batch
+
+        (`triggered: true`, with `batch` populated) or an idempotent no-op
+
+        (`triggered: false`, with `reason` indicating why).
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrchestrationManualTriggerObject'
+    ConflictResponse:
+      description: Conflict — the request collides with the current state of the resource (e.g. idempotency-key reuse with a different payload).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    OrchestrationDepositAllRecordsResponse:
+      description: A paginated list of deposits for the named orchestration address.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrchestrationDepositAllRecordsObject'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    OrchestrationAddressResponse:
+      description: A single orchestration address record.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrchestrationAddressObject'
+    BadRequestResponse:
+      description: Bad request - validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  details:
+                    type: object
+                    description: Field-specific validation errors
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    OrchestrationAddressAllRecordsResponse:
+      description: A paginated list of orchestration addresses for the user.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrchestrationAddressAllRecordsObject'
+    OrchestrationBatchAllRecordsResponse:
+      description: A paginated list of batches for the named orchestration address.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrchestrationBatchAllRecordsObject'
+  schemas:
+    UpdateOrchestrationAddress:
+      type: object
+      title: Update Orchestration Address
+      description: "Partial update. Any combination of `mode`, `schedule`, `thresholdAmount`, `offrampMessage`,\nand `destination.accountId` may be set. Same mode cross-rules as create\napply to the *resulting* configuration (e.g. switching to `THRESHOLD`\nrequires `thresholdAmount`).\n\n**Side effects:**\n  * Switching mode clears schedule-only fields when they no longer apply.\n  * Changing `schedule.interval` without an explicit `nextRunAt` resets the next tick to `now + newInterval`.\n  * Changing `destination.accountId` re-validates the new account (must belong to user, be USD, be an offramp account, etc.).\n  * Queued batches use the current settings when the worker reads the OA to begin offramp initialization. Later edits do not alter that attempt or already-initialized offramps and their saved messages.\n\nA `DEACTIVATED` address cannot be updated — returns `400 RESOURCE_CONFLICT`.\nConcurrent changes to the validated message, destination, mode, or status return\n`409 RESOURCE_CONFLICT`; reload the current settings and retry the update.\n"
+      properties:
+        offrampMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Optional payment message, preserved exactly. Wire allows at most four lines of
+
+            35 characters; ACH allows 10 characters; SWIFT allows 12. Only printable ASCII
+
+            and newlines are accepted; backslashes and other control characters are rejected.
+
+            Nonempty messages are unsupported for RTP and other rails. Missing, null, or
+
+            empty means no message on create; on update omission preserves the setting and
+
+            null or empty clears it. A destination change revalidates the saved or supplied
+
+            message. Returns null when unset. Queued batches read current settings when
+
+            initializing an offramp; initialized offramps retain their saved message on retry.
+
+            '
+          example: Invoice 42
+        mode:
+          $ref: '#/components/schemas/OrchestrationAddressModeEnum'
+        schedule:
+          allOf:
+          - $ref: '#/components/schemas/OrchestrationAddressSchedule'
+        thresholdAmount:
+          type:
+          - string
+          - 'null'
+          description: 'New aggregate threshold. Required if the resulting mode is `THRESHOLD`,
+
+            and must be at least the destination rail''s offramp minimum (else `400`).
+
+            '
+        destination:
+          type: object
+          description: Partial destination update — only `accountId` may be changed.
+          properties:
+            accountId:
+              type: string
+              format: uuid
+              description: New offramp account ID. Same validation as on create.
+          required:
+          - accountId
+    OrchestrationDepositAllRecordsObject:
+      type: object
+      description: Paginated list of deposits for an orchestration address.
+      properties:
+        count:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrchestrationDepositObject'
+        nextCursor:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Pass this value as `createdBefore` to retrieve the next page. `null` means no next page is advertised.
+    OrchestrationManualTriggerTriggered:
+      type: object
+      description: Response shape when the manual trigger produced a new batch.
+      properties:
+        triggered:
+          type: boolean
+          enum:
+          - true
+        batch:
+          $ref: '#/components/schemas/OrchestrationBatchObject'
+      required:
+      - triggered
+      - batch
+    OrchestrationDepositIgnoredReasonEnum:
+      type: string
+      enum:
+      - ADDRESS_DEACTIVATED
+      - UNSUPPORTED_TOKEN
+      description: "Why a deposit was ignored. Funds remain in the escrow wallet — a Slack\nalert fires for manual ops follow-up.\n  * `ADDRESS_DEACTIVATED` — the deposit arrived after the address was deactivated.\n  * `UNSUPPORTED_TOKEN` — the deposited token does not match the address's configured `source.currency` (e.g. USDT sent to a USDC-only address).\n"
+    OrchestrationBatchFailureReasonEnum:
+      type: string
+      enum:
+      - ADDRESS_NOT_ACTIVE
+      - NOT_INITIATED
+      - QUOTE_FAILED
+      - CRYPTO_FAILED
+      - FIAT_FAILED
+      - EXPIRED
+      - REJECTED
+      - CANCELLED
+      description: "Populated when `status=FAILED`.\n  * `ADDRESS_NOT_ACTIVE` — the address was deactivated before the worker created\n    the offramp. The only input condition that terminally fails a batch.\n  * All other values are terminal statuses surfaced from the linked offramp\n    transaction (e.g. lost product access → `NOT_INITIATED`, a rejected AML\n    review → a terminal status).\n\nInternal inconsistencies (missing address, payout account lost its rail, a\nprocessor-validation bug) do **not** appear here — the worker pauses the batch\n(leaves it `PENDING`) and alerts ops instead of marking it `FAILED`.\n"
+    OrchestrationAddressModeEnum:
+      type: string
+      enum:
+      - PER_DEPOSIT
+      - SCHEDULED
+      - THRESHOLD
+      description: "Determines when deposits are converted into an offramp.\n  * `PER_DEPOSIT` — each deposit is batched into its own offramp immediately, UNLESS the cumulative `PENDING` amount is below the destination rail's offramp minimum, in which case the deposit is held `PENDING` and all pending deposits are batched together once their cumulative amount reaches the minimum.\n  * `SCHEDULED` — deposits accumulate until the next schedule boundary (`HOURLY`/`DAILY`/`WEEKLY`), then the entire pending pool is batched together (only if it meets the offramp minimum; otherwise it rolls into the next tick).\n  * `THRESHOLD` — deposits accumulate until their summed amount reaches `thresholdAmount`, then the entire pending pool is batched.\n"
+    Unauthorized:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    OrchestrationBatchObject:
+      type: object
+      description: A batch of one or more deposits rolled up into a single offramp transaction.
+      properties:
+        id:
+          type: string
+          format: uuid
+        orchestrationAddressId:
+          type: string
+          format: uuid
+        totalAmount:
+          type: string
+          description: Sum of the included deposits' amounts, in the source `currency`.
+          example: '150.000000'
+        currency:
+          type: string
+          enum:
+          - usdc
+          - usdt
+        status:
+          $ref: '#/components/schemas/OrchestrationBatchStatusEnum'
+        failureReason:
+          $ref: '#/components/schemas/OrchestrationBatchFailureReasonEnum'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        depositIds:
+          type: array
+          description: IDs of all deposits included in this batch.
+          items:
+            type: string
+            format: uuid
+        offrampTransactionId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: 'ID of the offramp transaction produced from this batch. `null` while
+
+            `status=PENDING` (the worker has not yet created the offramp). Call
+
+            `GET /v2/offramps/{transferId}` for full offramp details.
+
+            '
+    OrchestrationAddressObject:
+      type: object
+      description: An orchestration address record.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique orchestration address ID.
+        userId:
+          type: string
+          format: uuid
+          description: ID of the user that owns this orchestration address.
+        address:
+          type:
+          - string
+          - 'null'
+          description: 'The on-chain wallet address that accepts deposits. `null` while
+
+            `status=PENDING_WALLET` (provisioning in flight); populated once the
+
+            wallet exists.
+
+            '
+          example: '0xAbC0123456789AbCdEf0123456789AbCdEf01234'
+        source:
+          type: object
+          description: Source token + chain the address accepts.
+          properties:
+            currency:
+              type: string
+              enum:
+              - usdc
+              - usdt
+            chain:
+              type: string
+              description: 'Abbreviated chain name (e.g. `BASE`, `ETHEREUM`, `SOLANA`) — the same
+
+                form accepted on create and used across the v2 API.
+
+                '
+              example: BASE
+        destination:
+          type: object
+          description: Destination payout configuration.
+          properties:
+            currency:
+              type: string
+              enum:
+              - usd
+            accountId:
+              type: string
+              format: uuid
+        offrampMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Optional payment message, preserved exactly. Wire allows at most four lines of
+
+            35 characters; ACH allows 10 characters; SWIFT allows 12. Only printable ASCII
+
+            and newlines are accepted; backslashes and other control characters are rejected.
+
+            Nonempty messages are unsupported for RTP and other rails. Missing, null, or
+
+            empty means no message on create; on update omission preserves the setting and
+
+            null or empty clears it. A destination change revalidates the saved or supplied
+
+            message. Returns null when unset. Queued batches read current settings when
+
+            initializing an offramp; initialized offramps retain their saved message on retry.
+
+            '
+          example: Invoice 42
+        mode:
+          $ref: '#/components/schemas/OrchestrationAddressModeEnum'
+        schedule:
+          description: 'Populated only when `mode=SCHEDULED`; `null` otherwise.
+
+            '
+          type:
+          - object
+          - 'null'
+          properties:
+            interval:
+              $ref: '#/components/schemas/OrchestrationScheduleIntervalEnum'
+            nextRunAt:
+              type: string
+              format: date-time
+              description: ISO 8601 timestamp of the next scheduled batch.
+        thresholdAmount:
+          type:
+          - string
+          - 'null'
+          description: 'Populated only when `mode=THRESHOLD`; `null` otherwise. Decimal amount
+
+            in the source `currency`.
+
+            '
+          example: '100.00'
+        status:
+          $ref: '#/components/schemas/OrchestrationAddressStatusEnum'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deactivatedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: ISO 8601 timestamp when the address was deactivated. `null` if still active.
+        balance:
+          type:
+          - object
+          - 'null'
+          description: 'The escrow wallet''s live on-chain balance of the source token. Present
+
+            ONLY on the single-address GET (`GET /orchestration-addresses/{id}`); the
+
+            list endpoint omits it to avoid a provider call per row. `null` if the
+
+            wallet isn''t provisioned yet or the balance lookup failed — the GET still
+
+            returns `200`.
+
+            '
+          properties:
+            currency:
+              type: string
+              enum:
+              - usdc
+              - usdt
+            amount:
+              type: string
+              description: Decimal balance in the source `currency` (e.g. `"100.500000"`).
+          example:
+            currency: usdc
+            amount: '100.500000'
+    OrchestrationAddressStatusEnum:
+      type: string
+      enum:
+      - PENDING_WALLET
+      - ACTIVE
+      - DEACTIVATED
+      description: "Lifecycle status of the orchestration address.\n  * `PENDING_WALLET` — created but the escrow wallet is still being provisioned. The on-chain `address` is null. Typically transient (a few seconds).\n  * `ACTIVE` — wallet provisioned, ready to receive deposits.\n  * `DEACTIVATED` — soft-deleted. The on-chain wallet still exists and can receive funds, but incoming deposits are recorded with `status=IGNORED` and never offramped.\n"
+    InternalServerError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message describing what went wrong
+          example: Invalid API key or user not found
+    OrchestrationAddressAllRecordsObject:
+      type: object
+      description: Paginated list of orchestration addresses.
+      properties:
+        count:
+          type: integer
+          description: Number of records returned in this page.
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrchestrationAddressObject'
+        nextCursor:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Pass this value as `createdBefore` to retrieve the next page. `null` means no next page is advertised.
+    OrchestrationScheduleIntervalEnum:
+      type: string
+      enum:
+      - HOURLY
+      - DAILY
+      - WEEKLY
+      description: How often a `SCHEDULED` orchestration address rolls up pending deposits into a batch.
+    CreateOrchestrationAddress:
+      type: object
+      title: Create Orchestration Address
+      description: "Provisions a new persistent on-chain address that automatically offramps any\nstablecoin it receives.\n\n**Mode rules (cross-field):**\n  * `mode=PER_DEPOSIT` — must NOT include `schedule` or `thresholdAmount`.\n  * `mode=SCHEDULED` — MUST include `schedule.interval`; must NOT include `thresholdAmount`. `schedule.nextRunAt` is optional.\n  * `mode=THRESHOLD` — MUST include `thresholdAmount`; must NOT include `schedule`.\n\n**Source rules:** `source.currency` must be supported on `source.chain` (e.g. USDT on TRON, USDC on Base/Polygon/Ethereum/Solana). Unsupported pairs like USDC on TRON are rejected with `400`.\n\n**Offramp minimums:** each destination rail has a minimum offramp amount (e.g. ≥ 5 for SWIFT, ≥ 1 for wire/ACH/RTP; USDT carries a ≥ 10 floor). `mode=THRESHOLD` requires `thresholdAmount` to meet that minimum, and a batch is only ever created once the pending deposits reach it — deposits below the minimum are held `PENDING` to accumulate.\n\n**Idempotency:** `requestId` is the client-supplied idempotency key. Repeating the same `requestId` with the same payload returns the existing record (200). Repeating with a *different* payload returns `409 RESOURCE_CONFLICT` indicating which field differs (e.g. `requestId already used with a different source.currency`).\n\n**Wallet provisioning:** the response is returned synchronously after the escrow wallet is provisioned, so `status=ACTIVE` and `address` is non-null in the typical case. If the provider call is in flight, `status=PENDING_WALLET` and `address=null` — retry the same call (same `requestId`) to drive provisioning forward.\n"
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Client-supplied idempotency key (UUID v4 recommended). Unique per `(profileId, requestId)`.
+        source:
+          $ref: '#/components/schemas/OrchestrationAddressSource'
+        destination:
+          $ref: '#/components/schemas/OrchestrationAddressDestination'
+        offrampMessage:
+          type:
+          - string
+          - 'null'
+          description: 'Optional payment message, preserved exactly. Wire allows at most four lines of
+
+            35 characters; ACH allows 10 characters; SWIFT allows 12. Only printable ASCII
+
+            and newlines are accepted; backslashes and other control characters are rejected.
+
+            Nonempty messages are unsupported for RTP and other rails. Missing, null, or
+
+            empty means no message on create; on update omission preserves the setting and
+
+            null or empty clears it. A destination change revalidates the saved or supplied
+
+            message. Returns null when unset. Queued batches read current settings when
+
+            initializing an offramp; initialized offramps retain their saved message on retry.
+
+            '
+          example: Invoice 42
+        mode:
+          $ref: '#/components/schemas/OrchestrationAddressModeEnum'
+        schedule:
+          allOf:
+          - $ref: '#/components/schemas/OrchestrationAddressSchedule'
+          description: 'Required when `mode=SCHEDULED`. Forbidden otherwise.
+
+            '
+        thresholdAmount:
+          type:
+          - string
+          - 'null'
+          description: 'Required when `mode=THRESHOLD`. Forbidden otherwise. Decimal amount in
+
+            the address''s source `currency` (e.g. `"100.00"`). Must be at least the
+
+            destination rail''s offramp minimum (e.g. ≥ 5 for SWIFT, ≥ 1 for
+
+            wire/ACH/RTP; USDT ≥ 10), else `400`. Aggregate pending deposits are
+
+            summed in integer token units (BigInt) and compared to this value, so
+
+            floating-point drift never blocks the threshold.
+
+            '
+          example: '100.00'
+      required:
+      - requestId
+      - source
+      - destination
+      - mode
+    DeactivateOrchestrationAddress:
+      type: object
+      title: Deactivate Orchestration Address
+      description: 'Body for deactivating an orchestration address. Any deposits still `PENDING`
+
+        (not yet rolled into a batch) are refunded in-kind to `walletAddress`.
+
+        '
+      required:
+      - walletAddress
+      properties:
+        walletAddress:
+          type: string
+          description: 'Destination address for the in-kind refund of the address''s `PENDING`
+
+            deposits. Must be a valid address for the orchestration address''s `chain`
+
+            (else `400 FIELD_VALIDATION_ERROR`). Required even when there are no
+
+            pending deposits to refund.
+
+            '
+    OrchestrationDepositObject:
+      type: object
+      description: A single on-chain deposit detected for an orchestration address.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Deterministic UUID derived from `(providerReferenceId, escrowWalletId)`. Stable across webhook re-deliveries.
+        orchestrationAddressId:
+          type: string
+          format: uuid
+        batchId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: ID of the batch that included this deposit. `null` while `status=PENDING` or `status=IGNORED`.
+        amount:
+          type: string
+          description: 'Decimal amount of the source token deposited (e.g. `"100.500000"`).
+
+            Precision matches the token''s on-chain decimals.
+
+            '
+        currency:
+          type: string
+          enum:
+          - usdc
+          - usdt
+        chain:
+          type: string
+          description: Abbreviated chain name (e.g. `BASE`).
+        sourceAddress:
+          type: string
+          description: On-chain address that sent the deposit. Informational only.
+        transactionHash:
+          type: string
+          description: On-chain transaction hash.
+        status:
+          $ref: '#/components/schemas/OrchestrationDepositStatusEnum'
+        ignoredReason:
+          $ref: '#/components/schemas/OrchestrationDepositIgnoredReasonEnum'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    OrchestrationAddressSource:
+      type: object
+      description: 'The on-chain source the orchestration address accepts deposits in. A stablecoin
+
+        contract must exist for the `(currency, chain)` pair — USDC and USDT are both
+
+        supported on Base/Polygon/Ethereum/Solana, while TRON supports USDT only.
+
+        Unsupported pairs (e.g. USDC on TRON) are rejected at create time with `400`.
+
+        '
+      properties:
+        currency:
+          type: string
+          enum:
+          - usdc
+          - usdt
+          description: Stablecoin the address accepts. v1 supports USDC and USDT, subject to chain support (see above).
+        chain:
+          type: string
+          enum:
+          - POLYGON
+          - ETHEREUM
+          - SOLANA
+          - BASE
+          - FLOW_EVM
+          - BSC
+          - TRON
+          description: 'Blockchain network the address lives on, as an abbreviated chain name.
+
+            The same abbreviated form is used in both requests and responses (e.g.
+
+            `BASE`).
+
+            '
+      required:
+      - currency
+      - chain
+    OrchestrationDepositStatusEnum:
+      type: string
+      enum:
+      - PENDING
+      - BATCHED
+      - IGNORED
+      - REFUNDED
+      description: "Per-deposit status.\n  * `PENDING` — recorded, waiting to be rolled into a batch.\n  * `BATCHED` — included in a batch (`batchId` is set).\n  * `IGNORED` — recorded but never batched. See `ignoredReason` for why.\n  * `REFUNDED` — was `PENDING` when the address was deactivated; the funds were refunded in-kind to the `walletAddress` supplied at deactivation.\n"
+    OrchestrationBatchAllRecordsObject:
+      type: object
+      description: Paginated list of batches for an orchestration address.
+      properties:
+        count:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrchestrationBatchObject'
+        nextCursor:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Pass this value as `createdBefore` to retrieve the next page. `null` means no next page is advertised.
+    OrchestrationBatchStatusEnum:
+      type: string
+      enum:
+      - PENDING
+      - PROCESSING
+      - COMPLETED
+      - FAILED
+      description: "Batch lifecycle.\n  * `PENDING` — created; the worker has not yet picked it up.\n  * `PROCESSING` — the linked offramp has been created and is in flight.\n  * `COMPLETED` — the linked offramp reached `COMPLETED`.\n  * `FAILED` — terminal failure. See `failureReason`.\n"
+    OrchestrationAddressSchedule:
+      type: object
+      description: Schedule config for a `SCHEDULED` orchestration address.
+      properties:
+        interval:
+          $ref: '#/components/schemas/OrchestrationScheduleIntervalEnum'
+        nextRunAt:
+          type: string
+          format: date-time
+          description: 'Optional ISO 8601 timestamp for the first scheduled batch. Defaults to
+
+            `now + interval` if omitted. Subsequent ticks advance by exactly one
+
+            interval; missed windows (worker downtime) collapse into a single
+
+            catch-up batch rather than firing N back-to-back.
+
+            '
+      required:
+      - interval
+    OrchestrationManualTriggerObject:
+      description: 'Result of a manual `POST /orchestrate` call. Either a freshly-created batch
+
+        (`triggered: true`) or an idempotent no-op (`triggered: false`).
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/OrchestrationManualTriggerTriggered'
+      - $ref: '#/components/schemas/OrchestrationManualTriggerNoOp'
+    OrchestrationAddressDestination:
+      type: object
+      description: The destination payout configuration. v1 ships USD only, via an existing offramp account.
+      properties:
+        currency:
+          type: string
+          enum:
+          - usd
+          description: Destination fiat currency. v1 ships USD only.
+        accountId:
+          type: string
+          format: uuid
+          description: 'UUID of the offramp account that will receive the converted fiat. Must
+
+            belong to the same user, be a USD offramp account, be active, and be
+
+            routed through HIFI''s US fiat partner. Get one via
+
+            `POST /v2/users/{userId}/accounts`.
+
+            '
+      required:
+      - currency
+      - accountId
+    OrchestrationManualTriggerNoOp:
+      type: object
+      description: 'Response shape when the manual trigger was an idempotent no-op (no PENDING
+
+        deposits, or the address was deactivated under the row lock).
+
+        '
+      properties:
+        triggered:
+          type: boolean
+          enum:
+          - false
+        reason:
+          $ref: '#/components/schemas/OrchestrationManualTriggerReasonEnum'
+        batch:
+          type:
+          - object
+          - 'null'
+          description: Always `null` in the no-op variant.
+          example: null
+      required:
+      - triggered
+      - reason
+      - batch
+    OrchestrationManualTriggerReasonEnum:
+      type: string
+      enum:
+      - no_pending_deposits
+      - address_no_longer_active
+      - below_offramp_minimum
+      description: "Reason the manual trigger was a no-op (returned when `triggered=false`).\n  * `no_pending_deposits` — the address has no `PENDING` deposits to batch.\n  * `address_no_longer_active` — the address was deactivated between the read and the row-lock acquisition.\n  * `below_offramp_minimum` — the summed `PENDING` deposits are below the destination rail's offramp minimum, so they are held to accumulate rather than batched.\n"
+  requestBodies:
+    CreateOrchestrationAddressBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateOrchestrationAddress'
+    UpdateOrchestrationAddressBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateOrchestrationAddress'
+    DeactivateOrchestrationAddressBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeactivateOrchestrationAddress'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

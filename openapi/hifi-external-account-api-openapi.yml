@@ -1,0 +1,935 @@
+openapi: 3.2.0
+info:
+  title: Hifi External Account API
+  version: 2.0.0
+  description: API documentation for HIFI
+servers:
+- url: https://production.hifibridge.com
+  description: Production server
+- url: https://sandbox.hifibridge.com
+  description: Sandbox server
+security:
+- bearerAuth: []
+tags:
+- name: External Account
+  description: External Account endpoints for managing beneficiary bank accounts
+paths:
+  /v2/users/{userId}/external-accounts:
+    post:
+      summary: Create an external account
+      description: 'Create a new external bank account for offramp transfers. External accounts represent beneficiary bank accounts where funds can be sent.
+
+
+        The account will be validated and registered with the appropriate payment provider based on the specified rail and destination country/currency.'
+      tags:
+      - External Account
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      requestBody:
+        $ref: '#/components/requestBodies/CreateExternalAccountBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateExternalAccountResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: postV2UsersByUserIdExternalAccounts
+      x-operation-id-source: derived
+    get:
+      summary: List all external accounts
+      description: List all external accounts associated with a user. Supports cursor-based pagination.
+      tags:
+      - External Account
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      - $ref: '#/components/parameters/CreatedBeforeParameter'
+      - $ref: '#/components/parameters/CreatedAfterParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAllExternalAccountsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2UsersByUserIdExternalAccounts
+      x-operation-id-source: derived
+  /v2/users/{userId}/external-accounts/{accountId}:
+    get:
+      summary: Retrieve an external account
+      description: Get details of a specific external account.
+      tags:
+      - External Account
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/ExternalAccountIdPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetExternalAccountResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: getV2UsersByUserIdExternalAccountsByAccountId
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an external account
+      description: Soft delete an external account. The account will be marked as inactive and can no longer be used for transfers.
+      tags:
+      - External Account
+      parameters:
+      - $ref: '#/components/parameters/UserIdPathParameter'
+      - $ref: '#/components/parameters/ExternalAccountIdPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/DeleteExternalAccountResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: deleteV2UsersByUserIdExternalAccountsByAccountId
+      x-operation-id-source: derived
+components:
+  schemas:
+    ExternalAccountBankDetailsSWIFT:
+      type: object
+      description: Bank details for international SWIFT transfers
+      required:
+      - iban
+      - swiftCode
+      - bankName
+      properties:
+        iban:
+          type: string
+          description: International Bank Account Number
+          example: DE91100000000123456789
+        swiftCode:
+          type: string
+          description: SWIFT/BIC code (8 or 11 characters)
+          example: DEUTDEFF
+        bankName:
+          type: string
+          description: Name of the bank
+          example: Deutsche Bank
+    ExternalAccountBankDetailsMoMo:
+      type: object
+      description: Bank details for Mobile Money transfers
+      required:
+      - accountNumber
+      - bankName
+      properties:
+        accountNumber:
+          type: string
+          description: Mobile phone number in E.164 format
+          example: '+254712345678'
+        bankName:
+          type: string
+          description: Mobile money provider name
+          example: M-Pesa
+    ExternalAccountBankDetailsSPEI:
+      type: object
+      description: Bank details for Mexican SPEI transfers
+      required:
+      - speiClabe
+      properties:
+        speiClabe:
+          type: string
+          description: CLABE number (18 digits)
+          example: 032180000118359719
+        bankName:
+          type: string
+          description: Name of the bank
+          example: BBVA Mexico
+    CreateExternalAccountPIX:
+      type: object
+      required:
+      - requestId
+      - direction
+      - country
+      - currency
+      - rail
+      - accountHolder
+      - accountDetails
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Unique request ID for deduplication
+          example: 550e8400-e29b-41d4-a716-446655440000
+        direction:
+          type: string
+          enum:
+          - payout
+          description: Direction of transfers (currently only payout supported)
+          example: payout
+        country:
+          type: string
+          description: Must be BRA for PIX
+          example: BRA
+        currency:
+          type: string
+          description: Must be BRL for PIX
+          example: BRL
+        rail:
+          type: string
+          enum:
+          - pix
+          example: pix
+        accountHolder:
+          $ref: '#/components/schemas/ExternalAccountHolder'
+        accountDetails:
+          $ref: '#/components/schemas/ExternalAccountBankDetailsPIX'
+    CreateExternalAccountSuccessObject:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ACTIVE
+        message:
+          type: string
+          example: Account created successfully
+        id:
+          type: string
+          format: uuid
+          example: 583eb259-e78b-4f0c-a4b5-a8957876fa6f
+    CreateExternalAccountACH:
+      type: object
+      required:
+      - requestId
+      - direction
+      - country
+      - currency
+      - rail
+      - accountHolder
+      - accountDetails
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Unique request ID for deduplication
+          example: 550e8400-e29b-41d4-a716-446655440000
+        direction:
+          type: string
+          enum:
+          - payout
+          description: Direction of transfers (currently only payout supported)
+          example: payout
+        country:
+          type: string
+          description: ISO 3166-1 alpha-3 country code (must be USA for ACH)
+          example: USA
+        currency:
+          type: string
+          description: Currency code (must be USD for ACH)
+          example: USD
+        rail:
+          type: string
+          enum:
+          - ach
+          description: Payment rail
+          example: ach
+        accountHolder:
+          $ref: '#/components/schemas/ExternalAccountHolder'
+        accountDetails:
+          $ref: '#/components/schemas/ExternalAccountBankDetailsACH'
+    ExternalAccountHolder:
+      type: object
+      description: Account holder information
+      required:
+      - type
+      - name
+      properties:
+        type:
+          type: string
+          enum:
+          - individual
+          - business
+          description: Type of account holder
+          example: individual
+        name:
+          type: string
+          description: Full name of account holder
+          example: John Doe
+        email:
+          type: string
+          format: email
+          description: Email address
+          example: john@example.com
+        phone:
+          type: string
+          description: Phone number in E.164 format
+          example: '+14155551234'
+        address:
+          $ref: '#/components/schemas/ExternalAccountAddress'
+    ExternalAccountObject:
+      type: object
+      description: External account object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the external account
+          example: 583eb259-e78b-4f0c-a4b5-a8957876fa6f
+        userId:
+          type: string
+          format: uuid
+          description: User ID associated with this account
+          example: 77848151-d8cd-545a-8d45-62d31c30019d
+        requestId:
+          type: string
+          format: uuid
+          description: Request ID used for deduplication
+          example: 550e8400-e29b-41d4-a716-446655440000
+        direction:
+          type: string
+          enum:
+          - payin
+          - payout
+          description: Direction of transfers
+          example: payout
+        status:
+          type: string
+          enum:
+          - active
+          - inactive
+          - pending
+          description: Current status of the account
+          example: active
+        country:
+          type: string
+          description: ISO 3166-1 alpha-3 country code
+          example: USA
+        currency:
+          type: string
+          description: Currency code
+          example: USD
+        rail:
+          type: string
+          enum:
+          - ach
+          - wire
+          - swift
+          - sepa
+          - pix
+          - spei
+          - momo
+          description: Payment rail
+          example: ach
+        accountHolder:
+          $ref: '#/components/schemas/ExternalAccountHolder'
+        accountDetails:
+          type: object
+          description: Bank details (fields vary by rail)
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the account was created
+          example: '2024-01-15T10:30:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the account was last updated
+          example: '2024-01-15T10:30:00.000Z'
+    DeleteExternalAccountSuccessObject:
+      type: object
+      properties:
+        message:
+          type: string
+          example: External account deleted successfully
+        account:
+          $ref: '#/components/schemas/ExternalAccountObject'
+    Unauthorized:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    ExternalAccountBankDetailsPIX:
+      type: object
+      description: Bank details for Brazilian PIX transfers
+      required:
+      - pixKey
+      properties:
+        pixKey:
+          type: string
+          description: PIX key (CPF, CNPJ, phone, email, or EVP)
+          example: '12345678901'
+        bankName:
+          type: string
+          description: Name of the bank
+          example: Banco do Brasil
+    InternalServerError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    ExternalAccountAddress:
+      type: object
+      description: Address information
+      required:
+      - addressLine1
+      - city
+      - stateProvinceRegion
+      - postalCode
+      - country
+      properties:
+        addressLine1:
+          type: string
+          description: Primary address line
+          example: 123 Main Street
+        addressLine2:
+          type: string
+          description: Secondary address line (apartment, suite, etc.)
+          example: Suite 100
+        city:
+          type: string
+          description: City name
+          example: New York
+        stateProvinceRegion:
+          type: string
+          description: State, province, or region
+          example: NY
+        postalCode:
+          type: string
+          description: Postal or ZIP code
+          example: '10001'
+        country:
+          type: string
+          description: ISO 3166-1 alpha-3 country code
+          example: USA
+    ExternalAccountBankDetailsACH:
+      type: object
+      description: Bank details for ACH transfers
+      required:
+      - accountNumber
+      - routingNumber
+      properties:
+        accountNumber:
+          type: string
+          description: Bank account number
+          example: '123456789'
+        routingNumber:
+          type: string
+          description: ABA routing number (9 digits)
+          example: '021000021'
+        accountType:
+          type: string
+          enum:
+          - checking
+          - savings
+          description: Type of bank account
+          example: checking
+        bankName:
+          type: string
+          description: Name of the bank
+          example: Chase Bank
+    ExternalAccountListObject:
+      type: object
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalAccountObject'
+        count:
+          type: integer
+          description: Number of accounts returned
+          example: 10
+        nextCursor:
+          type:
+          - string
+          - 'null'
+          description: Cursor for the next page of results (null if no more results)
+          example: '2024-01-15T10:30:00.000Z'
+    CreateExternalAccountSWIFT:
+      type: object
+      required:
+      - requestId
+      - direction
+      - country
+      - currency
+      - rail
+      - accountHolder
+      - accountDetails
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Unique request ID for deduplication
+          example: 550e8400-e29b-41d4-a716-446655440000
+        direction:
+          type: string
+          enum:
+          - payout
+          description: Direction of transfers (currently only payout supported)
+          example: payout
+        country:
+          type: string
+          description: ISO 3166-1 alpha-3 country code
+          example: BRA
+        currency:
+          type: string
+          description: Currency code
+          example: USD
+        rail:
+          type: string
+          enum:
+          - swift
+          example: swift
+        accountHolder:
+          $ref: '#/components/schemas/ExternalAccountHolder'
+        accountDetails:
+          $ref: '#/components/schemas/ExternalAccountBankDetailsSWIFT'
+    CreateExternalAccountWire:
+      type: object
+      required:
+      - requestId
+      - direction
+      - country
+      - currency
+      - rail
+      - accountHolder
+      - accountDetails
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Unique request ID for deduplication
+          example: 550e8400-e29b-41d4-a716-446655440000
+        direction:
+          type: string
+          enum:
+          - payout
+          description: Direction of transfers (currently only payout supported)
+          example: payout
+        country:
+          type: string
+          description: ISO 3166-1 alpha-3 country code (must be USA for Wire)
+          example: USA
+        currency:
+          type: string
+          description: Currency code (must be USD for Wire)
+          example: USD
+        rail:
+          type: string
+          enum:
+          - wire
+          example: wire
+        accountHolder:
+          $ref: '#/components/schemas/ExternalAccountHolder'
+        accountDetails:
+          $ref: '#/components/schemas/ExternalAccountBankDetailsWire'
+    CreateExternalAccountMoMo:
+      type: object
+      required:
+      - requestId
+      - direction
+      - country
+      - currency
+      - rail
+      - accountHolder
+      - accountDetails
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Unique request ID for deduplication
+          example: 550e8400-e29b-41d4-a716-446655440000
+        direction:
+          type: string
+          enum:
+          - payout
+          description: Direction of transfers (currently only payout supported)
+          example: payout
+        country:
+          type: string
+          description: ISO 3166-1 alpha-3 country code (e.g., KEN, GHA)
+          example: KEN
+        currency:
+          type: string
+          description: Local currency code (e.g., KES, GHS)
+          example: KES
+        rail:
+          type: string
+          enum:
+          - momo
+          example: momo
+        accountHolder:
+          $ref: '#/components/schemas/ExternalAccountHolder'
+        accountDetails:
+          $ref: '#/components/schemas/ExternalAccountBankDetailsMoMo'
+    ExternalAccountBankDetailsWire:
+      type: object
+      description: Bank details for domestic wire transfers
+      required:
+      - accountNumber
+      - routingNumber
+      properties:
+        accountNumber:
+          type: string
+          description: Bank account number
+          example: '123456789'
+        routingNumber:
+          type: string
+          description: ABA routing number (9 digits)
+          example: '021000021'
+        accountType:
+          type: string
+          enum:
+          - checking
+          - savings
+          description: Type of bank account
+          example: checking
+        bankName:
+          type: string
+          description: Name of the bank
+          example: Bank of America
+    CreateExternalAccountSPEI:
+      type: object
+      required:
+      - requestId
+      - direction
+      - country
+      - currency
+      - rail
+      - accountHolder
+      - accountDetails
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Unique request ID for deduplication
+          example: 550e8400-e29b-41d4-a716-446655440000
+        direction:
+          type: string
+          enum:
+          - payout
+          description: Direction of transfers (currently only payout supported)
+          example: payout
+        country:
+          type: string
+          description: Must be MEX for SPEI
+          example: MEX
+        currency:
+          type: string
+          description: Must be MXN for SPEI
+          example: MXN
+        rail:
+          type: string
+          enum:
+          - spei
+          example: spei
+        accountHolder:
+          $ref: '#/components/schemas/ExternalAccountHolder'
+        accountDetails:
+          $ref: '#/components/schemas/ExternalAccountBankDetailsSPEI'
+  responses:
+    CreateExternalAccountResponse:
+      description: External account created successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateExternalAccountSuccessObject'
+          example:
+            status: ACTIVE
+            message: Account created successfully
+            id: 583eb259-e78b-4f0c-a4b5-a8957876fa6f
+    DeleteExternalAccountResponse:
+      description: External account deleted successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeleteExternalAccountSuccessObject'
+          example:
+            message: External account deleted successfully
+            account:
+              id: 583eb259-e78b-4f0c-a4b5-a8957876fa6f
+              userId: 77848151-d8cd-545a-8d45-62d31c30019d
+              direction: offramp
+              status: inactive
+              country: USA
+              currency: USD
+              rail: ach
+              createdAt: '2024-01-15T10:30:00.000Z'
+              updatedAt: '2024-01-15T12:00:00.000Z'
+    GetAllExternalAccountsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ExternalAccountListObject'
+          example:
+            accounts:
+            - id: 583eb259-e78b-4f0c-a4b5-a8957876fa6f
+              userId: 77848151-d8cd-545a-8d45-62d31c30019d
+              direction: offramp
+              status: active
+              country: USA
+              currency: USD
+              rail: ach
+              accountHolder:
+                type: individual
+                name: John Doe
+              accountDetails:
+                accountNumber: '123456789'
+                routingNumber: '021000021'
+              createdAt: '2024-01-15T10:30:00.000Z'
+              updatedAt: '2024-01-15T10:30:00.000Z'
+            count: 1
+            nextCursor: null
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    BadRequestResponse:
+      description: Bad request - validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  details:
+                    type: object
+                    description: Field-specific validation errors
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    GetExternalAccountResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              account:
+                $ref: '#/components/schemas/ExternalAccountObject'
+          example:
+            account:
+              id: 583eb259-e78b-4f0c-a4b5-a8957876fa6f
+              userId: 77848151-d8cd-545a-8d45-62d31c30019d
+              direction: offramp
+              status: active
+              country: USA
+              currency: USD
+              rail: ach
+              accountHolder:
+                type: individual
+                name: John Doe
+                email: john@example.com
+                phone: '+14155551234'
+                address:
+                  addressLine1: 123 Main Street
+                  city: New York
+                  stateProvinceRegion: NY
+                  postalCode: '10001'
+                  country: USA
+              accountDetails:
+                accountNumber: '123456789'
+                routingNumber: '021000021'
+                accountType: checking
+                bankName: Chase Bank
+              createdAt: '2024-01-15T10:30:00.000Z'
+              updatedAt: '2024-01-15T10:30:00.000Z'
+  parameters:
+    CreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    UserIdPathParameter:
+      name: userId
+      in: path
+      schema:
+        type: string
+      description: ID of the user
+      required: true
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    ExternalAccountIdPathParameter:
+      name: accountId
+      in: path
+      schema:
+        type: string
+        format: uuid
+      description: ID of the external account
+      required: true
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+  requestBodies:
+    CreateExternalAccountBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/CreateExternalAccountACH'
+            - $ref: '#/components/schemas/CreateExternalAccountWire'
+            - $ref: '#/components/schemas/CreateExternalAccountSWIFT'
+            - $ref: '#/components/schemas/CreateExternalAccountPIX'
+            - $ref: '#/components/schemas/CreateExternalAccountSPEI'
+            - $ref: '#/components/schemas/CreateExternalAccountMoMo'
+          examples:
+            ACHExample:
+              summary: ACH Account (US)
+              value:
+                direction: offramp
+                country: USA
+                currency: USD
+                rail: ach
+                accountHolder:
+                  type: individual
+                  name: John Doe
+                  email: john@example.com
+                  phone: '+14155551234'
+                  address:
+                    addressLine1: 123 Main Street
+                    city: New York
+                    stateProvinceRegion: NY
+                    postalCode: '10001'
+                    country: USA
+                accountDetails:
+                  accountNumber: '123456789'
+                  routingNumber: '021000021'
+                  accountType: checking
+                  bankName: Chase Bank
+            SWIFTExample:
+              summary: SWIFT Account (International)
+              value:
+                direction: offramp
+                country: BRA
+                currency: USD
+                rail: swift
+                accountHolder:
+                  type: individual
+                  name: Maria Silva
+                  email: maria@example.com
+                  phone: '+5511999999999'
+                  address:
+                    addressLine1: Rua Example 123
+                    city: Sao Paulo
+                    stateProvinceRegion: SP
+                    postalCode: 01310-100
+                    country: BRA
+                accountDetails:
+                  iban: BR1500000000000010932840814P2
+                  swiftCode: BRAABORJXXX
+                  bankName: Banco do Brasil
+            PIXExample:
+              summary: PIX Account (Brazil)
+              value:
+                direction: offramp
+                country: BRA
+                currency: BRL
+                rail: pix
+                accountHolder:
+                  type: individual
+                  name: Maria Silva
+                  email: maria@example.com
+                  phone: '+5511999999999'
+                accountDetails:
+                  pixKey: '12345678901'
+                  bankName: Banco do Brasil
+            SPEIExample:
+              summary: SPEI Account (Mexico)
+              value:
+                direction: offramp
+                country: MEX
+                currency: MXN
+                rail: spei
+                accountHolder:
+                  type: individual
+                  name: Carlos Garcia
+                  email: carlos@example.com
+                  phone: '+525512345678'
+                accountDetails:
+                  speiClabe: 032180000118359719
+                  bankName: BBVA Mexico
+            MoMoExample:
+              summary: Mobile Money Account (Kenya)
+              value:
+                direction: offramp
+                country: KEN
+                currency: KES
+                rail: momo
+                accountHolder:
+                  type: individual
+                  name: James Mwangi
+                  email: james@example.com
+                  phone: '+254712345678'
+                accountDetails:
+                  accountNumber: '+254712345678'
+                  bankName: M-Pesa
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

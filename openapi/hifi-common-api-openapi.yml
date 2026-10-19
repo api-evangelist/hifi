@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   title: Hifi Common API
   version: 2.0.0
-  description: API documentation for Hifi
+  description: API documentation for HIFI
 servers:
 - url: https://production.hifibridge.com
   description: Production server
@@ -14,7 +14,7 @@ tags:
 - name: Common
   description: Common endpoints
 paths:
-  /v2/ping:
+  /ping:
     get:
       summary: Ping
       tags:
@@ -28,41 +28,28 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
-      operationId: getV2Ping
+      operationId: getPing
       x-operation-id-source: derived
 components:
-  schemas:
-    Pong:
-      type: object
-      properties:
-        message:
-          type: string
-          example: pong
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Not authorized
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
   responses:
-    PingResponse:
-      description: Success
+    InternalServerErrorResponse:
+      description: Internal Server Error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Pong'
+            $ref: '#/components/schemas/InternalServerError'
     UnauthorizedResponse:
       description: Unauthorized
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Unauthorized'
+    PingResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Pong'
     NotFoundResponse:
       description: Resource not found
       content:
@@ -81,12 +68,37 @@ components:
                     type: string
                   message:
                     type: string
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
+  schemas:
+    Pong:
+      type: object
+      properties:
+        message:
+          type: string
+          example: pong
+    Unauthorized:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    InternalServerError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
   securitySchemes:
     bearerAuth:
       type: http

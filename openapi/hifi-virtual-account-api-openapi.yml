@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   title: Hifi Virtual Account API
   version: 2.0.0
-  description: API documentation for Hifi
+  description: API documentation for HIFI
 servers:
 - url: https://production.hifibridge.com
   description: Production server
@@ -170,125 +170,69 @@ paths:
       operationId: postV2UsersByUserIdVirtualAccountsByAccountIdSimulateDeposit
       x-operation-id-source: derived
 components:
-  responses:
-    GetVirtualAccountResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/VirtualAccountObject'
-          examples:
-            VirtualAccountObjectExample:
-              $ref: '#/components/examples/VirtualAccountObjectExample'
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    NotFoundResponse:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                enum:
-                - error
-              error:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  message:
-                    type: string
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
-    CreateVirtualAccountResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateVirtualAccountObject'
-          examples:
-            VirtualAccountObjectCreationExample:
-              $ref: '#/components/examples/VirtualAccountObjectCreationExample'
-    ReactivateVirtualAccountResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReactivateVirtualAccountObject'
-          examples:
-            VirtualAccountObjectCreationExample:
-              $ref: '#/components/examples/VirtualAccountObjectCreationExample'
-    SimulateVirtualAccountDepositResponse:
-      description: Successfully triggered sandbox deposit
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SimulateVirtualAccountDeposit'
-          examples:
-            VirtualAccountDepositSimulationObjectExample:
-              $ref: '#/components/examples/VirtualAccountDepositSimulationObjectExample'
-    DeactivateVirtualAccountResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DeactivateVirtualAccountObject'
-          examples:
-            VirtualAccountObjectDeactivateExample:
-              $ref: '#/components/examples/VirtualAccountObjectDeactivateExample'
-    UpdateVirtualAccountResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UpdateVirtualAccountObject'
-    GetAllVirtualAccountsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/VirtualAccountListObject'
-          examples:
-            VirtualAccountObjectListExample:
-              $ref: '#/components/examples/VirtualAccountObjectListExample'
   schemas:
-    CreateVirtualAccountObject:
+    CreateVirtualAccount:
       type: object
+      title: Create Virtual Account
+      description: 'Create a virtual account and optionally configure its automatic USDT
+
+        onramp conversion-fee threshold.
+
+        '
       properties:
-        message:
+        sourceCurrency:
           type: string
-        accountInfo:
-          $ref: '#/components/schemas/VirtualAccountObject'
-    Unauthorized:
-      type: object
-      properties:
-        error:
+          enum:
+          - usd
+        destinationCurrency:
           type: string
-          example: Not authorized
-    UpdateVirtualAccountObject:
-      type: object
-      properties:
-        message:
+          enum:
+          - usdc
+          - usdt
+          - usdg
+          - pyusd
+        destinationChain:
           type: string
-        accountInfo:
-          $ref: '#/components/schemas/VirtualAccountObject'
-    ReactivateVirtualAccountObject:
-      type: object
-      properties:
-        message:
+          enum:
+          - POLYGON
+          - ETHEREUM
+          - SOLANA
+          - BASE
+          - TRON
+          description: 'Either `externalWalletId` or `destinationChain` must be provided. If provided, the token will be delivered to user''s HIFI wallet on the destination chain.
+
+            '
+        externalWalletId:
           type: string
-        accountInfo:
-          $ref: '#/components/schemas/VirtualAccountObject'
+          description: 'Either `externalWalletId` or `destinationChain` must be provided.
+
+            '
+        maxBps:
+          oneOf:
+          - type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 10000
+          - type: string
+            pattern: ^0*(?:[0-9]{1,4}|10000)$
+          description: 'Maximum USDT conversion fee, supplied as an integer or decimal-integer
+
+            string representing 0 through 10,000 basis points, allowed for automatic
+
+            onramps through this virtual account. Omit or use `null` to leave the
+
+            threshold disabled.
+
+            '
+        transferType:
+          type: string
+          enum:
+          - ach
+          - wire
+      required:
+      - sourceCurrency
+      - destinationCurrency
     DeactivateVirtualAccountObject:
       type: object
       properties:
@@ -296,12 +240,6 @@ components:
           type: string
         accountInfo:
           $ref: '#/components/schemas/VirtualAccountObject'
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
     VirtualAccountListObject:
       type: object
       properties:
@@ -315,9 +253,138 @@ components:
         nextCursor:
           type: string
           description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
-    CreateVirtualAccount:
+    UpdateVirtualAccountObject:
       type: object
-      title: Create Virtual Account
+      properties:
+        message:
+          type: string
+        virtualAccountInfo:
+          $ref: '#/components/schemas/VirtualAccountObject'
+    Unauthorized:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    InboundObject:
+      type: object
+      properties:
+        bankName:
+          type:
+          - string
+          - 'null'
+        senderName:
+          type:
+          - string
+          - 'null'
+        routingNumber:
+          type:
+          - string
+          - 'null'
+        accountNumber:
+          type:
+          - string
+          - 'null'
+        accountType:
+          type:
+          - string
+          - 'null'
+          description: ACH field. `null` when the inbound payment did not carry it.
+        fedBatchId:
+          type:
+          - string
+          - 'null'
+          description: ACH field. `null` when the inbound payment did not carry it.
+        imad:
+          type:
+          - string
+          - 'null'
+          description: Fedwire input message identifier. `null` when the inbound payment did not carry it.
+        omad:
+          type:
+          - string
+          - 'null'
+          description: Fedwire output message identifier. `null` when the inbound payment did not carry it.
+        traceNumber:
+          type:
+          - string
+          - 'null'
+          description: Trace number for the inbound payment. `null` when the payment did not carry one.
+        bankAddress:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        references:
+          type:
+          - object
+          - 'null'
+          description: Remittance and reference information supplied by the sender. `null` when the payment carried none.
+          properties:
+            senderReference:
+              type:
+              - string
+              - 'null'
+            beneficiaryReference:
+              type:
+              - string
+              - 'null'
+            remittance:
+              type: array
+              items:
+                type: string
+        paymentRail:
+          type:
+          - string
+          - 'null'
+          enum:
+          - ach
+          - wire
+          - rtp
+    CreateVirtualAccountObject:
+      type: object
+      properties:
+        message:
+          type: string
+        accountInfo:
+          $ref: '#/components/schemas/VirtualAccountObject'
+    InternalServerError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    OnrampSandboxScenario:
+      type: string
+      enum:
+      - FIAT_FAILED
+      - COMPLETED
+      description: 'Sandbox-only field that forces the onramp created by this deposit to a predetermined outcome
+
+        '
+    UpdateVirtualAccount:
+      type: object
+      title: Update Virtual Account
+      description: 'Update the virtual account''s destination routing, its automatic USDT onramp
+
+        conversion-fee threshold, or both. `maxBps` may be sent by itself.
+
+        '
       properties:
         sourceCurrency:
           type: string
@@ -328,9 +395,8 @@ components:
           enum:
           - usdc
           - usdt
-          description: 'usdt is only supported on ethereum
-
-            '
+          - usdg
+          - pyusd
         destinationChain:
           type: string
           enum:
@@ -338,7 +404,8 @@ components:
           - ETHEREUM
           - SOLANA
           - BASE
-          description: 'Either `externalWalletId` or `destinationChain` must be provided.
+          - TRON
+          description: 'Either `externalWalletId` or `destinationChain` must be provided. If provided, the token will be delivered to user''s HIFI wallet on the destination chain.
 
             '
         externalWalletId:
@@ -346,90 +413,47 @@ components:
           description: 'Either `externalWalletId` or `destinationChain` must be provided.
 
             '
-      required:
-      - sourceCurrency
-      - destinationCurrency
-    InboundObject:
-      type: object
-      properties:
-        bankName:
-          type: string
-        senderName:
-          type: string
-        routingNumber:
-          type: string
-        accountNumber:
-          type: string
-        accountType:
-          type: string
-        fedBatchId:
-          type: string
-        imad:
-          type: string
-        omad:
-          type: string
-        traceNumber:
-          type: string
-        bankAddress:
-          type: string
-        description:
-          type: string
-        paymentRail:
-          type: string
-          enum:
-          - ach
-          - wire
-          - rtp
-    SimulateVirtualAccountDeposit:
-      type: object
-      title: Simulate Virtual Account Deposit
-      properties:
-        amount:
-          type: string
-          description: Amount to simulate deposit
-        paymentRail:
-          type: string
-          enum:
-          - WIRE
-          - ACH
-          description: Payment rail for the simulated deposit , recommended to use WIRE for faster settlement
-        requestId:
-          type: string
-          description: Unique identifier for the request (recommend using uuid v4)
-        source:
-          type: object
-          required:
-          - routingNumber
-          - accountNumber
-          - name
-          - bankName
-          properties:
-            routingNumber:
-              type: string
-              description: Routing number of the source bank account
-            accountNumber:
-              type: string
-              description: Account number of the source bank account
-            name:
-              type: string
-              description: Name on the source bank account
-            bankName:
-              type: string
-              description: Name of the source bank
-        userId:
-          type: string
-          description: Optional user ID to associate with this deposit
-        reference:
-          type: string
-          description: Optional reference for this deposit
-        description:
-          type: string
-          description: Optional description for this deposit
-      required:
-      - amount
-      - paymentRail
-      - requestId
-      - source
+        maxBps:
+          oneOf:
+          - type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 10000
+          - type: string
+            pattern: ^0*(?:[0-9]{1,4}|10000)$
+          description: 'Maximum USDT conversion fee, supplied as an integer or decimal-integer
+
+            string representing 0 through 10,000 basis points, allowed for automatic
+
+            onramps through this virtual account. Omit to preserve the current value;
+
+            use `null` to disable the threshold.
+
+            '
+      oneOf:
+      - title: Update conversion-fee threshold only
+        required:
+        - maxBps
+        not:
+          anyOf:
+          - required:
+            - sourceCurrency
+          - required:
+            - destinationCurrency
+          - required:
+            - destinationChain
+          - required:
+            - externalWalletId
+      - title: Update destination routing
+        required:
+        - sourceCurrency
+        - destinationCurrency
+        oneOf:
+        - required:
+          - destinationChain
+        - required:
+          - externalWalletId
     VirtualAccountObject:
       type: object
       properties:
@@ -470,6 +494,19 @@ components:
           enum:
           - activated
           - deactivated
+        maxBps:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+          maximum: 10000
+          description: 'Maximum USDT conversion fee, as a whole number of basis points from
+
+            0 through 10,000, allowed for automatic onramps through this virtual
+
+            account. `null` means disabled.
+
+            '
         microDeposits:
           type: object
           properties:
@@ -486,7 +523,9 @@ components:
                   currency:
                     type: string
                   amount:
-                    type: integer
+                    type: string
+                    description: Amount received, in dollars as a decimal string (for example `"0.71"`). Not cents.
+                    example: '0.71'
                   sourceBankInfo:
                     $ref: '#/components/schemas/InboundObject'
         depositInstructions:
@@ -536,203 +575,67 @@ components:
         settlementRuleId:
           type: string
           format: uuid
-    UpdateVirtualAccount:
+    SimulateVirtualAccountDeposit:
       type: object
-      title: Update Virtual Account
+      title: Simulate Virtual Account Deposit
       properties:
-        sourceCurrency:
+        amount:
+          type: string
+          description: Amount to simulate deposit
+        paymentRail:
           type: string
           enum:
-          - usd
-        destinationCurrency:
+          - WIRE
+          - ACH
+          - RTP
+          description: Payment rail for the simulated deposit , recommended to use WIRE for faster settlement
+        requestId:
           type: string
-          enum:
-          - usdc
-          - usdt
-          description: 'usdt is only supported on ethereum
-
-            '
-        destinationChain:
-          type: string
-          enum:
-          - POLYGON
-          - ETHEREUM
-          - SOLANA
-          - BASE
-          description: 'Either `externalWalletId` or `destinationChain` must be provided.
-
-            '
-        externalWalletId:
-          type: string
-          description: 'Either `externalWalletId` or `destinationChain` must be provided.
-
-            '
-      required:
-      - sourceCurrency
-      - destinationCurrency
-  parameters:
-    VACreatedBeforeParameter:
-      name: createdBefore
-      in: query
-      schema:
-        type: string
-      description: Return the micro deposit records that created before this eventId
-      required: false
-    VADestinationChainParameter:
-      name: destinationChain
-      in: query
-      schema:
-        type: string
-        enum:
-        - POLYGON
-      description: Destination chain
-      required: false
-    VACreatedAfterParameter:
-      name: createdAfter
-      in: query
-      schema:
-        type: string
-      description: Return the micro deposit records that created after this eventId
-      required: false
-    VirtualAccountIdPathParameter:
-      name: accountId
-      in: path
-      schema:
-        type: string
-      description: ID of the virtual account
-      required: true
-    VADestinationCurrencyParameter:
-      name: destinationCurrency
-      in: query
-      schema:
-        type: string
-        enum:
-        - usdc
-        - usdt
-      description: Destination currency
-      required: false
-    LimitParameter:
-      name: limit
-      in: query
-      schema:
-        type: string
-        minimum: 1
-        maximum: 100
-      description: default to 10, maximum to 100
-      required: false
-    VASourceCurrencyParameter:
-      name: sourceCurrency
-      in: query
-      schema:
-        type: string
-        enum:
-        - usd
-      description: Source currency
-      required: false
-    UserIdPathParameter:
-      name: userId
-      in: path
-      schema:
-        type: string
-      description: ID of the user
-      required: true
-    VALimitParameter:
-      name: limit
-      in: query
-      schema:
-        type: string
-        minimum: 1
-        maximum: 100
-      description: Number of micro deposit records return for the virtual account, default to 10 maximum to 100
-      required: false
-    CreatedBeforeParameter:
-      name: createdBefore
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
-    CreatedAfterParameter:
-      name: createdAfter
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
-  requestBodies:
-    SimulateVirtualAccountDepositBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SimulateVirtualAccountDeposit'
-    UpdateVirtualAccountBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UpdateVirtualAccount'
-    CreateVirtualAccountBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateVirtualAccount'
-  examples:
-    VirtualAccountObjectDeactivateExample:
-      summary: Virtual Account Object (Deactivation)
-      value:
-        message: Virtual account deactivated
-        accountInfo:
-          id: cfbc005d-8640-57a4-89e1-539c974fa780
-          createdAt: '2025-09-27T03:08:11.548Z'
-          updatedAt: '2025-09-27T03:08:11.548Z'
-          userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
-          source:
-            paymentRail:
-            - ach
-            - wire
-            - rtp
-            currency: usd
-          destination:
-            chain: POLYGON
-            currency: usdc
-            walletAddress: '0xd102C4130985B7fcB95697616eaf5542c4f98d49'
-            externalWalletId: null
-          status: deactivated
-          depositInstructions:
-            bankName: Bank of NoWhere
-            bankAddress: 123 Main St, New York, NY 10001, USA
-            beneficiary:
-              name: Henry Wu
-              address: Example St 1., Apt 123, New York, NY, 10010, US
-            ach:
-              routingNumber: 028000024
-              accountNumber: '123456789'
-            wire:
-              routingNumber: '021000021'
-              accountNumber: '123456789'
-            rtp:
-              routingNumber: '021000021'
-              accountNumber: '123456789'
-            instruction: Please deposit usd to the bank account provided. Please ensure that the beneficiary name matches the account holder name provided, or the payment may be rejected.
-          settlementRuleId: null
-    VirtualAccountDepositSimulationObjectExample:
-      summary: Virtual Account Deposit Simulation Object
-      value:
-        amount: '88.8'
-        paymentRail: WIRE
-        requestId: 550e8400-e29b-41d4-a716-446655440000
+          description: Unique identifier for the request (recommend using uuid v4)
         source:
-          routingNumber: '021000021'
-          accountNumber: '123456789'
-          name: Henry Wu
-          bankName: Bank of NoWhere
-        userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
-        reference: Test deposit
-        description: Simulated test deposit
+          type: object
+          required:
+          - routingNumber
+          - accountNumber
+          - name
+          - bankName
+          properties:
+            routingNumber:
+              type: string
+              description: Routing number of the source bank account
+            accountNumber:
+              type: string
+              description: Account number of the source bank account
+            name:
+              type: string
+              description: Name on the source bank account
+            bankName:
+              type: string
+              description: Name of the source bank
+        userId:
+          type: string
+          description: Optional user ID to associate with this deposit
+        reference:
+          type: string
+          description: Optional reference for this deposit
+        description:
+          type: string
+          description: Optional description for this deposit
+        sandboxScenario:
+          $ref: '#/components/schemas/OnrampSandboxScenario'
+      required:
+      - amount
+      - paymentRail
+      - requestId
+      - source
+    ReactivateVirtualAccountObject:
+      type: object
+      properties:
+        message:
+          type: string
+        accountInfo:
+          $ref: '#/components/schemas/VirtualAccountObject'
+  examples:
     VirtualAccountObjectListExample:
       summary: Virtual Account Object List
       value:
@@ -846,6 +749,259 @@ components:
               accountNumber: '123456789'
             instruction: Please deposit usd to the bank account provided. Please ensure that the beneficiary name matches the account holder name provided, or the payment may be rejected.
           settlementRuleId: null
+    VirtualAccountDepositSimulationObjectExample:
+      summary: Virtual Account Deposit Simulation Object
+      value:
+        amount: '88.8'
+        paymentRail: WIRE
+        requestId: 550e8400-e29b-41d4-a716-446655440000
+        source:
+          routingNumber: '021000021'
+          accountNumber: '123456789'
+          name: Henry Wu
+          bankName: Bank of NoWhere
+        userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
+        reference: Test deposit
+        description: Simulated test deposit
+    VirtualAccountObjectDeactivateExample:
+      summary: Virtual Account Object (Deactivation)
+      value:
+        message: Virtual account deactivated
+        accountInfo:
+          id: cfbc005d-8640-57a4-89e1-539c974fa780
+          createdAt: '2025-09-27T03:08:11.548Z'
+          updatedAt: '2025-09-27T03:08:11.548Z'
+          userId: 840c28f2-ea7d-5c3a-9271-b10fd8b6ae6d
+          source:
+            paymentRail:
+            - ach
+            - wire
+            - rtp
+            currency: usd
+          destination:
+            chain: POLYGON
+            currency: usdc
+            walletAddress: '0xd102C4130985B7fcB95697616eaf5542c4f98d49'
+            externalWalletId: null
+          status: deactivated
+          depositInstructions:
+            bankName: Bank of NoWhere
+            bankAddress: 123 Main St, New York, NY 10001, USA
+            beneficiary:
+              name: Henry Wu
+              address: Example St 1., Apt 123, New York, NY, 10010, US
+            ach:
+              routingNumber: 028000024
+              accountNumber: '123456789'
+            wire:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            rtp:
+              routingNumber: '021000021'
+              accountNumber: '123456789'
+            instruction: Please deposit usd to the bank account provided. Please ensure that the beneficiary name matches the account holder name provided, or the payment may be rejected.
+          settlementRuleId: null
+  parameters:
+    VASourceCurrencyParameter:
+      name: sourceCurrency
+      in: query
+      schema:
+        type: string
+        enum:
+        - usd
+      description: Source currency
+      required: false
+    CreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    VADestinationCurrencyParameter:
+      name: destinationCurrency
+      in: query
+      schema:
+        type: string
+        enum:
+        - usdc
+        - usdt
+      description: Destination currency
+      required: false
+    UserIdPathParameter:
+      name: userId
+      in: path
+      schema:
+        type: string
+      description: ID of the user
+      required: true
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    VACreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+      description: Return the micro deposit records that created before this eventId
+      required: false
+    VADestinationChainParameter:
+      name: destinationChain
+      in: query
+      schema:
+        type: string
+        enum:
+        - POLYGON
+      description: Destination chain
+      required: false
+    VirtualAccountIdPathParameter:
+      name: accountId
+      in: path
+      schema:
+        type: string
+      description: ID of the virtual account
+      required: true
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+    VACreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+      description: Return the micro deposit records that created after this eventId
+      required: false
+    VALimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: Number of micro deposit records return for the virtual account, default to 10 maximum to 100
+      required: false
+  requestBodies:
+    UpdateVirtualAccountBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateVirtualAccount'
+    CreateVirtualAccountBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateVirtualAccount'
+    SimulateVirtualAccountDepositBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimulateVirtualAccountDeposit'
+  responses:
+    SimulateVirtualAccountDepositResponse:
+      description: Successfully triggered sandbox deposit
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimulateVirtualAccountDeposit'
+          examples:
+            VirtualAccountDepositSimulationObjectExample:
+              $ref: '#/components/examples/VirtualAccountDepositSimulationObjectExample'
+    GetAllVirtualAccountsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VirtualAccountListObject'
+          examples:
+            VirtualAccountObjectListExample:
+              $ref: '#/components/examples/VirtualAccountObjectListExample'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    CreateVirtualAccountResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateVirtualAccountObject'
+          examples:
+            VirtualAccountObjectCreationExample:
+              $ref: '#/components/examples/VirtualAccountObjectCreationExample'
+    ReactivateVirtualAccountResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReactivateVirtualAccountObject'
+          examples:
+            VirtualAccountObjectCreationExample:
+              $ref: '#/components/examples/VirtualAccountObjectCreationExample'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    DeactivateVirtualAccountResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeactivateVirtualAccountObject'
+          examples:
+            VirtualAccountObjectDeactivateExample:
+              $ref: '#/components/examples/VirtualAccountObjectDeactivateExample'
+    GetVirtualAccountResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VirtualAccountObject'
+          examples:
+            VirtualAccountObjectExample:
+              $ref: '#/components/examples/VirtualAccountObjectExample'
+    UpdateVirtualAccountResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateVirtualAccountObject'
   securitySchemes:
     bearerAuth:
       type: http

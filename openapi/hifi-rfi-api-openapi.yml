@@ -1,0 +1,569 @@
+openapi: 3.2.0
+info:
+  title: Hifi RFI API
+  version: 2.0.0
+  description: API documentation for HIFI
+servers:
+- url: https://production.hifibridge.com
+  description: Production server
+- url: https://sandbox.hifibridge.com
+  description: Sandbox server
+security:
+- bearerAuth: []
+tags:
+- name: RFI
+  description: Request for information (RFI) endpoints
+paths:
+  /v2/rfis:
+    get:
+      summary: List RFIs
+      description: 'List the requests for information (RFIs) compliance has raised against your users. An RFI is raised either during onboarding, against the user''s KYC/KYB, or against a single transfer, which stays held until the request is resolved.
+
+
+        If you would rather collect the reply programmatically, submit it through the Submit an RFI response endpoint instead.
+
+
+        Pass `transferId` to find the request holding a specific onramp or offramp, for example after an `ONRAMP.RFI.OPEN` or `OFFRAMP.RFI.OPEN` webhook.
+
+
+        The open onboarding RFI for a single user is also returned on the Retrieve KYC status endpoint.'
+      tags:
+      - RFI
+      parameters:
+      - $ref: '#/components/parameters/RfiStatusQueryParameter'
+      - $ref: '#/components/parameters/RfiKindQueryParameter'
+      - $ref: '#/components/parameters/RfiUserIdQueryParameter'
+      - $ref: '#/components/parameters/RfiTransferIdQueryParameter'
+      - $ref: '#/components/parameters/RfiLimitParameter'
+      - $ref: '#/components/parameters/RfiOffsetParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/ListRfisResponse'
+        '400':
+          $ref: '#/components/responses/RfiBadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '500':
+          $ref: '#/components/responses/RfiInternalServerErrorResponse'
+      operationId: getV2Rfis
+      x-operation-id-source: derived
+  /v2/rfis/{rfiId}/submissions:
+    post:
+      summary: Submit an RFI response
+      description: Answer the current round of a request for information. Each entry in `items` replies to one request item by its `requestItemId` with exactly one of `fileId` or `answerText`, and any file must be uploaded through the files endpoint first. Every item marked `required` must be answered, and a round accepts only one submission.
+      tags:
+      - RFI
+      parameters:
+      - $ref: '#/components/parameters/RfiIdPathParameter'
+      requestBody:
+        $ref: '#/components/requestBodies/SubmitRfiBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/SubmitRfiResponse'
+        '400':
+          $ref: '#/components/responses/RfiBadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/RfiNotFoundResponse'
+        '409':
+          $ref: '#/components/responses/RfiConflictResponse'
+        '422':
+          $ref: '#/components/responses/RfiNotEligibleResponse'
+        '500':
+          $ref: '#/components/responses/RfiInternalServerErrorResponse'
+      operationId: postV2RfisByRfiIdSubmissions
+      x-operation-id-source: derived
+components:
+  schemas:
+    RfiRoundObject:
+      type: object
+      description: The current attempt at the request. Each time compliance asks again a new round is opened with its own items and deadline, and earlier rounds are retained but not returned here.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Round ID.
+          example: b81d4f2c-6e35-4a90-9f27-0c3e5a71d8b6
+        round:
+          type: integer
+          description: Attempt number, starting at 1.
+          example: 1
+        issuedAt:
+          type: string
+          format: date-time
+          description: When this round was issued and emailed to your compliance contact.
+          example: '2026-07-01T10:30:00.000Z'
+        expiresAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Deadline for replying. A submission after this time is rejected.
+          example: '2026-07-31T10:30:00.000Z'
+        submittedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: When this round was answered. Null while it is still awaiting a reply.
+          example: null
+        items:
+          type: array
+          description: What this round asks for, in the order it should be presented.
+          items:
+            $ref: '#/components/schemas/RfiRequestItemObject'
+        link:
+          type:
+          - string
+          - 'null'
+          description: Hosted page where you can answer the request without calling this API. The same link is emailed to your compliance contact when the request is issued. Null once the link can no longer be used, which is after a submission, after compliance asks again, or once the request is closed.
+          example: https://dashboard.hifi.com/production/rfi-link/rfir_2mNpXwZ7bV1aLcs3Kf9dQ#sessionToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+    RfiStatus:
+      type: string
+      description: Where the request is in its lifecycle. `issued` is waiting on a reply, `submitted` has been answered and is under review, `resolved` has been decided, and `expired` passed its deadline unanswered.
+      enum:
+      - issued
+      - submitted
+      - resolved
+      - expired
+      example: issued
+    RfiSubmissionBody:
+      type: object
+      description: The replies making up one submission.
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 200
+          description: One entry per reply.
+          items:
+            $ref: '#/components/schemas/RfiSubmissionItem'
+    RfiSubmissionItem:
+      type: object
+      description: One reply to one request item. Exactly one of `fileId` and `answerText` must be provided.
+      required:
+      - requestItemId
+      properties:
+        requestItemId:
+          type: string
+          format: uuid
+          description: The `id` of the request item being answered.
+          example: 3f7c1e90-2a4b-4d61-9c0e-5b8f2d6a1e34
+        fileId:
+          type:
+          - string
+          - 'null'
+          description: ID of a file previously uploaded through the files API (prefixed with `file_`). Only valid against a `document` request item, and only for a file uploaded under the same client.
+          example: file_7bV1aLcs3Kf9dQ2mNpXwZ
+        answerText:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          maxLength: 10000
+          description: Written reply. Required for a `question` request item, and accepted for a `document` request item as an explanation in place of the file.
+          example: The property is leased by the user's employer; the attached letter confirms the address.
+    RfiRequestItemObject:
+      type: object
+      description: A single thing being asked for. One item may be answered by several entries in a submission, which is how three bank statements answer one request.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Request item ID. Quote it as `requestItemId` when submitting a reply.
+          example: 3f7c1e90-2a4b-4d61-9c0e-5b8f2d6a1e34
+        kind:
+          type: string
+          description: '`document` expects a file, or written text explaining why the file cannot be provided. `question` expects written text only.'
+          enum:
+          - document
+          - question
+          example: document
+        label:
+          type: string
+          description: What is being asked for, in the reviewer's own words.
+          example: Proof of address issued in the last 3 months
+        docType:
+          type:
+          - string
+          - 'null'
+          description: Hint for the kind of document expected. Null when the request does not correspond to a standard document type. Not a closed set, so treat an unrecognised value as an untyped document request. Values currently in use are `proof_of_address`, `source_of_funds`, `bank_statement`, `government_id`, `selfie`, `incorporation_docs`, `ownership_structure`, `invoice` and `contract`.
+          example: proof_of_address
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Additional guidance for this item.
+          example: A utility bill or bank statement dated within the last three months.
+        required:
+          type: boolean
+          description: Whether this item must be answered for the submission to be accepted.
+          example: true
+    RfiSubmissionResult:
+      type: object
+      description: Confirmation that a submission was recorded.
+      properties:
+        rfiId:
+          type: string
+          format: uuid
+          description: ID of the request that was answered.
+          example: 7c9e1a34-5b02-4d68-91af-3e6d2b8c4075
+        roundId:
+          type: string
+          format: uuid
+          description: ID of the round that was answered.
+          example: b81d4f2c-6e35-4a90-9f27-0c3e5a71d8b6
+        round:
+          type: integer
+          description: Attempt number that was answered.
+          example: 1
+        status:
+          type: string
+          description: Status of the request after the submission.
+          enum:
+          - submitted
+          example: submitted
+        submittedAt:
+          type: string
+          format: date-time
+          description: When the submission was recorded.
+          example: '2026-07-03T09:12:44.000Z'
+        responseCount:
+          type: integer
+          description: Number of replies recorded, which may exceed the number of request items answered.
+          example: 5
+    RfiListObject:
+      type: object
+      description: Paginated list of requests for information, newest first.
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RfiObject'
+        pagination:
+          $ref: '#/components/schemas/RfiPagination'
+    Unauthorized:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    RfiPagination:
+      type: object
+      description: Offset-based pagination.
+      properties:
+        limit:
+          type: integer
+          description: Page size used for this response.
+          example: 20
+        offset:
+          type: integer
+          description: Number of records skipped.
+          example: 0
+        total:
+          type: integer
+          description: Total number of records matching the filters.
+          example: 3
+      required:
+      - limit
+      - offset
+      - total
+    RfiKind:
+      type: string
+      description: What the request is attached to. `onboarding` asks about the user's own KYC/KYB; `transaction` asks about a single transfer, which stays held until the request is resolved.
+      enum:
+      - onboarding
+      - transaction
+      example: onboarding
+    RfiError:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Machine-readable error type.
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message.
+          example: One or more fields are invalid or missing.
+        fields:
+          type: array
+          description: Present on field-level validation errors. One entry per problem field.
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                description: Error code related to the field issue.
+              message:
+                type: string
+                description: Error message for the specific issue.
+              field:
+                type: string
+                description: The name of the field that has an issue.
+    RfiObject:
+      type: object
+      description: A request for information raised by compliance against a user or one of their transfers.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Request ID.
+          example: 7c9e1a34-5b02-4d68-91af-3e6d2b8c4075
+        kind:
+          $ref: '#/components/schemas/RfiKind'
+        status:
+          $ref: '#/components/schemas/RfiStatus'
+        subjectType:
+          type: string
+          description: Whether the user the request concerns is an individual or a business.
+          enum:
+          - individual
+          - business
+          example: individual
+        userId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: ID of the user the request concerns.
+          example: 2d5b7e18-9c40-4a63-b8f1-7e0a4c9d2536
+        transferId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: ID of the held transfer, on a `transaction` request. Null on an `onboarding` request.
+          example: null
+        flowType:
+          type:
+          - string
+          - 'null'
+          description: Which transfer `transferId` refers to. Null on an `onboarding` request.
+          enum:
+          - onramp
+          - offramp
+          example: null
+        createdAt:
+          type: string
+          format: date-time
+          description: When the request was raised.
+          example: '2026-07-01T10:30:00.000Z'
+        currentRound:
+          type:
+          - integer
+          - 'null'
+          description: Attempt number of the round in `round`.
+          example: 1
+        round:
+          allOf:
+          - $ref: '#/components/schemas/RfiRoundObject'
+          description: The current round. Null if the request has no round open.
+  parameters:
+    RfiOffsetParameter:
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Number of requests to skip.
+    RfiIdPathParameter:
+      name: rfiId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: ID of the request for information.
+      example: 7c9e1a34-5b02-4d68-91af-3e6d2b8c4075
+    RfiLimitParameter:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      description: Number of requests to return.
+    RfiUserIdQueryParameter:
+      name: userId
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: ID of the user whose requests are listed.
+      example: 2d5b7e18-9c40-4a63-b8f1-7e0a4c9d2536
+    RfiStatusQueryParameter:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - issued
+        - submitted
+        - resolved
+        - expired
+      description: Filter requests by status.
+    RfiTransferIdQueryParameter:
+      name: transferId
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: ID of the onramp or offramp the request is held against.
+      example: 9b1e4c72-3a58-4f06-8d2b-6c0e7a1f5d43
+    RfiKindQueryParameter:
+      name: kind
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - onboarding
+        - transaction
+      description: Filter requests by what they are attached to.
+  responses:
+    SubmitRfiResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RfiSubmissionResult'
+          example:
+            rfiId: 7c9e1a34-5b02-4d68-91af-3e6d2b8c4075
+            roundId: b81d4f2c-6e35-4a90-9f27-0c3e5a71d8b6
+            round: 1
+            status: submitted
+            submittedAt: '2026-07-03T09:12:44.000Z'
+            responseCount: 3
+    RfiConflictResponse:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RfiError'
+          example:
+            type: RESOURCE_CONFLICT
+            message: This request has already been answered
+    RfiBadRequestResponse:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RfiError'
+          example:
+            type: VALIDATION_ERROR
+            message: A question request item is answered with answerText
+            fields:
+            - code: conditional_required
+              message: A question request item is answered with answerText
+              field: items[1].answerText
+    RfiInternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RfiError'
+          example:
+            type: INTERNAL_SERVER_ERROR
+            message: An internal error occurred
+    ListRfisResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RfiListObject'
+          example:
+            data:
+            - id: 7c9e1a34-5b02-4d68-91af-3e6d2b8c4075
+              kind: onboarding
+              status: issued
+              subjectType: individual
+              userId: 2d5b7e18-9c40-4a63-b8f1-7e0a4c9d2536
+              transferId: null
+              flowType: null
+              createdAt: '2026-07-01T10:30:00.000Z'
+              currentRound: 1
+              round:
+                id: b81d4f2c-6e35-4a90-9f27-0c3e5a71d8b6
+                round: 1
+                issuedAt: '2026-07-01T10:30:00.000Z'
+                expiresAt: '2026-07-31T10:30:00.000Z'
+                submittedAt: null
+                items:
+                - id: 3f7c1e90-2a4b-4d61-9c0e-5b8f2d6a1e34
+                  kind: document
+                  label: Proof of address issued in the last 3 months
+                  docType: proof_of_address
+                  detail: A utility bill or bank statement dated within the last three months.
+                  required: true
+                - id: 6b2d4a81-7c05-4e39-8f1a-2d9c3e7b5041
+                  kind: question
+                  label: What is the source of the funds being deposited?
+                  docType: null
+                  detail: null
+                  required: true
+                link: https://dashboard.hifi.com/production/rfi-link/rfir_2mNpXwZ7bV1aLcs3Kf9dQ#sessionToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+            pagination:
+              limit: 20
+              offset: 0
+              total: 1
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    RfiNotEligibleResponse:
+      description: Unprocessable Entity
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RfiError'
+          example:
+            type: RESOURCE_NOT_USABLE
+            message: The deadline for this request has passed
+    RfiNotFoundResponse:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RfiError'
+          example:
+            type: RESOURCE_NOT_FOUND
+            message: RFI not found
+  requestBodies:
+    SubmitRfiBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RfiSubmissionBody'
+          example:
+            items:
+            - requestItemId: 3f7c1e90-2a4b-4d61-9c0e-5b8f2d6a1e34
+              fileId: file_7bV1aLcs3Kf9dQ2mNpXwZ
+            - requestItemId: 3f7c1e90-2a4b-4d61-9c0e-5b8f2d6a1e34
+              fileId: file_9aB0xY4mNpXwZ7bV1aLdt
+            - requestItemId: 6b2d4a81-7c05-4e39-8f1a-2d9c3e7b5041
+              answerText: Salary from the user's employer, with payslips attached.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

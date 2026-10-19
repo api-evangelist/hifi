@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   title: Hifi Offramp API
   version: 2.0.0
-  description: API documentation for Hifi
+  description: API documentation for HIFI
 servers:
 - url: https://production.hifibridge.com
   description: Production server
@@ -106,6 +106,27 @@ paths:
           $ref: '#/components/responses/InternalServerErrorResponse'
       operationId: postV2OfframpsByTransferIdQuoteAccept
       x-operation-id-source: derived
+  /v2/offramps/{transferId}/cancel:
+    post:
+      summary: Cancel an offramp
+      description: Cancel an offramp that is in review. Only offramps with status `IN_REVIEW` can be cancelled.
+      tags:
+      - Offramp
+      parameters:
+      - $ref: '#/components/parameters/OfframpRecordIDPathParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/CancelOfframpResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      operationId: postV2OfframpsByTransferIdCancel
+      x-operation-id-source: derived
   /v2/offramps/rates:
     get:
       summary: Retrieve an offramp rate
@@ -128,6 +149,373 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    CreateHongKongGlobalNetworkOfframp:
+      type: object
+      title: Offramp Global Network (HKD)
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - invoice_payments
+          - payment_for_services
+          - payment_for_software
+          - payment_for_imported_goods
+          - travel_services
+          - transfer_to_own_account
+          - repayment_of_loans
+          - payroll
+          - payment_of_property_rental
+          - information_service_charges
+          - advertising_and_public_relations
+          - royalty_and_ip_fees
+          - financial_service_fees
+          - advisory_and_consulting_fees
+          - representative_office_expenses
+          - tax_payment
+          - transportation_fees
+          - construction_costs
+          - insurance_premium
+          - offline_goods_trade
+          - insurance_claims
+          - remittance_to_family_or_friends
+          - education_expenses
+          - medical_treatment
+          - donations
+          - mutual_fund_investment
+          - currency_exchange
+          - advance_payment_for_goods
+          - merchant_settlement
+          - repatriation_fund_settlement
+        description:
+          type: string
+        source:
+          type: object
+          description: offramp source
+          $ref: '#/components/schemas/OfframpSource'
+        destination:
+          type: object
+          description: offramp destination
+          $ref: '#/components/schemas/HongKongOfframpDestination'
+        developerFee:
+          description: custom offramp fees, omit if no fees are charged
+          allOf:
+          - $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
+        sandboxScenario:
+          $ref: '#/components/schemas/SandboxScenario'
+      required:
+      - requestId
+      - source
+      - destination
+    DeveloperFee:
+      type: object
+      properties:
+        fees:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum:
+                - PERCENTAGE
+                - FLAT
+              value:
+                type: string
+                description: 'Fee amount as a string. For PERCENTAGE type, "0.0005" represents 0.05%.
+
+                  For FLAT type, represents absolute amount.
+
+                  For PERCENTAGE type, the value must be between 0 and 1 with max 4 decimal places.
+
+                  '
+              walletAddress:
+                type: string
+                description: Wallet address to receive the fee
+            required:
+            - type
+            - value
+            - walletAddress
+      required:
+      - fees
+    NigeriaOfframpDestination:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: amount of fiat currency to receive
+          exclusiveMinimum: 0
+        currency:
+          type: string
+          enum:
+          - ngn
+          description: fiat currency
+        accountId:
+          type: string
+          format: uuid
+          description: account that is receiving the fiat currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is receiving the fiat
+        paymentReference:
+          type: string
+          description: 'a reference message to include when offramping.
+
+            '
+      required:
+      - currency
+      - accountId
+    OfframpAllRecordsObject:
+      type: object
+      properties:
+        count:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfframpRecordObject'
+        nextCursor:
+          type: string
+          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
+    SandboxScenario:
+      type: string
+      enum:
+      - FIAT_FAILED
+      - CRYPTO_FAILED
+      - COMPLETED
+      description: 'Sandbox-only field that forces this offramp to a predetermined outcome
+
+        '
+    BrlOfframpDestination:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: amount of fiat currency to receive
+          exclusiveMinimum: 0
+        currency:
+          type: string
+          enum:
+          - brl
+          description: fiat currency
+        accountId:
+          type: string
+          format: uuid
+          description: account that is receiving the fiat currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is receiving the fiat
+        paymentReference:
+          type: string
+          description: 'a reference message to include when offramping.
+
+            '
+      required:
+      - userId
+      - currency
+      - accountId
+    OfframpDepositInstructionsList:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uuid
+          fromAddress:
+            type: string
+          toAddress:
+            type: string
+          currency:
+            type: string
+          contractAddress:
+            type: string
+          rawAmount:
+            type: string
+          amount:
+            type: number
+          chain:
+            type: string
+          collected:
+            type: boolean
+          collectable:
+            type: boolean
+          expiresAt:
+            type: string
+            format: date-time
+          transactionHash:
+            type:
+            - string
+            - 'null'
+    UsdOfframpDestination:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: amount of fiat currency to receive
+          exclusiveMinimum: 0
+        currency:
+          type: string
+          enum:
+          - usd
+          description: fiat currency
+        accountId:
+          type: string
+          format: uuid
+          description: account that is receiving the fiat currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is receiving the fiat
+        sameDayAch:
+          type: boolean
+          default: false
+          description: same day ACH processing
+        achReference:
+          type: string
+          description: 'a reference message to include when offramping through ACH transfer.
+
+
+            it can be at most 10 characters, A-Z, a-z, 0-9, and spaces. Note that as of `2024-08-06`, setting this field is only supported for certain developers while we work on rolling out general support for everyone.
+
+            '
+        wireMessage:
+          type: string
+          description: 'a message to include when offramping through WIRE transfer.
+
+
+            it can be at most 4 lines, each with a max length of 35 char according to the Fedwire standard.
+
+            '
+        swiftReference:
+          type: string
+          description: 'A reference message to include when offramping through SWIFT transfer that is mainly use to indicate the purpose of payment.
+
+
+            it can be at most 12 characters.
+
+            '
+      required:
+      - currency
+      - accountId
+    SupportingInformationDocument:
+      type: object
+      description: A supporting document for the offramp (e.g. invoice, contract).
+      properties:
+        fileId:
+          type: string
+          format: uuid
+          description: Public file ID of an uploaded file.
+        type:
+          type: string
+          enum:
+          - INVOICE
+          - CONTRACT
+          - AGREEMENT
+          - PURCHASE_ORDER
+          - OTHER
+          description: Type of supporting document.
+        description:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Optional description of the document.
+      required:
+      - fileId
+      - type
+    CreateBrazilGlobalNetworkOfframp:
+      type: object
+      title: Offramp Global Network (BRL)
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - invoice_payments
+          - payment_for_services
+          - payment_for_software
+          - payment_for_imported_goods
+          - travel_services
+          - transfer_to_own_account
+          - repayment_of_loans
+          - payroll
+          - payment_of_property_rental
+          - information_service_charges
+          - advertising_and_public_relations
+          - royalty_and_ip_fees
+          - financial_service_fees
+          - advisory_and_consulting_fees
+          - representative_office_expenses
+          - tax_payment
+          - transportation_fees
+          - construction_costs
+          - insurance_premium
+          - offline_goods_trade
+          - insurance_claims
+          - remittance_to_family_or_friends
+          - education_expenses
+          - medical_treatment
+          - donations
+          - mutual_fund_investment
+          - currency_exchange
+          - advance_payment_for_goods
+          - merchant_settlement
+          - repatriation_fund_settlement
+        description:
+          type: string
+        source:
+          type: object
+          description: offramp source
+          $ref: '#/components/schemas/OfframpSource'
+        destination:
+          type: object
+          description: offramp destination
+          $ref: '#/components/schemas/BrlOfframpDestination'
+        developerFee:
+          description: custom offramp fees, omit if no fees are charged
+          allOf:
+          - $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
+        sandboxScenario:
+          $ref: '#/components/schemas/SandboxScenario'
+      required:
+      - requestId
+      - source
+      - destination
     CreateMexicoGlobalNetworkOfframp:
       type: object
       title: Offramp Global Network (MXN)
@@ -178,17 +566,698 @@ components:
           type: object
           description: offramp destination
           $ref: '#/components/schemas/MxnOfframpDestination'
-        fee:
-          type:
-          - object
-          - 'null'
-          description: custom offramp fee, omit if no fee is charged
+        developerFee:
+          description: custom offramp fees, omit if no fees are charged
           allOf:
-          - $ref: '#/components/schemas/OfframpFee'
+          - $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
+        sandboxScenario:
+          $ref: '#/components/schemas/SandboxScenario'
       required:
       - requestId
       - source
       - destination
+    SupportingInformation:
+      type: object
+      description: 'Optional supporting information for the offramp. May include detailed purpose of payment,
+
+        beneficiary details, and supporting documents. When provided, documents must reference
+
+        files previously uploaded via the file upload API.
+
+        '
+      properties:
+        detailedPurposeOfPayment:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Detailed description of the purpose of the payment.
+        beneficiaryDetails:
+          $ref: '#/components/schemas/SupportingInformationBeneficiaryDetails'
+        documents:
+          type: array
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/SupportingInformationDocument'
+          description: Supporting documents (e.g. invoice, contract). Each document must reference an uploaded file by fileId.
+    CreateUsdOfframp:
+      type: object
+      title: Offramp (USD)
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - gift
+          - bills
+          - groceries
+          - travel
+          - health
+          - entertainment
+          - housing
+          - school-fees
+          - other
+          description: 'Refer to [here](https://docs.hifi.com/transactions/offramps#purpose-of-payment-code) for more details on the purpose of payment code to provide.
+
+            '
+        supportingDocumentType:
+          type: string
+          enum:
+          - billing_document
+          - order_document
+          - shipment_document
+          - regulatory_document
+          - transport_document
+          - other_document
+          description: 'The type of supporting document, required for swift payment.
+
+            '
+        supportingDocumentUrl:
+          type: string
+          description: 'The URL of the supporting document, required for swift payment.
+
+            '
+        description:
+          type: string
+        source:
+          type: object
+          description: offramp source
+          $ref: '#/components/schemas/OfframpSource'
+        destination:
+          type: object
+          description: offramp destination
+          $ref: '#/components/schemas/UsdOfframpDestination'
+        developerFee:
+          type:
+          - object
+          - 'null'
+          description: custom offramp developer fee, omit if no developer fee is charged
+          $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
+        sandboxScenario:
+          $ref: '#/components/schemas/SandboxScenario'
+      required:
+      - requestId
+      - source
+      - destination
+    CreateCopOfframp:
+      type: object
+      title: Offramp (COP)
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - gift
+          - bills
+          - groceries
+          - travel
+          - health
+          - entertainment
+          - housing
+          - school-fees
+          - other
+        description:
+          type: string
+        source:
+          type: object
+          description: offramp source
+          $ref: '#/components/schemas/OfframpSource'
+        destination:
+          type: object
+          description: offramp destination
+          $ref: '#/components/schemas/CopOfframpDestination'
+        developerFee:
+          description: custom offramp fees, omit if no fees are charged
+          allOf:
+          - $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
+      required:
+      - requestId
+      - source
+      - destination
+    CopOfframpDestination:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: amount of fiat currency to receive
+          exclusiveMinimum: 0
+        currency:
+          type: string
+          enum:
+          - cop
+          description: fiat currency
+        accountId:
+          type: string
+          format: uuid
+          description: account that is receiving the fiat currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is receiving the fiat
+      required:
+      - currency
+      - accountId
+    MxnOfframpDestination:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: amount of fiat currency to receive
+          exclusiveMinimum: 0
+        currency:
+          type: string
+          enum:
+          - mxn
+          description: fiat currency
+        accountId:
+          type: string
+          format: uuid
+          description: account that is receiving the fiat currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is receiving the fiat
+        paymentReference:
+          type: string
+          description: 'a reference message to include when offramping.
+
+            '
+      required:
+      - currency
+      - accountId
+    ArsOfframpDestination:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: amount of fiat currency to receive
+          exclusiveMinimum: 0
+        currency:
+          type: string
+          enum:
+          - ars
+          description: fiat currency
+        accountId:
+          type: string
+          format: uuid
+          description: account that is receiving the fiat currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is receiving the fiat
+      required:
+      - currency
+      - accountId
+    HongKongOfframpDestination:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: amount of fiat currency to receive
+          exclusiveMinimum: 0
+        currency:
+          type: string
+          enum:
+          - hkd
+          - usd
+          description: fiat currency
+        accountId:
+          type: string
+          format: uuid
+          description: account that is receiving the fiat currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is receiving the fiat
+        paymentReference:
+          type: string
+          description: 'a reference message to include when offramping.
+
+            '
+      required:
+      - currency
+      - accountId
+    OfframpDestination:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: amount of fiat currency to receive
+          exclusiveMinimum: 0
+        currency:
+          type: string
+          enum:
+          - usd
+          - eur
+          - brl
+          - hkd
+          - mxn
+          - cop
+          - ars
+          - ngn
+          - ugx
+          - kes
+          - zmw
+          - mwk
+          - rwf
+          - tzs
+          - xaf
+          - xof
+          - bwp
+          - xaf
+          - cdf
+          - ghs
+          - zar
+          - inr
+          description: fiat currency
+        accountId:
+          type: string
+          format: uuid
+          description: account that is receiving the fiat currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is receiving the fiat
+        sameDayAch:
+          type: boolean
+          default: false
+          description: same day ACH processing
+        achReference:
+          type: string
+          description: 'a reference message to include when offramping through ACH transfer.
+
+
+            it can be at most 10 characters, A-Z, a-z, 0-9, and spaces. Note that as of `2024-08-06`, setting this field is only supported for certain developers while we work on rolling out general support for everyone.
+
+            '
+        sepaReference:
+          type: string
+          description: 'a reference message to include when offramping through SEPA transfer.
+
+
+            it must be between 6 to 140 characters. The allowed characters are a-z, A-Z, 0-9, spaces, ampersand (&), hyphen (-), full stop (.), and solidus (/).
+
+            '
+        wireMessage:
+          type: string
+          description: 'a message to include when offramping through WIRE transfer.
+
+
+            it can be at most 4 lines, each with a max length of 35 char according to the Fedwire standard.
+
+            '
+        paymentReference:
+          type: string
+          description: 'a reference message to include when offramping.
+
+
+            Please utilize `wireMessage` for wire transfer and `achReference` for ACH transfer instead of this field.
+
+            '
+        swiftReference:
+          type: string
+          description: 'A reference message to include when offramping through SWIFT transfer that is mainly use to indicate the purpose of payment.
+
+
+            it can be at most 12 characters.
+
+            '
+      required:
+      - currency
+      - accountId
+    Unauthorized:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    OfframpStatusEnum:
+      type: string
+      enum:
+      - NOT_INITIATED
+      - CREATED
+      - OPEN_QUOTE
+      - CRYPTO_INITIATED
+      - AWAITING_FUNDS
+      - CRYPTO_PENDING
+      - CRYPTO_PROCESSED
+      - FIAT_INITIATED
+      - FIAT_PENDING
+      - COMPLETED
+      - FIAT_FAILED
+      - FIAT_RETURNED
+      - CRYPTO_RETURNED
+      - CRYPTO_FAILED
+      - QUOTE_FAILED
+      - IN_REVIEW
+      - CANCELLED
+      description: 'Refer to [here](https://docs.hifi.com/docs/transfers/offramps#transaction-status) for more details on each offramp status.
+
+        '
+    AfricaOfframpDestination:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: amount of fiat currency to receive
+          exclusiveMinimum: 0
+        currency:
+          type: string
+          description: 'fiat currency.
+
+            Look at the list of supported `currency` [here](https://docs.google.com/spreadsheets/d/1QxAWGoZMznB6_Ts4mzFcFD49ZOMUZNdNiR6wlr8NDL0/edit?gid=293141391#gid=293141391).
+
+            Make sure the `currency` enum is supported for the provided `accountId`.
+
+            '
+        accountId:
+          type: string
+          format: uuid
+          description: account that is receiving the fiat currency
+        userId:
+          type: string
+          format: uuid
+          description: user who is receiving the fiat
+      required:
+      - currency
+      - accountId
+    InternalServerError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        error:
+          type: string
+          description: Error type
+        errorDetails:
+          type: string
+          description: Detailed error message
+    CreateChinaGlobalNetworkOfframp:
+      type: object
+      title: Offramp Global Network (CHN)
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - invoice_payments
+          - payment_for_services
+          - payment_for_software
+          - payment_for_imported_goods
+          - travel_services
+          - transfer_to_own_account
+          - repayment_of_loans
+          - payroll
+          - payment_of_property_rental
+          - information_service_charges
+          - advertising_and_public_relations
+          - royalty_and_ip_fees
+          - financial_service_fees
+          - advisory_and_consulting_fees
+          - representative_office_expenses
+          - tax_payment
+          - transportation_fees
+          - construction_costs
+          - insurance_premium
+          - offline_goods_trade
+          - insurance_claims
+          - remittance_to_family_or_friends
+          - education_expenses
+          - medical_treatment
+          - donations
+          - mutual_fund_investment
+          - currency_exchange
+          - advance_payment_for_goods
+          - merchant_settlement
+          - repatriation_fund_settlement
+        description:
+          type: string
+        source:
+          type: object
+          description: offramp source
+          $ref: '#/components/schemas/OfframpSource'
+        destination:
+          type: object
+          description: offramp destination
+          $ref: '#/components/schemas/ChinaOfframpDestination'
+        developerFee:
+          description: custom offramp fees, omit if no fees are charged
+          allOf:
+          - $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
+        sandboxScenario:
+          $ref: '#/components/schemas/SandboxScenario'
+      required:
+      - requestId
+      - source
+      - destination
+    CreateOfframp:
+      type: object
+      title: Offramp
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - gift
+          - bills
+          - groceries
+          - travel
+          - health
+          - entertainment
+          - housing
+          - school-fees
+          - other
+          description: 'Refer to [here](https://docs.hifi.com/transactions/offramps#purpose-of-payment-code) for more details on the purpose of payment code to provide.
+
+            '
+        supportingDocumentType:
+          type: string
+          enum:
+          - billing_document
+          - order_document
+          - shipment_document
+          - regulatory_document
+          - transport_document
+          - other_document
+          description: 'The type of supporting document, required for swift payment.
+
+            '
+        supportingDocumentUrl:
+          type: string
+          description: 'The URL of the supporting document, required for swift payment.
+
+            '
+        description:
+          type: string
+          description: Memo code or description for usd offramp.
+        source:
+          type: object
+          description: offramp source
+          $ref: '#/components/schemas/OfframpSource'
+        destination:
+          type: object
+          description: offramp destination
+          $ref: '#/components/schemas/OfframpDestination'
+        developerFee:
+          description: custom offramp fees, omit if no fees are charged
+          allOf:
+          - $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
+        sandboxScenario:
+          $ref: '#/components/schemas/SandboxScenario'
+      required:
+      - requestId
+      - source
+      - destination
+    OfframpSource:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: amount of crypto currency to send
+          exclusiveMinimum: 0
+        currency:
+          type: string
+          enum:
+          - usdc
+          - usdt
+          - usdg
+          - pyusd
+          description: 'crypto currency
+
+            '
+        chain:
+          type: string
+          enum:
+          - POLYGON
+          - ETHEREUM
+          - SOLANA
+          - BASE
+          - TRON
+        userId:
+          type: string
+          format: uuid
+          description: user who is sending the crypto, required if the funds are coming from HIFI Wallet
+        externalWalletId:
+          type: string
+          format: uuid
+          description: external wallet id who is sending the crypto, if provided, the offramp will only be processed if the funds are coming from the exact external wallet
+        returnAddress:
+          type: string
+          description: 'address the crypto is returned to if the offramp fails.
+
+
+            required unless `userId` is provided. when `userId` is provided and this
+
+            field is omitted, the user''s HIFI Wallet address is used.
+
+            '
+      required:
+      - currency
+      - chain
+      anyOf:
+      - title: funds from a HIFI Wallet
+        required:
+        - userId
+      - title: funds from an external wallet
+        required:
+        - returnAddress
+    CreateAfricaOfframp:
+      type: object
+      title: Offramp (Africa)
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - gift
+          - bills
+          - groceries
+          - travel
+          - health
+          - entertainment
+          - housing
+          - school-fees
+          - other
+        description:
+          type: string
+        source:
+          type: object
+          description: offramp source
+          $ref: '#/components/schemas/OfframpSource'
+        destination:
+          type: object
+          description: offramp destination
+          $ref: '#/components/schemas/AfricaOfframpDestination'
+        developerFee:
+          description: custom offramp fees, omit if no fees are charged
+          allOf:
+          - $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
+      required:
+      - requestId
+      - source
+      - destination
+      - purposeOfPayment
     OfframpObject:
       type: object
       properties:
@@ -204,6 +1273,23 @@ components:
             requestId:
               type: string
               format: uuid
+            orchestrationAddressId:
+              type:
+              - string
+              - 'null'
+              format: uuid
+              description: 'ID of the orchestration address that produced this offramp, or `null`
+
+                for offramps created directly via `POST /v2/offramps`. Use this to
+
+                pivot back to the originating orchestration address — fetch it via
+
+                `GET /v2/users/{userId}/orchestration-addresses/{orchestrationAddressId}`.
+
+                '
+            supportingInformation:
+              $ref: '#/components/schemas/SupportingInformation'
+              description: Supporting information provided when the offramp was created (e.g. detailed purpose of payment, beneficiary details, documents).
             createdAt:
               type: string
               format: date-time
@@ -214,6 +1300,20 @@ components:
               $ref: '#/components/schemas/OfframpStatusEnum'
             failedReason:
               type: string
+            error:
+              type: string
+              description: 'Error code when the offramp transaction has failed (e.g. `QUOTE_EXPIRED`, `QUOTE_FAILED`, `QUOTE_NOT_AVAILABLE`, `BILLING_CONFIG_NOT_FOUND`, `INSUFFICIENT_BALANCE`, `FAILED_TO_CREATE_PAYMENT`, `INTERNAL_ERROR`, `TRANSACTION_REJECTED`).
+
+                Present when status is a failed state such as `QUOTE_FAILED` or `CRYPTO_FAILED`.
+
+                '
+            errorDetails:
+              type: string
+              description: 'Human-readable error details when the offramp transaction has failed.
+
+                Present when status is a failed state.
+
+                '
             source:
               type: object
               properties:
@@ -279,7 +1379,7 @@ components:
                 sameDayAch:
                   type: boolean
                   default: false
-                  description: same day ACH offramp for a $1 additional fee
+                  description: same day ACH processing
             receipt:
               type: object
               properties:
@@ -363,607 +1463,14 @@ components:
                   format: date-time
             depositInformation:
               $ref: '#/components/schemas/OfframpDepositInstructionsList'
-    ArsOfframpDestination:
+    CancelOfframpResponse:
       type: object
       properties:
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of fiat currency to receive
-        currency:
+        message:
           type: string
-          enum:
-          - ars
-          description: fiat currency
-        accountId:
-          type: string
-          format: uuid
-          description: account that is receiving the fiat currency
-        userId:
-          type: string
-          format: uuid
-          description: user who is receiving the fiat
-      required:
-      - currency
-      - accountId
-    BrlOfframpDestination:
-      type: object
-      properties:
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of fiat currency to receive
-        currency:
-          type: string
-          enum:
-          - brl
-          description: fiat currency
-        accountId:
-          type: string
-          format: uuid
-          description: account that is receiving the fiat currency
-        userId:
-          type: string
-          format: uuid
-          description: user who is receiving the fiat
-        paymentReference:
-          type: string
-          description: 'a reference message to include when offramping.
-
-            '
-      required:
-      - userId
-      - currency
-      - accountId
-    CreateAfricaOfframp:
-      type: object
-      title: Offramp (Africa)
-      properties:
-        requestId:
-          type: string
-          description: unique identifier for the request (recommend using uuid v4)
-        purposeOfPayment:
-          type: string
-          enum:
-          - gift
-          - bills
-          - groceries
-          - travel
-          - health
-          - entertainment
-          - housing
-          - school-fees
-          - other
-        description:
-          type: string
-        source:
-          type: object
-          description: offramp source
-          $ref: '#/components/schemas/OfframpSource'
-        destination:
-          type: object
-          description: offramp destination
-          $ref: '#/components/schemas/AfricaOfframpDestination'
-        fee:
-          type:
-          - object
-          - 'null'
-          description: custom offramp fee, omit if no fee is charged
-          allOf:
-          - $ref: '#/components/schemas/OfframpFee'
-      required:
-      - requestId
-      - source
-      - destination
-      - purposeOfPayment
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Not authorized
-    CreateUsdOfframp:
-      type: object
-      title: Offramp (USD)
-      properties:
-        requestId:
-          type: string
-          description: unique identifier for the request (recommend using uuid v4)
-        purposeOfPayment:
-          type: string
-          enum:
-          - gift
-          - bills
-          - groceries
-          - travel
-          - health
-          - entertainment
-          - housing
-          - school-fees
-          - other
-        supportingDocumentType:
-          type: string
-          enum:
-          - billing_document
-          - order_document
-          - shipment_document
-          - regulatory_document
-          - transport_document
-          - other_document
-          description: 'The type of supporting document, required for swift payment.
-
-            '
-        supportingDocumentUrl:
-          type: string
-          description: 'The URL of the supporting document, required for swift payment.
-
-            '
-        description:
-          type: string
-        source:
-          type: object
-          description: offramp source
-          $ref: '#/components/schemas/OfframpSource'
-        destination:
-          type: object
-          description: offramp destination
-          $ref: '#/components/schemas/UsdOfframpDestination'
-        developerFee:
-          type:
-          - object
-          - 'null'
-          description: custom offramp developer fee, omit if no developer fee is charged
-          $ref: '#/components/schemas/DeveloperFee'
-      required:
-      - requestId
-      - source
-      - destination
-    OfframpPaymentTrackingObject:
-      type: object
-      properties:
-        fedBatchId:
-          type: string
-          description: Fedwire or ACH batch ID used for settlement tracking
-        imad:
-          type: string
-          description: Input Messaging Accountability Data. A combination of a date, source identifier, and sequence number assigned to a Fedwire message when it is processed by the Federal Reserve Bank Funds Transfer application. Unique to the payment.
-        omad:
-          type: string
-          description: Output Messaging Accountability Data. A combination of a date, destination identifier, and sequence number assigned to a Fedwire message when it is processed by the Federal Reserve Bank Funds Transfer application.
-        traceNumber:
-          type: string
-          description: Unique ACH trace number for the transaction
-        paymentRail:
-          type: string
-          enum:
-          - wire
-          - ach
-          - rtp
-          - swift
-    InternalServerError:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Unexpected error happened
-    CreateBrazilGlobalNetworkOfframp:
-      type: object
-      title: Offramp Global Network (BRL)
-      properties:
-        requestId:
-          type: string
-          description: unique identifier for the request (recommend using uuid v4)
-        purposeOfPayment:
-          type: string
-          enum:
-          - invoice_payments
-          - payment_for_services
-          - payment_for_software
-          - payment_for_imported_goods
-          - travel_services
-          - transfer_to_own_account
-          - repayment_of_loans
-          - payroll
-          - payment_of_property_rental
-          - information_service_charges
-          - advertising_and_public_relations
-          - royalty_and_ip_fees
-          - financial_service_fees
-          - advisory_and_consulting_fees
-          - representative_office_expenses
-          - tax_payment
-          - transportation_fees
-          - construction_costs
-          - insurance_premium
-          - offline_goods_trade
-          - insurance_claims
-          - remittance_to_family_or_friends
-          - education_expenses
-          - medical_treatment
-          - donations
-          - mutual_fund_investment
-          - currency_exchange
-          - advance_payment_for_goods
-          - merchant_settlement
-          - repatriation_fund_settlement
-        description:
-          type: string
-        source:
-          type: object
-          description: offramp source
-          $ref: '#/components/schemas/OfframpSource'
-        destination:
-          type: object
-          description: offramp destination
-          $ref: '#/components/schemas/BrlOfframpDestination'
-        fee:
-          type:
-          - object
-          - 'null'
-          description: custom offramp fee, omit if no fee is charged
-          allOf:
-          - $ref: '#/components/schemas/OfframpFee'
-      required:
-      - requestId
-      - source
-      - destination
-    CreateCopOfframp:
-      type: object
-      title: Offramp (COP)
-      properties:
-        requestId:
-          type: string
-          description: unique identifier for the request (recommend using uuid v4)
-        purposeOfPayment:
-          type: string
-          enum:
-          - gift
-          - bills
-          - groceries
-          - travel
-          - health
-          - entertainment
-          - housing
-          - school-fees
-          - other
-        description:
-          type: string
-        source:
-          type: object
-          description: offramp source
-          $ref: '#/components/schemas/OfframpSource'
-        destination:
-          type: object
-          description: offramp destination
-          $ref: '#/components/schemas/CopOfframpDestination'
-        fee:
-          type:
-          - object
-          - 'null'
-          description: custom offramp fee, omit if no fee is charged
-          allOf:
-          - $ref: '#/components/schemas/OfframpFee'
-      required:
-      - requestId
-      - source
-      - destination
-    NigeriaOfframpDestination:
-      type: object
-      properties:
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of fiat currency to receive
-        currency:
-          type: string
-          enum:
-          - ngn
-          description: fiat currency
-        accountId:
-          type: string
-          format: uuid
-          description: account that is receiving the fiat currency
-        userId:
-          type: string
-          format: uuid
-          description: user who is receiving the fiat
-        paymentReference:
-          type: string
-          description: 'a reference message to include when offramping.
-
-            '
-      required:
-      - currency
-      - accountId
-    CreateMxnOfframp:
-      type: object
-      title: Offramp (MXN)
-      properties:
-        requestId:
-          type: string
-          description: unique identifier for the request (recommend using uuid v4)
-        purposeOfPayment:
-          type: string
-          enum:
-          - gift
-          - bills
-          - groceries
-          - travel
-          - health
-          - entertainment
-          - housing
-          - school-fees
-          - other
-        description:
-          type: string
-        source:
-          type: object
-          description: offramp source
-          $ref: '#/components/schemas/OfframpSource'
-        destination:
-          type: object
-          description: offramp destination
-          $ref: '#/components/schemas/MxnOfframpDestination'
-        fee:
-          type:
-          - object
-          - 'null'
-          description: custom offramp fee, omit if no fee is charged
-          allOf:
-          - $ref: '#/components/schemas/OfframpFee'
-      required:
-      - requestId
-      - source
-      - destination
-    MxnOfframpDestination:
-      type: object
-      properties:
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of fiat currency to receive
-        currency:
-          type: string
-          enum:
-          - mxn
-          description: fiat currency
-        accountId:
-          type: string
-          format: uuid
-          description: account that is receiving the fiat currency
-        userId:
-          type: string
-          format: uuid
-          description: user who is receiving the fiat
-        paymentReference:
-          type: string
-          description: 'a reference message to include when offramping.
-
-            '
-      required:
-      - currency
-      - accountId
-    CreateChinaGlobalNetworkOfframp:
-      type: object
-      title: Offramp Global Network (CHN)
-      properties:
-        requestId:
-          type: string
-          description: unique identifier for the request (recommend using uuid v4)
-        purposeOfPayment:
-          type: string
-          enum:
-          - invoice_payments
-          - payment_for_services
-          - payment_for_software
-          - payment_for_imported_goods
-          - travel_services
-          - transfer_to_own_account
-          - repayment_of_loans
-          - payroll
-          - payment_of_property_rental
-          - information_service_charges
-          - advertising_and_public_relations
-          - royalty_and_ip_fees
-          - financial_service_fees
-          - advisory_and_consulting_fees
-          - representative_office_expenses
-          - tax_payment
-          - transportation_fees
-          - construction_costs
-          - insurance_premium
-          - offline_goods_trade
-          - insurance_claims
-          - remittance_to_family_or_friends
-          - education_expenses
-          - medical_treatment
-          - donations
-          - mutual_fund_investment
-          - currency_exchange
-          - advance_payment_for_goods
-          - merchant_settlement
-          - repatriation_fund_settlement
-        description:
-          type: string
-        source:
-          type: object
-          description: offramp source
-          $ref: '#/components/schemas/OfframpSource'
-        destination:
-          type: object
-          description: offramp destination
-          $ref: '#/components/schemas/ChinaOfframpDestination'
-        fee:
-          type:
-          - object
-          - 'null'
-          description: custom offramp fee, omit if no fee is charged
-          allOf:
-          - $ref: '#/components/schemas/OfframpFee'
-      required:
-      - requestId
-      - source
-      - destination
-    CreateBrlOfframp:
-      type: object
-      title: Offramp (BRL)
-      properties:
-        requestId:
-          type: string
-          description: unique identifier for the request (recommend using uuid v4)
-        purposeOfPayment:
-          type: string
-          enum:
-          - gift
-          - bills
-          - groceries
-          - travel
-          - health
-          - entertainment
-          - housing
-          - school-fees
-          - other
-        description:
-          type: string
-        source:
-          type: object
-          description: offramp source
-          $ref: '#/components/schemas/OfframpSource'
-        destination:
-          type: object
-          description: offramp destination
-          $ref: '#/components/schemas/BrlOfframpDestination'
-        fee:
-          type:
-          - object
-          - 'null'
-          description: custom offramp fee, omit if no fee is charged
-          allOf:
-          - $ref: '#/components/schemas/OfframpFee'
-      required:
-      - requestId
-      - source
-      - destination
-    OfframpAcceptedQuoteObject:
-      $ref: '#/components/schemas/OfframpObject'
-    CopOfframpDestination:
-      type: object
-      properties:
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of fiat currency to receive
-        currency:
-          type: string
-          enum:
-          - cop
-          description: fiat currency
-        accountId:
-          type: string
-          format: uuid
-          description: account that is receiving the fiat currency
-        userId:
-          type: string
-          format: uuid
-          description: user who is receiving the fiat
-      required:
-      - currency
-      - accountId
-    HongKongOfframpDestination:
-      type: object
-      properties:
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of fiat currency to receive
-        currency:
-          type: string
-          enum:
-          - hkd
-          - usd
-          description: fiat currency
-        accountId:
-          type: string
-          format: uuid
-          description: account that is receiving the fiat currency
-        userId:
-          type: string
-          format: uuid
-          description: user who is receiving the fiat
-        paymentReference:
-          type: string
-          description: 'a reference message to include when offramping.
-
-            '
-      required:
-      - currency
-      - accountId
-    OfframpAllRecordsObject:
-      type: object
-      properties:
-        count:
-          type: integer
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/OfframpRecordObject'
-        nextCursor:
-          type: string
-          description: The `createdAt` timestamp of the last record in the current page. Pass this as `createdBefore` in the next request to retrieve the next page of results.
-    OfframpConversionRateObject:
-      type: object
-      properties:
-        fromCurrency:
-          type: string
-          enum:
-          - usdc
-          description: source currency
-        toCurrency:
-          type: string
-          enum:
-          - usd
-          - brl
-          - mxn
-          - ugx
-          - ngn
-          - kes
-          - tzs
-          - mwk
-          - xaf
-          - bwp
-          - zar
-          - usd-hka
-          - usd-chn
-          - cny
-          - hkd
-          - sgd
-          - usd-sgp
-          description: target currency
-        conversionRate:
-          type: string
-        conversionRates:
-          type: array
-          items:
-            type: object
-            properties:
-              transferType:
-                type: string
-                description: when `transferType` is `default`, this is the conversion rate for the default transfer type
-              conversionRate:
-                type: string
+          example: 'Transaction: {transferId} cancelled successfully'
       example:
-        fromCurrency: usdc
-        toCurrency: usd
-        conversionRate: '1'
-        conversionRates:
-        - transferType: default
-          conversionRate: '1'
+        message: 'Transaction: {transferId} cancelled successfully'
     CreateArsOfframp:
       type: object
       title: Offramp (ARS)
@@ -993,52 +1500,82 @@ components:
           type: object
           description: offramp destination
           $ref: '#/components/schemas/ArsOfframpDestination'
-        fee:
-          type:
-          - object
-          - 'null'
-          description: custom offramp fee, omit if no fee is charged
+        developerFee:
+          description: custom offramp fees, omit if no fees are charged
           allOf:
-          - $ref: '#/components/schemas/OfframpFee'
+          - $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
       required:
       - requestId
       - source
       - destination
-    OfframpSource:
+    OfframpConversionRateObject:
       type: object
       properties:
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of crypto currency to send
-        currency:
+        fromCurrency:
           type: string
           enum:
           - usdc
-          - usdt
-          - usdHifi
-          description: 'crypto currency (note: `usdHifi` is only available in sandbox to simulate token movement)
-
-            '
-        chain:
+          description: source currency
+        toCurrency:
           type: string
           enum:
-          - POLYGON
-          - ETHEREUM
-          - SOLANA
-          - BASE
-        userId:
+          - usd
+          - brl
+          - mxn
+          - ugx
+          - ngn
+          - kes
+          - tzs
+          - mwk
+          - xaf
+          - bwp
+          - zar
+          - usd-hka
+          - usd-chn
+          - cny
+          - hkd
+          - sgd
+          - usd-sgp
+          - inr
+          description: target currency
+        conversionRate:
           type: string
-          format: uuid
-          description: user who is sending the crypto, required if `externalWalletId` is not provided
-        externalWalletId:
-          type: string
-          format: uuid
-          description: external wallet id who is sending the crypto, required if `userId` is not provided
-      required:
-      - currency
-      - chain
+        conversionRates:
+          type: array
+          items:
+            type: object
+            properties:
+              transferType:
+                type: string
+                description: 'The transfer type this rate applies to. When `transferType` is `default`, this is the
+
+                  conversion rate for the default transfer type. For `toCurrency: inr`, rates are
+
+                  returned per India Global Network transfer type — `account_ifsc` and `imps_p2p`.
+
+                  '
+              conversionRate:
+                type: string
+      example:
+        fromCurrency: usdc
+        toCurrency: usd
+        conversionRate: '1'
+        conversionRates:
+        - transferType: default
+          conversionRate: '1'
     CreateNigeriaGlobalNetworkOfframp:
       type: object
       title: Offramp Global Network (NGN)
@@ -1089,57 +1626,34 @@ components:
           type: object
           description: offramp destination
           $ref: '#/components/schemas/NigeriaOfframpDestination'
-        fee:
-          type:
-          - object
-          - 'null'
-          description: custom offramp fee, omit if no fee is charged
+        developerFee:
+          description: custom offramp fees, omit if no fees are charged
           allOf:
-          - $ref: '#/components/schemas/OfframpFee'
+          - $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
+        sandboxScenario:
+          $ref: '#/components/schemas/SandboxScenario'
       required:
       - requestId
       - source
       - destination
-    UsdOfframpDestination:
+    OfframpAcceptedQuoteObject:
+      $ref: '#/components/schemas/OfframpObject'
+    CreateMxnOfframp:
       type: object
-      properties:
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of fiat currency to receive
-        currency:
-          type: string
-          enum:
-          - usd
-          description: fiat currency
-        accountId:
-          type: string
-          format: uuid
-          description: account that is receiving the fiat currency
-        userId:
-          type: string
-          format: uuid
-          description: user who is receiving the fiat
-        sameDayAch:
-          type: boolean
-          default: false
-          description: same day ACH offramp for a $1 additional fee
-        achReference:
-          type: string
-          description: "a reference message to include when offramping through ACH transfer. \n\nit can be at most 10 characters, A-Z, a-z, 0-9, and spaces. Note that as of `2024-08-06`, setting this field is only supported for certain developers while we work on rolling out general support for everyone.\n"
-        wireMessage:
-          type: string
-          description: "a message to include when offramping through WIRE transfer. \n\nit can be at most 4 lines, each with a max length of 35 char according to the Fedwire standard.\n"
-        swiftReference:
-          type: string
-          description: "A reference message to include when offramping through SWIFT transfer that is mainly use to indicate the purpose of payment. \n\nit can be at most 12 characters.\n"
-      required:
-      - currency
-      - accountId
-    CreateOfframp:
-      type: object
-      title: Offramp
+      title: Offramp (MXN)
       properties:
         requestId:
           type: string
@@ -1156,26 +1670,8 @@ components:
           - housing
           - school-fees
           - other
-        supportingDocumentType:
-          type: string
-          enum:
-          - billing_document
-          - order_document
-          - shipment_document
-          - regulatory_document
-          - transport_document
-          - other_document
-          description: 'The type of supporting document, required for swift payment.
-
-            '
-        supportingDocumentUrl:
-          type: string
-          description: 'The URL of the supporting document, required for swift payment.
-
-            '
         description:
           type: string
-          description: Memo code or description for usd offramp.
         source:
           type: object
           description: offramp source
@@ -1183,14 +1679,99 @@ components:
         destination:
           type: object
           description: offramp destination
-          $ref: '#/components/schemas/OfframpDestination'
+          $ref: '#/components/schemas/MxnOfframpDestination'
         developerFee:
-          type:
-          - array
-          - 'null'
           description: custom offramp fees, omit if no fees are charged
-          items:
-            $ref: '#/components/schemas/DeveloperFee'
+          allOf:
+          - $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
+      required:
+      - requestId
+      - source
+      - destination
+    OfframpRecordObject:
+      $ref: '#/components/schemas/OfframpObject'
+    SupportingInformationBeneficiaryDetails:
+      type: object
+      description: Optional beneficiary details for the offramp.
+      properties:
+        legalEntityName:
+          type: string
+          minLength: 1
+          maxLength: 255
+        jurisdictionOfIncorporation:
+          type: string
+          description: ISO 3166-1 alpha-3 country code.
+        natureOfBusiness:
+          type: string
+          minLength: 1
+          maxLength: 500
+        relationshipToBeneficiary:
+          type: string
+          minLength: 1
+          maxLength: 500
+        website:
+          type: string
+          minLength: 1
+          maxLength: 255
+    CreateBrlOfframp:
+      type: object
+      title: Offramp (BRL)
+      properties:
+        requestId:
+          type: string
+          description: unique identifier for the request (recommend using uuid v4)
+        purposeOfPayment:
+          type: string
+          enum:
+          - gift
+          - bills
+          - groceries
+          - travel
+          - health
+          - entertainment
+          - housing
+          - school-fees
+          - other
+        description:
+          type: string
+        source:
+          type: object
+          description: offramp source
+          $ref: '#/components/schemas/OfframpSource'
+        destination:
+          type: object
+          description: offramp destination
+          $ref: '#/components/schemas/BrlOfframpDestination'
+        developerFee:
+          description: custom offramp fees, omit if no fees are charged
+          allOf:
+          - $ref: '#/components/schemas/DeveloperFee'
+        requireApproval:
+          type: boolean
+          description: 'Whether this offramp requires approval before processing.
+
+            - `true`: Offramp will enter approval workflow
+
+            - `false` or omitted: Offramp proceeds like usual
+
+            '
+          default: false
+          example: false
+        supportingInformation:
+          $ref: '#/components/schemas/SupportingInformation'
       required:
       - requestId
       - source
@@ -1201,8 +1782,8 @@ components:
         amount:
           type: number
           format: float
-          minimum: 0
           description: amount of fiat currency to receive
+          exclusiveMinimum: 0
         currency:
           type: string
           enum:
@@ -1225,395 +1806,28 @@ components:
       required:
       - currency
       - accountId
-    OfframpDestination:
+    OfframpPaymentTrackingObject:
       type: object
       properties:
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of fiat currency to receive
-        currency:
+        fedBatchId:
+          type: string
+          description: Fedwire or ACH batch ID used for settlement tracking
+        imad:
+          type: string
+          description: Input Messaging Accountability Data. A combination of a date, source identifier, and sequence number assigned to a Fedwire message when it is processed by the Federal Reserve Bank Funds Transfer application. Unique to the payment.
+        omad:
+          type: string
+          description: Output Messaging Accountability Data. A combination of a date, destination identifier, and sequence number assigned to a Fedwire message when it is processed by the Federal Reserve Bank Funds Transfer application.
+        traceNumber:
+          type: string
+          description: Unique ACH trace number for the transaction
+        paymentRail:
           type: string
           enum:
-          - usd
-          - eur
-          - brl
-          - hkd
-          - mxn
-          - cop
-          - ars
-          - ngn
-          - ugx
-          - kes
-          - zmw
-          - mwk
-          - rwf
-          - tzs
-          - xaf
-          - xof
-          - bwp
-          - xaf
-          - cdf
-          - ghs
-          - zar
-          description: fiat currency
-        accountId:
-          type: string
-          format: uuid
-          description: account that is receiving the fiat currency
-        userId:
-          type: string
-          format: uuid
-          description: user who is receiving the fiat
-        sameDayAch:
-          type: boolean
-          default: false
-          description: same day ACH offramp for a $1 additional fee
-        achReference:
-          type: string
-          description: "a reference message to include when offramping through ACH transfer. \n\nit can be at most 10 characters, A-Z, a-z, 0-9, and spaces. Note that as of `2024-08-06`, setting this field is only supported for certain developers while we work on rolling out general support for everyone.\n"
-        sepaReference:
-          type: string
-          description: "a reference message to include when offramping through SEPA transfer.  \n\nit must be between 6 to 140 characters. The allowed characters are a-z, A-Z, 0-9, spaces, ampersand (&), hyphen (-), full stop (.), and solidus (/).\n"
-        wireMessage:
-          type: string
-          description: "a message to include when offramping through WIRE transfer. \n\nit can be at most 4 lines, each with a max length of 35 char according to the Fedwire standard.\n"
-        paymentReference:
-          type: string
-          description: "a reference message to include when offramping. \n\nPlease utilize `wireMessage` for wire transfer and `achReference` for ACH transfer instead of this field.\n"
-        swiftReference:
-          type: string
-          description: "a reference message or remittance information to include when offramping through SWIFT transfer. \n\nit can have at most 4 lines (separated by \"\\n\"), each line with a max length of 35 chars. The allowed characters are a-z, A-Z, 0-9, special characters (/ - ? : ( ) . , ' +), and spaces.\n"
-        swiftCharges:
-          type: string
-          enum:
-          - sha
-          - our
-      required:
-      - currency
-      - accountId
-    OfframpStatusEnum:
-      type: string
-      enum:
-      - NOT_INITIATED
-      - CREATED
-      - OPEN_QUOTE
-      - CRYPTO_INITIATED
-      - AWAITING_FUNDS
-      - CRYPTO_PENDING
-      - CRYPTO_PROCESSED
-      - FIAT_INITIATED
-      - FIAT_PENDING
-      - COMPLETED
-      - FIAT_FAILED
-      - CRYPTO_RETURNED
-      - CRYPTO_FAILED
-      - QUOTE_FAILED
-      - IN_REVIEW
-      description: 'Refer to [here](https://docs.hifibridge.com/docs/transfers/offramps#transaction-status) for more details on each offramp status.
-
-        '
-    CreateHongKongGlobalNetworkOfframp:
-      type: object
-      title: Offramp Global Network (HKD)
-      properties:
-        requestId:
-          type: string
-          description: unique identifier for the request (recommend using uuid v4)
-        purposeOfPayment:
-          type: string
-          enum:
-          - invoice_payments
-          - payment_for_services
-          - payment_for_software
-          - payment_for_imported_goods
-          - travel_services
-          - transfer_to_own_account
-          - repayment_of_loans
-          - payroll
-          - payment_of_property_rental
-          - information_service_charges
-          - advertising_and_public_relations
-          - royalty_and_ip_fees
-          - financial_service_fees
-          - advisory_and_consulting_fees
-          - representative_office_expenses
-          - tax_payment
-          - transportation_fees
-          - construction_costs
-          - insurance_premium
-          - offline_goods_trade
-          - insurance_claims
-          - remittance_to_family_or_friends
-          - education_expenses
-          - medical_treatment
-          - donations
-          - mutual_fund_investment
-          - currency_exchange
-          - advance_payment_for_goods
-          - merchant_settlement
-          - repatriation_fund_settlement
-        description:
-          type: string
-        source:
-          type: object
-          description: offramp source
-          $ref: '#/components/schemas/OfframpSource'
-        destination:
-          type: object
-          description: offramp destination
-          $ref: '#/components/schemas/HongKongOfframpDestination'
-        fee:
-          type:
-          - object
-          - 'null'
-          description: custom offramp fee, omit if no fee is charged
-          allOf:
-          - $ref: '#/components/schemas/OfframpFee'
-      required:
-      - requestId
-      - source
-      - destination
-    OfframpRecordObject:
-      $ref: '#/components/schemas/OfframpObject'
-    AfricaOfframpDestination:
-      type: object
-      properties:
-        amount:
-          type: number
-          format: float
-          minimum: 0
-          description: amount of fiat currency to receive
-        currency:
-          type: string
-          description: 'fiat currency.
-
-            Look at the list of supported `currency` [here](https://docs.google.com/spreadsheets/d/1QxAWGoZMznB6_Ts4mzFcFD49ZOMUZNdNiR6wlr8NDL0/edit?gid=293141391#gid=293141391).
-
-            Make sure the `currency` enum is supported for the provided `accountId`.
-
-            '
-        accountId:
-          type: string
-          format: uuid
-          description: account that is receiving the fiat currency
-        userId:
-          type: string
-          format: uuid
-          description: user who is receiving the fiat
-      required:
-      - currency
-      - accountId
-    OfframpDepositInstructionsList:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: string
-            format: uuid
-          fromAddress:
-            type: string
-          toAddress:
-            type: string
-          currency:
-            type: string
-          contractAddress:
-            type: string
-          rawAmount:
-            type: string
-          amount:
-            type: number
-          chain:
-            type: string
-          collected:
-            type: boolean
-          collectable:
-            type: boolean
-          expiresAt:
-            type: string
-            format: date-time
-          transactionHash:
-            type:
-            - string
-            - 'null'
-    DeveloperFee:
-      type: object
-      properties:
-        fees:
-          type: array
-          items:
-            type: object
-            properties:
-              type:
-                type: string
-                enum:
-                - PERCENTAGE
-                - FLAT
-              value:
-                type: string
-                description: 'Fee amount as a string. For PERCENTAGE type, "0.0005" represents 0.05%.
-
-                  For FLAT type, represents absolute amount.
-
-                  For PERCENTAGE type, the value must be between 0 and 1 with max 4 decimal places.
-
-                  '
-              walletAddress:
-                type: string
-                description: Wallet address to receive the fee
-            required:
-            - type
-            - value
-            - walletAddress
-      required:
-      - fees
-  parameters:
-    UserIdOptionalParameter:
-      name: userId
-      in: query
-      schema:
-        type: string
-      description: The user ID.
-      required: false
-    LimitParameter:
-      name: limit
-      in: query
-      schema:
-        type: string
-        minimum: 1
-        maximum: 100
-      description: default to 10, maximum to 100
-      required: false
-    FromCryptoCurrencyParameter:
-      name: fromCurrency
-      in: query
-      schema:
-        type: string
-        enum:
-        - usdc
-      required: true
-    ToFiatCurrencyParameter:
-      name: toCurrency
-      in: query
-      schema:
-        type: string
-        enum:
-        - usd
-        - brl
-        - mxn
-        - ugx
-        - ngn
-        - kes
-        - tzs
-        - mwk
-        - xaf
-        - bwp
-        - zar
-        - usd-hka
-        - usd-chn
-        - cny
-        - hkd
-        - sgd
-        - usd-sgp
-      required: true
-    CreatedBeforeParameter:
-      name: createdBefore
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
-    CreatedAfterParameter:
-      name: createdAfter
-      in: query
-      schema:
-        type: string
-        format: date
-      description: 'ISO format: YYYY-MM-DD'
-      required: false
-    OfframpRecordIDPathParameter:
-      name: transferId
-      in: path
-      schema:
-        type: string
-      description: Transfer record ID.
-      required: true
-  responses:
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalServerError'
-    NotFoundResponse:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                enum:
-                - error
-              error:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  message:
-                    type: string
-    CryptoToFiatAllRecordsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/OfframpAllRecordsObject'
-          examples:
-            OfframpObjectListExample:
-              $ref: '#/components/examples/OfframpObjectListExample'
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Unauthorized'
-    CryptoToFiatTransferResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/OfframpObject'
-          examples:
-            OfframpObjectUsdOpenQuoteExample:
-              $ref: '#/components/examples/OfframpObjectUsdOpenQuoteExample'
-    CryptoToFiatRecordResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/OfframpRecordObject'
-          examples:
-            OfframpObjectUsdCompleteExample:
-              $ref: '#/components/examples/OfframpObjectUsdCompleteExample'
-    CryptoToFiatConversionRateResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/OfframpConversionRateObject'
-    CryptoToFiatAcceptQuoteResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/OfframpAcceptedQuoteObject'
-          examples:
-            OfframpObjectUsdCryptoInitiatedExample:
-              $ref: '#/components/examples/OfframpObjectUsdCryptoInitiatedExample'
+          - wire
+          - ach
+          - rtp
+          - swift
   examples:
     OfframpObjectListExample:
       summary: Offramp Object List
@@ -1685,8 +1899,8 @@ components:
                 currency: usd
               rate: '1'
             depositInformation: []
-    OfframpObjectUsdOpenQuoteExample:
-      summary: Offramp Object (USD - OPEN_QUOTE)
+    OfframpObjectUsdCryptoInitiatedExample:
+      summary: Offramp Object (USD - CRYPTO_INITIATED)
       value:
         transferType: OFFRAMP
         transferDetails:
@@ -1694,7 +1908,7 @@ components:
           requestId: 201ca31d-700f-4c76-ac4b-961623acbb79
           createdAt: '2025-02-03T16:12:04.331652+00:00'
           updatedAt: '2025-02-03T16:12:08.732+00:00'
-          status: OPEN_QUOTE
+          status: CRYPTO_INITIATED
           failedReason: null
           source:
             userId: 7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee
@@ -1711,9 +1925,6 @@ components:
             userId: 7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee
             amount: 0
             currency: usd
-            wireMessage: Wire message
-            achReference: ACH reference
-            paymentReference: Payment reference
             user:
               email: john.doe@hifibridge.com
               firstName: John
@@ -1818,8 +2029,8 @@ components:
               currency: usd
             rate: '1'
           depositInformation: []
-    OfframpObjectUsdCryptoInitiatedExample:
-      summary: Offramp Object (USD - CRYPTO_INITIATED)
+    OfframpObjectUsdOpenQuoteExample:
+      summary: Offramp Object (USD - OPEN_QUOTE)
       value:
         transferType: OFFRAMP
         transferDetails:
@@ -1827,7 +2038,7 @@ components:
           requestId: 201ca31d-700f-4c76-ac4b-961623acbb79
           createdAt: '2025-02-03T16:12:04.331652+00:00'
           updatedAt: '2025-02-03T16:12:08.732+00:00'
-          status: CRYPTO_INITIATED
+          status: OPEN_QUOTE
           failedReason: null
           source:
             userId: 7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee
@@ -1844,6 +2055,9 @@ components:
             userId: 7d54a7a7-dac3-4313-8b09-27fa4b7fd1ee
             amount: 0
             currency: usd
+            wireMessage: Wire message
+            achReference: ACH reference
+            paymentReference: Payment reference
             user:
               email: john.doe@hifibridge.com
               firstName: John
@@ -1880,6 +2094,184 @@ components:
               currency: usd
             rate: '1'
           depositInformation: []
+  parameters:
+    CreatedAfterParameter:
+      name: createdAfter
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    ToFiatCurrencyParameter:
+      name: toCurrency
+      in: query
+      schema:
+        type: string
+        enum:
+        - usd
+        - brl
+        - mxn
+        - ugx
+        - ngn
+        - kes
+        - tzs
+        - mwk
+        - xaf
+        - bwp
+        - zar
+        - usd-hka
+        - usd-chn
+        - cny
+        - hkd
+        - sgd
+        - usd-sgp
+        - inr
+        - aud
+        - cad
+        - gbp
+        - jpy
+        - vnd
+      required: true
+    CreatedBeforeParameter:
+      name: createdBefore
+      in: query
+      schema:
+        type: string
+        format: date
+      description: 'ISO format: YYYY-MM-DD'
+      required: false
+    UserIdOptionalParameter:
+      name: userId
+      in: query
+      schema:
+        type: string
+      description: The user ID.
+      required: false
+    FromCryptoCurrencyParameter:
+      name: fromCurrency
+      in: query
+      schema:
+        type: string
+        enum:
+        - usdc
+      required: true
+    OfframpRecordIDPathParameter:
+      name: transferId
+      in: path
+      schema:
+        type: string
+      description: Transfer record ID.
+      required: true
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: string
+        minimum: 1
+        maximum: 100
+      description: default to 10, maximum to 100
+      required: false
+  responses:
+    CryptoToFiatAllRecordsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OfframpAllRecordsObject'
+          examples:
+            OfframpObjectListExample:
+              $ref: '#/components/examples/OfframpObjectListExample'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+    CryptoToFiatAcceptQuoteResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OfframpAcceptedQuoteObject'
+          examples:
+            OfframpObjectUsdCryptoInitiatedExample:
+              $ref: '#/components/examples/OfframpObjectUsdCryptoInitiatedExample'
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+    BadRequestResponse:
+      description: Bad request - validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - error
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  details:
+                    type: object
+                    description: Field-specific validation errors
+    CryptoToFiatConversionRateResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OfframpConversionRateObject'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+    CancelOfframpResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CancelOfframpResponse'
+    CryptoToFiatTransferResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OfframpObject'
+          examples:
+            OfframpObjectUsdOpenQuoteExample:
+              $ref: '#/components/examples/OfframpObjectUsdOpenQuoteExample'
+    CryptoToFiatRecordResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OfframpRecordObject'
+          examples:
+            OfframpObjectUsdCompleteExample:
+              $ref: '#/components/examples/OfframpObjectUsdCompleteExample'
   requestBodies:
     CreateOfframpBody:
       required: true
