@@ -64,6 +64,152 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Hifi is a company surfaced as a portfolio company of dcvc and added to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+Hifi is a stablecoin and money-movement infrastructure company that provides composable financial APIs for moving, converting, routing, and settling value across bank rails and stablecoins. The platform covers fiat on-ramps and off-ramps, crypto transfers, token swaps, cross-chain bridging, virtual accounts, wallets and custody, KYC and compliance onboarding, settlement rules and orchestration addresses, transfer approvals, and reporting. Hifi is registered as a Money Services Business and partners with Cross River Bank for regulated banking, letting developers build global payouts, treasury automation, escrow flows, and multi-chain settlement programmatically over a single REST API secured with bearer API keys.
 
-Backed by: dcvc
+**Areas:** Company · Stablecoins · Payments · Money Movement · On-Ramp · Off-Ramp · Cryptocurrency · Fintech · KYC · Virtual Accounts · Cross-Chain · Financial Infrastructure
+
+## Hifi on APIs.io
+
+Everything profiled for Hifi is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/hifi/](https://apis.io/providers/hifi/)** — or go straight to one of the APIs or properties below.
+
+### APIs (15)
+
+- [Hifi Account API](https://apis.io/apis/hifi/hifi-account-api/) — Account endpoints
+- [Hifi Common API](https://apis.io/apis/hifi/hifi-common-api/) — Common endpoints
+- [Hifi Cross-Chain Bridge API](https://apis.io/apis/hifi/hifi-cross-chain-bridge-api/) — Cross-Chain Bridge endpoints
+- [Hifi Crypto Transfer API](https://apis.io/apis/hifi/hifi-crypto-transfer-api/) — Crypto Transfer endpoints
+- [Hifi File API](https://apis.io/apis/hifi/hifi-file-api/) — File endpoints
+- [Hifi Kyc API](https://apis.io/apis/hifi/hifi-kyc-api/) — Kyc endpoints
+- [Hifi Offramp API](https://apis.io/apis/hifi/hifi-offramp-api/) — Offramp endpoints
+- [Hifi Onramp API](https://apis.io/apis/hifi/hifi-onramp-api/) — Onramp endpoints
+- [Hifi Reporting API](https://apis.io/apis/hifi/hifi-reporting-api/) — Reporting and metrics endpoints
+- [Hifi Settlement Rules API](https://apis.io/apis/hifi/hifi-settlement-rules-api/) — The Settlement Rules API from Hifi — 5 operation(s) for settlement rules.
+- [Hifi Token Swap API](https://apis.io/apis/hifi/hifi-token-swap-api/) — Token Swap endpoints
+- [Hifi Transfer Approvals API](https://apis.io/apis/hifi/hifi-transfer-approvals-api/) — Transfer approval workflow and admin actions
+- [Hifi User API](https://apis.io/apis/hifi/hifi-user-api/) — User endpoints
+- [Hifi Virtual Account API](https://apis.io/apis/hifi/hifi-virtual-account-api/) — Virtual Account endpoints
+- [Hifi Wallet API](https://apis.io/apis/hifi/hifi-wallet-api/) — Wallet endpoints
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Hifi Webhooks](https://apis.io/asyncapis/hifi/hifi-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [hifi](https://apis.io/servers/hifi/hifi/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Hifi Agentic Access](https://apis.io/agentic-access/hifi/hifi-agentic-access/)
+
+#### Collections (15)
+
+Postman and Open Collection request collections.
+
+- [Hifi Account API](https://apis.io/collections/hifi/open-hifi-account-api/)
+- [Hifi Account Common API](https://apis.io/collections/hifi/open-hifi-common-api/)
+- [Hifi Account Cross-Chain Bridge API](https://apis.io/collections/hifi/open-hifi-cross-chain-bridge-api/)
+- [Hifi Account Crypto Transfer API](https://apis.io/collections/hifi/open-hifi-crypto-transfer-api/)
+- [Hifi Account File API](https://apis.io/collections/hifi/open-hifi-file-api/)
+- [Hifi Account Kyc API](https://apis.io/collections/hifi/open-hifi-kyc-api/)
+- [Hifi Account Offramp API](https://apis.io/collections/hifi/open-hifi-offramp-api/)
+- [Hifi Account Onramp API](https://apis.io/collections/hifi/open-hifi-onramp-api/)
+- [Hifi Account Reporting API](https://apis.io/collections/hifi/open-hifi-reporting-api/)
+- [Hifi Account Settlement Rules API](https://apis.io/collections/hifi/open-hifi-settlement-rules-api/)
+- [Hifi Account Token Swap API](https://apis.io/collections/hifi/open-hifi-token-swap-api/)
+- [Hifi Account Transfer Approvals API](https://apis.io/collections/hifi/open-hifi-transfer-approvals-api/)
+- [Hifi Account User API](https://apis.io/collections/hifi/open-hifi-user-api/)
+- [Hifi Account Virtual Account API](https://apis.io/collections/hifi/open-hifi-virtual-account-api/)
+- [Hifi Account Wallet API](https://apis.io/collections/hifi/open-hifi-wallet-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Hifi Overlay](https://apis.io/overlays/hifi/hifi-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Hifi Authentication](https://apis.io/security/hifi/hifi-authentication/)
+- [Hifi Domain Security](https://apis.io/security/hifi/hifi-domain-security/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://hifi.com)
+- [Documentation](https://docs.hifi.com/guides/quickstart)
+- [Getting started](https://docs.hifi.com/guides/quickstart)
+- [API reference](https://docs.hifi.com/api-reference)
+- [Sign up](https://app.hifi.com/request-access)
+- [Support](https://hifi.com/contact)
+- [Blog](https://hifi.com/blog)
+- [Terms of service](https://hifi.com/terms-conditions)
+- [Privacy policy](https://hifi.com/privacy-policy)
+
+## API Evangelist rating
+
+**Kin Score 48.7** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 56.6 |
+| Contract governance | 4.5 |
+| Operational transparency | 31.6 |
+| Developer ergonomics | 66.1 |
+| Access clarity | 34.2 |
+
+**Agent readiness 33.8** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | verified |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | — |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | partial |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 22.3** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/hifi/](https://apis.io/providers/hifi/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Hifi: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/hifi/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
